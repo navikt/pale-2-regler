@@ -3,11 +3,8 @@ package no.nav.syfo
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.util.KtorExperimentalAPI
-import io.ktor.util.error
-import kotlinx.coroutines.*
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
@@ -31,28 +28,4 @@ fun main() {
     ApplicationServer(applicationEngine).start()
 
     applicationState.ready = true
-
-//    launchListeners(applicationState, environment)
-
 }
-
-@KtorExperimentalAPI
-fun launchListeners(
-    applicationState: ApplicationState,
-    env: Environment
-) {
-    createListener(applicationState) {
-
-    }
-}
-
-fun createListener(applicationState: ApplicationState, action: suspend CoroutineScope.() -> Unit): Job =
-    GlobalScope.launch {
-        try {
-            action()
-        } catch (e: Exception) {
-            log.error(e)
-        } finally {
-            applicationState.alive = false
-        }
-    }
