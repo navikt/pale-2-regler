@@ -13,6 +13,8 @@ val logstashEncoderVersion = "5.1"
 val prometheusVersion = "0.8.0"
 val jacksonVersion = "2.9.7"
 
+val pale2CommonVersion = "1.9d7eb76"
+
 plugins {
     kotlin("jvm") version "1.3.61"
     id("com.github.johnrengelman.shadow") version "5.2.0"
@@ -27,7 +29,7 @@ repositories {
     maven(url = "https://kotlin.bintray.com/kotlinx")
     maven(url = "https://packages.confluent.io/maven/")
     maven {
-        url = uri("https://maven.pkg.github.com/navikt/syfosm-common")
+        url = uri("https://maven.pkg.github.com/navikt/pale-2-common")
         credentials {
             username = githubUser
             password = githubPassword
@@ -48,6 +50,9 @@ dependencies {
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
 
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
+
     implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation("io.prometheus:simpleclient_common:$prometheusVersion")
 
@@ -55,6 +60,11 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+
+    implementation("no.nav.syfo:pale-2-common-models:$pale2CommonVersion")
+    implementation("no.nav.syfo:pale-2-common-networking:$pale2CommonVersion")
+    implementation("no.nav.syfo:pale-2-common-rest-sts:$pale2CommonVersion")
+
 }
 
 tasks {
