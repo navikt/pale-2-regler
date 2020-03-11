@@ -19,7 +19,6 @@ val RULE_HIT_COUNTER: Counter = Counter.Builder()
         .help("Registers a counter for each rule in the rule set")
         .register()
 
-
 val RULE_HIT_STATUS_COUNTER: Counter = Counter.Builder()
         .namespace(METRICS_NS)
         .name("rule_hit_status_counter")
