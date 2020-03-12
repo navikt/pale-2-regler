@@ -33,6 +33,15 @@ spec:
     requests:
       cpu: 400m
       memory: 768Mi
+  vault:
+    enabled: true
+    paths:
+      - kvPath: /azuread/data/dev/creds/pale-2-regler
+        mountPath: /secrets/azuread/pale-2-regler
+      - kvPath: /kv/preprod/fss/pale-2-regler/default
+        mountPath: /secrets/default
+      - kvPath: serviceuser/data/dev/srvpale2rule
+        mountPath: /secrets/serviceuser
   webproxy: true
   ingresses:
     - "https://pale-2-regler.nais.preprod.local"
