@@ -1,5 +1,7 @@
 # pale-2-regler
 
+Rule service for PALE-2 (Prosessering av legeerklæringer). 
+
 ## Contact us
 ### Code/project related questions can be sent to
 * Joakim Kartveit, `joakim.kartveit@nav.no`
