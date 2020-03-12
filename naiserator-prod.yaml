@@ -36,3 +36,8 @@ spec:
   webproxy: true
   ingresses:
     - "https://pale-2-regler.nais.adeo.local"
+env:
+  - name: HELSENETTPROXY_ID
+    value: TBA
+  - name: AADACCESSTOKEN_URL
+    value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token

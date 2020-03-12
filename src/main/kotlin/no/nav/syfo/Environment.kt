@@ -6,7 +6,6 @@ data class Environment(
     val legeSuspensjonEndpointURL: String = getEnvVar("LEGE_SUSPENSJON_ENDPOINT_URL", "http://btsys"),
     val norskHelsenettEndpointURL: String = getEnvVar("HELSENETT_ENDPOINT_URL", "http://syfohelsenettproxy"),
     val helsenettproxyId: String = getEnvVar("HELSENETTPROXY_ID"),
-    val aktoerregisterV1Url: String = getEnvVar("AKTOR_REGISTER_V1_URL"),
     val aadAccessTokenUrl: String = getEnvVar("AADACCESSTOKEN_URL")
 )
 
