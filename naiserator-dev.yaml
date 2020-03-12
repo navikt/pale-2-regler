@@ -36,8 +36,8 @@ spec:
   webproxy: true
   ingresses:
     - "https://pale-2-regler.nais.preprod.local"
-env:
-  - name: HELSENETTPROXY_ID
-    value: c18eba24-f676-47db-9a97-3c66e9304aee
-  - name: AADACCESSTOKEN_URL
-    value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token
+  env:
+    - name: HELSENETTPROXY_ID
+      value: c18eba24-f676-47db-9a97-3c66e9304aee
+    - name: AADACCESSTOKEN_URL
+      value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token
