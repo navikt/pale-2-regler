@@ -18,11 +18,13 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import no.nav.syfo.Environment
+import no.nav.syfo.api.registerRuleApi
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.log
 import no.nav.syfo.metrics.monitorHttpRequests
+import no.nav.syfo.services.RuleService
 
-fun createApplicationEngine(environment: Environment, applicationState: ApplicationState): NettyApplicationEngine {
+fun createApplicationEngine(environment: Environment, applicationState: ApplicationState, ruleService: RuleService): NettyApplicationEngine {
     return embeddedServer(Netty, environment.applicationPort) {
         install(ContentNegotiation) {
             jackson {
@@ -42,6 +44,7 @@ fun createApplicationEngine(environment: Environment, applicationState: Applicat
         }
         routing {
             registerNaisApi(applicationState)
+            registerRuleApi(ruleService)
         }
         intercept(ApplicationCallPipeline.Monitoring, monitorHttpRequests())
     }

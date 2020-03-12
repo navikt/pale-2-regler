@@ -4,8 +4,7 @@ import io.ktor.util.KtorExperimentalAPI
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.GlobalScope
 import net.logstash.logback.argument.StructuredArguments.fields
-import no.nav.syfo.client.LegeSuspensjonClient
-import no.nav.syfo.client.NorskHelsenettClient
+import no.nav.syfo.clients.HttpClients
 import no.nav.syfo.model.ReceivedLegeerklaering
 import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.RuleMetadata
@@ -22,10 +21,11 @@ import org.slf4j.LoggerFactory
 
 @KtorExperimentalAPI
 class RuleService(
-    private val legeSuspensjonClient: LegeSuspensjonClient,
-    private val norskHelsenettClient: NorskHelsenettClient
-
+    httpClients: HttpClients
 ) {
+    val legeSuspensjonClient = httpClients.legeSuspensjonClient
+    val norskHelsenettClient = httpClients.norskHelsenettClient
+
     private val log: Logger = LoggerFactory.getLogger("ruleservice")
     suspend fun executeRuleChains(receivedLegeerklaering: ReceivedLegeerklaering): ValidationResult =
         with(GlobalScope) {
