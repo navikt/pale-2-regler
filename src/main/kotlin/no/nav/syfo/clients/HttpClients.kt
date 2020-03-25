@@ -14,7 +14,10 @@ import io.ktor.util.KtorExperimentalAPI
 import java.net.ProxySelector
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultSecrets
-import no.nav.syfo.client.*
+import no.nav.syfo.client.AccessTokenClient
+import no.nav.syfo.client.LegeSuspensjonClient
+import no.nav.syfo.client.NorskHelsenettClient
+import no.nav.syfo.client.StsOidcClient
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner
 
 class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
@@ -43,6 +46,7 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
     private val httpClientWithProxy = HttpClient(Apache, proxyConfig)
     private val httpClient = HttpClient(Apache, config)
 
+    @KtorExperimentalAPI
     private val oidcClient = StsOidcClient(vaultSecrets.serviceuserUsername, vaultSecrets.serviceuserPassword)
     private val accessTokenClient = AccessTokenClient(env.aadAccessTokenUrl, vaultSecrets.clientId, vaultSecrets.clientsecret, httpClientWithProxy)
 

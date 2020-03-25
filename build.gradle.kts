@@ -7,7 +7,7 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "1.3.0"
+val ktorVersion = "1.3.2"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
 val prometheusVersion = "0.8.0"
@@ -16,7 +16,7 @@ val jacksonVersion = "2.9.7"
 val pale2CommonVersion = "1.9d7eb76"
 
 plugins {
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.71"
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("org.jmailen.kotlinter") version "2.2.0"
 }
