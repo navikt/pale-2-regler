@@ -12,8 +12,11 @@ val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
 val prometheusVersion = "0.8.0"
 val jacksonVersion = "2.9.7"
-
 val pale2CommonVersion = "1.9d7eb76"
+val spekVersion = "2.0.9"
+val kluentVersion = "1.39"
+val mockkVersion = "1.9.3"
+val jfairyVersion = "0.6.2"
 
 plugins {
     kotlin("jvm") version "1.3.71"
@@ -65,6 +68,19 @@ dependencies {
     implementation("no.nav.syfo:pale-2-common-networking:$pale2CommonVersion")
     implementation("no.nav.syfo:pale-2-common-rest-sts:$pale2CommonVersion")
 
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
+        exclude(group = "org.eclipse.jetty")
+    }
+    testImplementation("org.amshove.kluent:kluent:$kluentVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("com.devskiller:jfairy:$jfairyVersion")
+    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
+    testRuntimeOnly ("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
+
 }
 
 tasks {
@@ -88,7 +104,9 @@ tasks {
     }
 
     withType<Test> {
-        useJUnit()
+        useJUnitPlatform {
+            includeEngines("spek2")
+        }
         testLogging {
             showStandardStreams = true
         }
