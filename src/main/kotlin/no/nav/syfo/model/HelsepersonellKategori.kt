@@ -5,5 +5,6 @@ enum class HelsepersonellKategori(val beskrivendeHelsepersonellKategoriKategoriV
     LEGE("Lege", "LE"),
     MANUELLTERAPEUT("ManuellTerapeut", "MT"),
     FYSIOTERAPAEUT("Fysioterapeut", "FT"),
-    TANNLEGE("Tannlege", "TL")
+    TANNLEGE("Tannlege", "TL"),
+    PSYKOLOG("Psykolog", "PS")
 }

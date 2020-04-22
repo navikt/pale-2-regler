@@ -96,7 +96,7 @@ object HPRRuleChainSpek : Spek({
                 )
             )))
 
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual false
         }
 
         it("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR, should trigger rule") {
@@ -113,7 +113,24 @@ object HPRRuleChainSpek : Spek({
                 )
             )))
 
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual true
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual true
+        }
+
+        it("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR, should NOT trigger rule") {
+            val behandler = Behandler(listOf(Godkjenning(
+                autorisasjon = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = ""
+                ),
+                helsepersonellkategori = Kode(
+                    aktiv = true,
+                    oid = 0,
+                    verdi = HelsepersonellKategori.PSYKOLOG.verdi
+                )
+            )))
+
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual false
         }
     }
 })

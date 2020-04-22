@@ -37,7 +37,7 @@ enum class HPRRuleChain(
             }
         }),
 
-    BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR(
+    BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(
         1407,
         Status.INVALID,
         "Den som skrev legeerklæringen manglet autorisasjon.",
@@ -51,7 +51,8 @@ enum class HPRRuleChain(
                             HelsepersonellKategori.KIROPRAKTOR.verdi,
                             HelsepersonellKategori.MANUELLTERAPEUT.verdi,
                             HelsepersonellKategori.TANNLEGE.verdi,
-                            HelsepersonellKategori.FYSIOTERAPAEUT.verdi))
+                            HelsepersonellKategori.FYSIOTERAPAEUT.verdi,
+                            HelsepersonellKategori.PSYKOLOG.verdi))
             }
         }),
 }
