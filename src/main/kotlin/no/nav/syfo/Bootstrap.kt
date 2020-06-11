@@ -1,6 +1,7 @@
 package no.nav.syfo
 
 import io.ktor.util.KtorExperimentalAPI
+import io.prometheus.client.hotspot.DefaultExports
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
@@ -27,7 +28,9 @@ fun main() {
     val applicationEngine = createApplicationEngine(env, applicationState,
         RuleService(HttpClients(env, vaultSecrets)))
 
-    ApplicationServer(applicationEngine).start()
+    DefaultExports.initialize()
+
+    ApplicationServer(applicationEngine, applicationState).start()
 
     applicationState.ready = true
 }

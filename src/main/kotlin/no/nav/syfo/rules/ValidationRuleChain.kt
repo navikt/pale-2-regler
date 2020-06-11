@@ -33,8 +33,8 @@ enum class ValidationRuleChain(
     PASIENT_YNGRE_ENN_13(
             1101,
             Status.INVALID,
-            "Pasienten er under 13 år. Sykmelding kan ikke benyttes.",
-            "Pasienten er under 13 år. Sykmelding kan ikke benyttes.", { (_, metadata) ->
+            "Pasienten er under 13 år. Legeerklæring kan ikke benyttes.",
+            "Pasienten er under 13 år. Legeerklæring kan ikke benyttes.", { (_, metadata) ->
             metadata.signatureDate.toLocalDate() < extractBornDate(metadata.patientPersonNumber).plusYears(13)
     }),
 
