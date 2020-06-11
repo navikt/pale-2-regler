@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory
 class RuleService(
     httpClients: HttpClients
 ) {
-    val legeSuspensjonClient = httpClients.legeSuspensjonClient
-    val norskHelsenettClient = httpClients.norskHelsenettClient
+    private val legeSuspensjonClient = httpClients.legeSuspensjonClient
+    private val norskHelsenettClient = httpClients.norskHelsenettClient
 
     private val log: Logger = LoggerFactory.getLogger("ruleservice")
     suspend fun executeRuleChains(receivedLegeerklaering: ReceivedLegeerklaering): ValidationResult =
@@ -37,7 +37,7 @@ class RuleService(
                 legeerklaeringId = receivedLegeerklaering.legeerklaering.id
             )
 
-            log.info("Received a SM2013, going to rules, {}", fields(loggingMeta))
+            log.info("Mottatt legeerklæring, validerer mot regler, {}", fields(loggingMeta))
 
             val legeerklaring = receivedLegeerklaering.legeerklaering
 
@@ -59,8 +59,8 @@ class RuleService(
                     ruleHits = listOf(
                         RuleInfo(
                             ruleName = "BEHANDLER_NOT_IN_HPR",
-                            messageForSender = "Den som har skrevet sykmeldingen ble ikke funnet i Helsepersonellregisteret (HPR)",
-                            messageForUser = "Avsender fodselsnummer er ikke registert i Helsepersonellregisteret (HPR)",
+                            messageForSender = "Den som har skrevet legeerklæringen ble ikke funnet i Helsepersonellregisteret (HPR)",
+                            messageForUser = "Avsenders fødselsnummer er ikke registert i Helsepersonellregisteret (HPR)",
                             ruleStatus = Status.INVALID
                         )
                     )
