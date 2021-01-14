@@ -1,6 +1,7 @@
-# pale-2-regler
+![Deploy to dev and prod](https://github.com/navikt/pale-2-regler/workflows/Deploy%20to%20dev%20and%20prod/badge.svg?branch=master)
 
-Rule service for PALE-2 (Prosessering av legeerklæringer). 
+# pale-2-regler
+This project contains just the rules for validating legeerklæringer from pale-2 (https://github.com/navikt/pale-2). 
 
 ## Technologies used
 * Kotlin
