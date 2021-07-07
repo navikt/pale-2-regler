@@ -47,7 +47,7 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
     private val httpClient = HttpClient(Apache, config)
 
     @KtorExperimentalAPI
-    private val oidcClient = StsOidcClient(vaultSecrets.serviceuserUsername, vaultSecrets.serviceuserPassword)
+    private val oidcClient = StsOidcClient(vaultSecrets.serviceuserUsername, vaultSecrets.serviceuserPassword, env.securityTokenServiceURL)
     private val accessTokenClient = AccessTokenClient(env.aadAccessTokenUrl, vaultSecrets.clientId, vaultSecrets.clientsecret, httpClientWithProxy)
 
     @KtorExperimentalAPI
