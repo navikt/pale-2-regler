@@ -14,7 +14,7 @@ import io.ktor.util.KtorExperimentalAPI
 import java.net.ProxySelector
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultSecrets
-import no.nav.syfo.client.AccessTokenClient
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.LegeSuspensjonClient
 import no.nav.syfo.client.NorskHelsenettClient
 import no.nav.syfo.client.StsOidcClient
@@ -48,7 +48,12 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
 
     @KtorExperimentalAPI
     private val oidcClient = StsOidcClient(vaultSecrets.serviceuserUsername, vaultSecrets.serviceuserPassword, env.securityTokenServiceURL)
-    private val accessTokenClient = AccessTokenClient(env.aadAccessTokenUrl, vaultSecrets.clientId, vaultSecrets.clientsecret, httpClientWithProxy)
+    private val accessTokenClientV2 = AccessTokenClientV2(
+        aadAccessTokenUrl = env.aadAccessTokenV2Url,
+        clientId = env.clientIdV2,
+        clientSecret = env.clientSecretV2,
+        httpClient = httpClientWithProxy
+    )
 
     @KtorExperimentalAPI
     val legeSuspensjonClient = LegeSuspensjonClient(
@@ -59,5 +64,5 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
     )
 
     @KtorExperimentalAPI
-    val norskHelsenettClient = NorskHelsenettClient(env.norskHelsenettEndpointURL, accessTokenClient, env.helsenettproxyId, httpClient)
+    val norskHelsenettClient = NorskHelsenettClient(env.norskHelsenettEndpointURL, accessTokenClientV2, env.helsenettproxyScope, httpClient)
 }

@@ -20,9 +20,7 @@ fun main() {
 
     val vaultSecrets = VaultSecrets(
         serviceuserPassword = getFileAsString("/secrets/serviceuser/password"),
-        serviceuserUsername = getFileAsString("/secrets/serviceuser/username"),
-        clientId = getFileAsString("/secrets/azuread/pale-2-regler/client_id"),
-        clientsecret = getFileAsString("/secrets/azuread/pale-2-regler/client_secret")
+        serviceuserUsername = getFileAsString("/secrets/serviceuser/username")
     )
 
     val applicationEngine = createApplicationEngine(env, applicationState,

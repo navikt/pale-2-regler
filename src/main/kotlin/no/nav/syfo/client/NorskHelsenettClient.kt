@@ -20,7 +20,7 @@ import no.nav.syfo.util.LoggingMeta
 @KtorExperimentalAPI
 class NorskHelsenettClient(
     private val endpointUrl: String,
-    private val accessTokenClient: AccessTokenClient,
+    private val accessTokenClientV2: AccessTokenClientV2,
     private val resourceId: String,
     private val httpClient: HttpClient
 ) {
@@ -29,9 +29,9 @@ class NorskHelsenettClient(
         callName = "finnbehandler",
         retryIntervals = arrayOf(500L, 1000L, 1000L)) {
         log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
-        val httpResponse = httpClient.get<HttpStatement>("$endpointUrl/api/behandler") {
+        val httpResponse = httpClient.get<HttpStatement>("$endpointUrl/api/v2/behandler") {
             accept(ContentType.Application.Json)
-            val accessToken = accessTokenClient.hentAccessToken(resourceId)
+            val accessToken = accessTokenClientV2.getAccessTokenV2(resourceId)
             headers {
                 append("Authorization", "Bearer $accessToken")
                 append("Nav-CallId", msgId)
