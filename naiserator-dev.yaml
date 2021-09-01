@@ -40,17 +40,13 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /azuread/data/dev/creds/pale-2-regler
-        mountPath: /secrets/azuread/pale-2-regler
       - kvPath: serviceuser/data/dev/srvpale2rule
         mountPath: /secrets/serviceuser
   webproxy: true
   ingresses:
     - "https://pale-2-regler.nais.preprod.local"
   env:
-    - name: HELSENETTPROXY_ID
-      value: c18eba24-f676-47db-9a97-3c66e9304aee
-    - name: AADACCESSTOKEN_URL
-      value: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/token
     - name: HELSENETT_ENDPOINT_URL
       value: https://syfohelsenettproxy.nais.preprod.local
+    - name: HELSENETT_SCOPE
+      value: api://dev-fss.teamsykmelding.syfohelsenettproxy/.default
