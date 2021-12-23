@@ -9,13 +9,11 @@ import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpStatement
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.util.KtorExperimentalAPI
-import java.io.IOException
 import no.nav.syfo.VaultSecrets
 import no.nav.syfo.helpers.retry
 import no.nav.syfo.log
+import java.io.IOException
 
-@KtorExperimentalAPI
 class LegeSuspensjonClient(private val endpointUrl: String, private val secrets: VaultSecrets, private val stsClient: StsOidcClient, private val httpClient: HttpClient) {
 
     suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert = retry("lege_suspansjon") {

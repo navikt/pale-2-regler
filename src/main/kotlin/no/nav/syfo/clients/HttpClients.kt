@@ -8,17 +8,19 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.engine.apache.ApacheEngineConfig
+import io.ktor.client.features.HttpResponseValidator
 import io.ktor.client.features.json.JacksonSerializer
 import io.ktor.client.features.json.JsonFeature
-import io.ktor.util.KtorExperimentalAPI
-import java.net.ProxySelector
+import io.ktor.network.sockets.SocketTimeoutException
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultSecrets
+import no.nav.syfo.application.exception.ServiceUnavailableException
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.LegeSuspensjonClient
 import no.nav.syfo.client.NorskHelsenettClient
 import no.nav.syfo.client.StsOidcClient
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner
+import java.net.ProxySelector
 
 class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
 
@@ -29,6 +31,13 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
                 registerModule(JavaTimeModule())
                 configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            }
+        }
+        HttpResponseValidator {
+            handleResponseException { exception ->
+                when (exception) {
+                    is SocketTimeoutException -> throw ServiceUnavailableException(exception.message)
+                }
             }
         }
         expectSuccess = false
@@ -46,7 +55,6 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
     private val httpClientWithProxy = HttpClient(Apache, proxyConfig)
     private val httpClient = HttpClient(Apache, config)
 
-    @KtorExperimentalAPI
     private val oidcClient = StsOidcClient(vaultSecrets.serviceuserUsername, vaultSecrets.serviceuserPassword, env.securityTokenServiceURL)
     private val accessTokenClientV2 = AccessTokenClientV2(
         aadAccessTokenUrl = env.aadAccessTokenV2Url,
@@ -55,7 +63,6 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
         httpClient = httpClientWithProxy
     )
 
-    @KtorExperimentalAPI
     val legeSuspensjonClient = LegeSuspensjonClient(
         env.legeSuspensjonEndpointURL,
         vaultSecrets,
@@ -63,6 +70,5 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
         httpClient
     )
 
-    @KtorExperimentalAPI
     val norskHelsenettClient = NorskHelsenettClient(env.norskHelsenettEndpointURL, accessTokenClientV2, env.helsenettproxyScope, httpClient)
 }

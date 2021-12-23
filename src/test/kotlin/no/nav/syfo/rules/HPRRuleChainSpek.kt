@@ -6,7 +6,7 @@ import no.nav.syfo.client.Godkjenning
 import no.nav.syfo.client.Kode
 import no.nav.syfo.model.HelsepersonellKategori
 import no.nav.syfo.model.Legeerklaering
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
@@ -19,118 +19,152 @@ object HPRRuleChainSpek : Spek({
             RuleData(legeerklaring, behandler)
 
         it("Should check rule BEHANDLER_IKKE_GYLDIG_I_HPR, should trigger rule") {
-            val behandler = Behandler(listOf(
-                Godkjenning(
-                    autorisasjon = Kode(
-                        aktiv = false,
-                        oid = 7702,
-                        verdi = "1")
+            val behandler = Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon = Kode(
+                            aktiv = false,
+                            oid = 7702,
+                            verdi = "1"
+                        )
+                    )
                 )
-            ))
+            )
 
-            HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual true
+            HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
         }
 
         it("Should check rule BEHANDLER_IKKE_GYLDIG_I_HPR, should NOT trigger rule") {
 
-            val behandler = Behandler(listOf(Godkjenning(
-                autorisasjon = Kode(
-                    aktiv = true,
-                    oid = 7702,
-                    verdi = "1")
-            )))
+            val behandler = Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon = Kode(
+                            aktiv = true,
+                            oid = 7702,
+                            verdi = "1"
+                        )
+                    )
+                )
+            )
 
-            HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
         }
 
         it("Should check rule BEHANDLER_NOT_VALID_AUTHORIZATION_IN_HPR, should trigger rule") {
-            val behandler = Behandler(listOf(Godkjenning(
-                autorisasjon = Kode(
-                    aktiv = true,
-                    oid = 7702,
-                    verdi = "11")
-            )))
+            val behandler = Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon = Kode(
+                            aktiv = true,
+                            oid = 7702,
+                            verdi = "11"
+                        )
+                    )
+                )
+            )
 
-            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual true
+            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
         }
 
         it("Should check rule BEHANDLER_MANGLER_AUTORISASJON_I_HPR, should NOT trigger rule") {
-            val behandler = Behandler(listOf(Godkjenning(
-                autorisasjon = Kode(
-                    aktiv = true,
-                    oid = 7704,
-                    verdi = "1")
-            )))
+            val behandler = Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon = Kode(
+                            aktiv = true,
+                            oid = 7704,
+                            verdi = "1"
+                        )
+                    )
+                )
+            )
 
-            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
         }
 
         it("Should check rule BEHANDLER_MANGLER_AUTORISASJON_I_HPR, should trigger rule") {
-            val behandler = Behandler(listOf(Godkjenning(
-                autorisasjon = Kode(
-                    aktiv = true,
-                    oid = 0,
-                    verdi = ""
-                ),
-                helsepersonellkategori = Kode(
-                    aktiv = true,
-                    oid = 0,
-                    verdi = "PL"
+            val behandler = Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon = Kode(
+                            aktiv = true,
+                            oid = 0,
+                            verdi = ""
+                        ),
+                        helsepersonellkategori = Kode(
+                            aktiv = true,
+                            oid = 0,
+                            verdi = "PL"
+                        )
+                    )
                 )
-            )))
+            )
 
-            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual true
+            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
         }
 
         it("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR, should NOT trigger rule") {
-            val behandler = Behandler(listOf(Godkjenning(
-                autorisasjon = Kode(
-                    aktiv = true,
-                    oid = 0,
-                    verdi = ""
-                ),
-                helsepersonellkategori = Kode(
-                    aktiv = true,
-                    oid = 0,
-                    verdi = HelsepersonellKategori.LEGE.verdi
+            val behandler = Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon = Kode(
+                            aktiv = true,
+                            oid = 0,
+                            verdi = ""
+                        ),
+                        helsepersonellkategori = Kode(
+                            aktiv = true,
+                            oid = 0,
+                            verdi = HelsepersonellKategori.LEGE.verdi
+                        )
+                    )
                 )
-            )))
+            )
 
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
         }
 
         it("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR, should trigger rule") {
-            val behandler = Behandler(listOf(Godkjenning(
-                autorisasjon = Kode(
-                    aktiv = true,
-                    oid = 0,
-                    verdi = ""
-                ),
-                helsepersonellkategori = Kode(
-                    aktiv = true,
-                    oid = 0,
-                    verdi = "kvakksalver"
+            val behandler = Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon = Kode(
+                            aktiv = true,
+                            oid = 0,
+                            verdi = ""
+                        ),
+                        helsepersonellkategori = Kode(
+                            aktiv = true,
+                            oid = 0,
+                            verdi = "kvakksalver"
+                        )
+                    )
                 )
-            )))
+            )
 
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual true
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
         }
 
         it("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR, should NOT trigger rule") {
-            val behandler = Behandler(listOf(Godkjenning(
-                autorisasjon = Kode(
-                    aktiv = true,
-                    oid = 0,
-                    verdi = ""
-                ),
-                helsepersonellkategori = Kode(
-                    aktiv = true,
-                    oid = 0,
-                    verdi = HelsepersonellKategori.PSYKOLOG.verdi
+            val behandler = Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon = Kode(
+                            aktiv = true,
+                            oid = 0,
+                            verdi = ""
+                        ),
+                        helsepersonellkategori = Kode(
+                            aktiv = true,
+                            oid = 0,
+                            verdi = HelsepersonellKategori.PSYKOLOG.verdi
+                        )
+                    )
                 )
-            )))
+            )
 
-            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldEqual false
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
         }
     }
 })
