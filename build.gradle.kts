@@ -7,29 +7,25 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "1.3.2"
-val logbackVersion = "1.2.3"
-val logstashEncoderVersion = "5.1"
-val prometheusVersion = "0.8.0"
-val jacksonVersion = "2.9.7"
-val pale2CommonVersion = "1.773adee"
-val spekVersion = "2.0.9"
-val kluentVersion = "1.39"
-val mockkVersion = "1.9.3"
-val jfairyVersion = "0.6.2"
+val ktorVersion = "1.6.7"
+val logbackVersion = "1.2.9"
+val logstashEncoderVersion = "7.0.1"
+val prometheusVersion = "0.14.1"
+val jacksonVersion = "2.13.1"
+val pale2CommonVersion = "1.a86680d"
+val spekVersion = "2.0.17"
+val kluentVersion = "1.68"
+val mockkVersion = "1.12.1"
+val jfairyVersion = "0.6.4"
 
 plugins {
-    kotlin("jvm") version "1.3.71"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
-    id("org.jmailen.kotlinter") version "2.2.0"
+    kotlin("jvm") version "1.6.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("org.jmailen.kotlinter") version "3.6.0"
 }
 
 repositories {
     mavenCentral()
-    jcenter()
-    maven(url = "https://dl.bintray.com/kotlin/ktor")
-    maven(url = "https://dl.bintray.com/spekframework/spek-dev")
-    maven(url = "https://kotlin.bintray.com/kotlinx")
     maven(url = "https://packages.confluent.io/maven/")
     maven {
         url = uri("https://maven.pkg.github.com/navikt/pale-2-common")
@@ -93,7 +89,7 @@ tasks {
         }
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "12"
+        kotlinOptions.jvmTarget = "17"
     }
 
     withType<ShadowJar> {

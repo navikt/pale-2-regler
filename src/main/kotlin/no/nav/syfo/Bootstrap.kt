@@ -1,7 +1,7 @@
 package no.nav.syfo
 
-import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
+import kotlinx.coroutines.DelicateCoroutinesApi
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.pale-2-regler")
 
-@KtorExperimentalAPI
+@DelicateCoroutinesApi
 fun main() {
     val env = Environment()
     val applicationState = ApplicationState()
@@ -25,8 +25,10 @@ fun main() {
         clientsecret = getFileAsString("/secrets/azuread/pale-2-regler/client_secret")
     )
 
-    val applicationEngine = createApplicationEngine(env, applicationState,
-        RuleService(HttpClients(env, vaultSecrets)))
+    val applicationEngine = createApplicationEngine(
+        env, applicationState,
+        RuleService(HttpClients(env, vaultSecrets))
+    )
 
     DefaultExports.initialize()
 

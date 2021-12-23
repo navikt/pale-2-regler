@@ -10,10 +10,11 @@ enum class LegesuspensjonRuleChain(
     override val predicate: (RuleData<Boolean>) -> Boolean
 ) : Rule<RuleData<Boolean>> {
     BEHANDLER_SUSPENDERT(
-            1414,
-            Status.INVALID,
-            "Den som sendte legeerklæringen har mistet retten til å skrive legeerklæringer.",
-            "Behandler er suspendert av NAV på konsultasjonstidspunkt", { (_, suspended) ->
-        suspended
-    }),
+        1414,
+        Status.INVALID,
+        "Den som sendte legeerklæringen har mistet retten til å skrive legeerklæringer.",
+        "Behandler er suspendert av NAV på konsultasjonstidspunkt", { (_, suspended) ->
+            suspended
+        }
+    ),
 }

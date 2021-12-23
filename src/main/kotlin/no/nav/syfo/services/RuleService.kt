@@ -1,7 +1,6 @@
 package no.nav.syfo.services
 
-import io.ktor.util.KtorExperimentalAPI
-import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import net.logstash.logback.argument.StructuredArguments.fields
 import no.nav.syfo.clients.HttpClients
@@ -18,8 +17,9 @@ import no.nav.syfo.rules.executeFlow
 import no.nav.syfo.util.LoggingMeta
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.format.DateTimeFormatter
 
-@KtorExperimentalAPI
+@DelicateCoroutinesApi
 class RuleService(
     httpClients: HttpClients
 ) {
@@ -69,7 +69,8 @@ class RuleService(
 
             val results = listOf(
                 ValidationRuleChain.values().executeFlow(
-                    legeerklaring, RuleMetadata(
+                    legeerklaring,
+                    RuleMetadata(
                         receivedDate = receivedLegeerklaering.mottattDato,
                         signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
                         patientPersonNumber = receivedLegeerklaering.personNrPasient,
