@@ -12,7 +12,7 @@ This project contains just the rules for validating legeerklæringer from pale-2
 
 #### Requirements
 
-* JDK 12
+* JDK 17
 
 ### Getting github-package-registry packages NAV-IT
 Some packages used in this repo is uploaded to the Github Package Registry which requires authentication. It can, for example, be solved like this in Gradle:
