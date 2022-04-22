@@ -1,5 +1,6 @@
 package no.nav.syfo.rules
 
+import io.kotest.core.spec.style.FunSpec
 import io.mockk.mockk
 import no.nav.syfo.client.Behandler
 import no.nav.syfo.client.Godkjenning
@@ -7,18 +8,16 @@ import no.nav.syfo.client.Kode
 import no.nav.syfo.model.HelsepersonellKategori
 import no.nav.syfo.model.Legeerklaering
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
-object HPRRuleChainSpek : Spek({
+class HPRRuleChainSpek : FunSpec({
 
     val legeerklaring = mockk<Legeerklaering>()
 
-    describe("Testing validation rules and checking the rule outcomes") {
+    context("Testing validation rules and checking the rule outcomes") {
         fun ruleData(legeerklaring: Legeerklaering, behandler: Behandler) =
             RuleData(legeerklaring, behandler)
 
-        it("Should check rule BEHANDLER_IKKE_GYLDIG_I_HPR, should trigger rule") {
+        test("Should check rule BEHANDLER_IKKE_GYLDIG_I_HPR, should trigger rule") {
             val behandler = Behandler(
                 listOf(
                     Godkjenning(
@@ -34,7 +33,7 @@ object HPRRuleChainSpek : Spek({
             HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
         }
 
-        it("Should check rule BEHANDLER_IKKE_GYLDIG_I_HPR, should NOT trigger rule") {
+        test("Should check rule BEHANDLER_IKKE_GYLDIG_I_HPR, should NOT trigger rule") {
 
             val behandler = Behandler(
                 listOf(
@@ -51,7 +50,7 @@ object HPRRuleChainSpek : Spek({
             HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
         }
 
-        it("Should check rule BEHANDLER_NOT_VALID_AUTHORIZATION_IN_HPR, should trigger rule") {
+        test("Should check rule BEHANDLER_NOT_VALID_AUTHORIZATION_IN_HPR, should trigger rule") {
             val behandler = Behandler(
                 listOf(
                     Godkjenning(
@@ -67,7 +66,7 @@ object HPRRuleChainSpek : Spek({
             HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
         }
 
-        it("Should check rule BEHANDLER_MANGLER_AUTORISASJON_I_HPR, should NOT trigger rule") {
+        test("Should check rule BEHANDLER_MANGLER_AUTORISASJON_I_HPR, should NOT trigger rule") {
             val behandler = Behandler(
                 listOf(
                     Godkjenning(
@@ -83,7 +82,7 @@ object HPRRuleChainSpek : Spek({
             HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
         }
 
-        it("Should check rule BEHANDLER_MANGLER_AUTORISASJON_I_HPR, should trigger rule") {
+        test("Should check rule BEHANDLER_MANGLER_AUTORISASJON_I_HPR, should trigger rule") {
             val behandler = Behandler(
                 listOf(
                     Godkjenning(
@@ -104,7 +103,7 @@ object HPRRuleChainSpek : Spek({
             HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
         }
 
-        it("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR, should NOT trigger rule") {
+        test("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR, should NOT trigger rule") {
             val behandler = Behandler(
                 listOf(
                     Godkjenning(
@@ -125,7 +124,7 @@ object HPRRuleChainSpek : Spek({
             HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
         }
 
-        it("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR, should trigger rule") {
+        test("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_I_HPR, should trigger rule") {
             val behandler = Behandler(
                 listOf(
                     Godkjenning(
@@ -146,7 +145,7 @@ object HPRRuleChainSpek : Spek({
             HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
         }
 
-        it("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR, should NOT trigger rule") {
+        test("Should check rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR, should NOT trigger rule") {
             val behandler = Behandler(
                 listOf(
                     Godkjenning(
