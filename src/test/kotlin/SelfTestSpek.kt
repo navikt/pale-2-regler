@@ -1,21 +1,20 @@
 package no.nav.syfo
 
+import io.kotest.core.spec.style.FunSpec
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.routing.routing
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.api.registerNaisApi
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
-object SelfTestSpek : Spek({
+class SelfTestSpek : FunSpec({
 
-    describe("Successfull liveness and readyness tests") {
+    context("Successfull liveness and readyness tests") {
 
-        it("Returns ok on is_alive") {
+        test("Returns ok on is_alive") {
             with(TestApplicationEngine()) {
                 start()
                 val applicationState = ApplicationState()
@@ -30,7 +29,7 @@ object SelfTestSpek : Spek({
             }
         }
 
-        it("Returns ok in is_ready") {
+        test("Returns ok in is_ready") {
             with(TestApplicationEngine()) {
                 start()
                 val applicationState = ApplicationState()
@@ -45,9 +44,9 @@ object SelfTestSpek : Spek({
             }
         }
     }
-    describe("Unsuccessful liveness and readyness") {
+    context("Unsuccessful liveness and readyness") {
 
-        it("Returns internal server error when liveness check fails") {
+        test("Returns internal server error when liveness check fails") {
             with(TestApplicationEngine()) {
                 start()
                 val applicationState = ApplicationState()
@@ -62,7 +61,7 @@ object SelfTestSpek : Spek({
             }
         }
 
-        it("Returns internal server error when readyness check fails") {
+        test("Returns internal server error when readyness check fails") {
             with(TestApplicationEngine()) {
                 start()
                 val applicationState = ApplicationState()
