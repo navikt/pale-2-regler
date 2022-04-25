@@ -8,10 +8,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.engine.apache.ApacheEngineConfig
-import io.ktor.client.features.HttpResponseValidator
-import io.ktor.client.features.json.JacksonSerializer
-import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.network.sockets.SocketTimeoutException
+import io.ktor.serialization.jackson.jackson
 import no.nav.syfo.Environment
 import no.nav.syfo.VaultSecrets
 import no.nav.syfo.application.exception.ServiceUnavailableException
@@ -24,9 +25,9 @@ import java.net.ProxySelector
 
 class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
 
-    private val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
-        install(JsonFeature) {
-            serializer = JacksonSerializer {
+    private val baseConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
+        install(ContentNegotiation) {
+            jackson {
                 registerKotlinModule()
                 registerModule(JavaTimeModule())
                 configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
@@ -34,7 +35,7 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
             }
         }
         HttpResponseValidator {
-            handleResponseException { exception ->
+            handleResponseExceptionWithRequest { exception, _ ->
                 when (exception) {
                     is SocketTimeoutException -> throw ServiceUnavailableException(exception.message)
                 }
@@ -42,9 +43,18 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
         }
         expectSuccess = false
     }
-
+    private val retryConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
+        baseConfig().apply {
+            install(HttpRequestRetry) {
+                maxRetries = 3
+                delayMillis { retry ->
+                    retry * 500L
+                }
+            }
+        }
+    }
     private val proxyConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
-        config()
+        baseConfig().apply { install(HttpRequestRetry) }
         engine {
             customizeClient {
                 setRoutePlanner(SystemDefaultRoutePlanner(ProxySelector.getDefault()))
@@ -53,7 +63,7 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
     }
 
     private val httpClientWithProxy = HttpClient(Apache, proxyConfig)
-    private val httpClient = HttpClient(Apache, config)
+    private val httpClient = HttpClient(Apache, retryConfig)
 
     private val oidcClient = StsOidcClient(vaultSecrets.serviceuserUsername, vaultSecrets.serviceuserPassword, env.securityTokenServiceURL)
     private val accessTokenClientV2 = AccessTokenClientV2(

@@ -1,17 +1,16 @@
 package no.nav.syfo.client
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
+import io.ktor.client.call.body
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
-import io.ktor.client.statement.HttpStatement
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import net.logstash.logback.argument.StructuredArguments.fields
-import no.nav.syfo.helpers.retry
 import no.nav.syfo.log
 import no.nav.syfo.util.LoggingMeta
 import java.io.IOException
@@ -23,12 +22,9 @@ class NorskHelsenettClient(
     private val httpClient: HttpClient
 ) {
 
-    suspend fun finnBehandler(behandlerFnr: String, msgId: String, loggingMeta: LoggingMeta): Behandler? = retry(
-        callName = "finnbehandler",
-        retryIntervals = arrayOf(500L, 1000L, 1000L)
-    ) {
+    suspend fun finnBehandler(behandlerFnr: String, msgId: String, loggingMeta: LoggingMeta): Behandler? {
         log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
-        val httpResponse = httpClient.get<HttpStatement>("$endpointUrl/api/v2/behandler") {
+        val httpResponse: HttpResponse = httpClient.get("$endpointUrl/api/v2/behandler") {
             accept(ContentType.Application.Json)
             val accessToken = accessTokenClientV2.getAccessTokenV2(resourceId)
             headers {
@@ -36,7 +32,7 @@ class NorskHelsenettClient(
                 append("Nav-CallId", msgId)
                 append("behandlerFnr", behandlerFnr)
             }
-        }.execute()
+        }
         when (httpResponse.status) {
             InternalServerError -> {
                 log.error("Syfohelsenettproxy svarte med feilmelding for msgId {}, {}", msgId, fields(loggingMeta))
@@ -45,16 +41,16 @@ class NorskHelsenettClient(
 
             BadRequest -> {
                 log.error("BehandlerFnr mangler i request for msgId {}, {}", msgId, fields(loggingMeta))
-                return@retry null
+                return null
             }
 
             NotFound -> {
                 log.warn("BehandlerFnr ikke funnet {}, {}", msgId, fields(loggingMeta))
-                return@retry null
+                return null
             }
             else -> {
                 log.info("Hentet behandler for msgId {}, {}", msgId, fields(loggingMeta))
-                httpResponse.call.response.receive<Behandler>()
+                return httpResponse.call.response.body<Behandler>()
             }
         }
     }
