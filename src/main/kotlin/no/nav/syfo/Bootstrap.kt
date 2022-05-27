@@ -31,6 +31,4 @@ fun main() {
     DefaultExports.initialize()
 
     ApplicationServer(applicationEngine, applicationState).start()
-
-    applicationState.ready = true
 }

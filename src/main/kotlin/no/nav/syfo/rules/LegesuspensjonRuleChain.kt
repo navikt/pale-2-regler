@@ -14,7 +14,7 @@ enum class LegesuspensjonRuleChain(
         Status.INVALID,
         "Den som sendte legeerklæringen har mistet retten til å skrive legeerklæringer.",
         "Behandler er suspendert av NAV på konsultasjonstidspunkt", { (_, suspended) ->
-            suspended
-        }
+        suspended
+    }
     ),
 }
