@@ -19,8 +19,8 @@ enum class ValidationRuleChain(
         Status.INVALID,
         "Pasienten sitt fødselsnummer eller D-nummer er ikke 11 tegn.",
         "Pasienten sitt fødselsnummer eller D-nummer er ikke 11 tegn.", { (_, metadata) ->
-            !validatePersonAndDNumber11Digits(metadata.patientPersonNumber)
-        }
+        !validatePersonAndDNumber11Digits(metadata.patientPersonNumber)
+    }
     ),
 
     UGYLDIG_FNR_PASIENT(
@@ -28,8 +28,8 @@ enum class ValidationRuleChain(
         Status.INVALID,
         "Fødselsnummer/D-nummer kan passerer ikke modulus 11",
         "Pasientens fødselsnummer/D-nummer er ikke gyldig", { (_, metadata) ->
-            !validatePersonAndDNumber(metadata.patientPersonNumber)
-        }
+        !validatePersonAndDNumber(metadata.patientPersonNumber)
+    }
     ),
 
     PASIENT_YNGRE_ENN_13(
@@ -37,8 +37,8 @@ enum class ValidationRuleChain(
         Status.INVALID,
         "Pasienten er under 13 år. Legeerklæring kan ikke benyttes.",
         "Pasienten er under 13 år. Legeerklæring kan ikke benyttes.", { (_, metadata) ->
-            metadata.signatureDate.toLocalDate() < extractBornDate(metadata.patientPersonNumber).plusYears(13)
-        }
+        metadata.signatureDate.toLocalDate() < extractBornDate(metadata.patientPersonNumber).plusYears(13)
+    }
     ),
 
     UGYLDIG_ORGNR_LENGDE(
@@ -46,8 +46,8 @@ enum class ValidationRuleChain(
         Status.INVALID,
         "Den må ha riktig organisasjonsnummer.",
         "Feil format på organisasjonsnummer. Dette skal være 9 sifre..", { (_, metadata) ->
-            metadata.legekontorOrgnr != null && metadata.legekontorOrgnr.length != 9
-        }
+        metadata.legekontorOrgnr != null && metadata.legekontorOrgnr.length != 9
+    }
     ),
 
     UGYLDIG_FNR_AVSENDER(
@@ -55,8 +55,8 @@ enum class ValidationRuleChain(
         Status.INVALID,
         "Fødselsnummer for den som sendte legeerklæringen, er ikke gyldig",
         "Avsenders fødselsnummer/D-nummer er ikke gyldig", { (_, metadata) ->
-            !validatePersonAndDNumber(metadata.avsenderfnr)
-        }
+        !validatePersonAndDNumber(metadata.avsenderfnr)
+    }
     ),
 
     AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR(
@@ -64,7 +64,7 @@ enum class ValidationRuleChain(
         Status.INVALID,
         "Den som signert legeerklæringen er også pasient.",
         "Avsender fnr er det samme som pasient fnr", { (_, metadata) ->
-            metadata.avsenderfnr.equals(metadata.patientPersonNumber)
-        }
+        metadata.avsenderfnr.equals(metadata.patientPersonNumber)
+    }
     ),
 }
