@@ -24,7 +24,8 @@ fun main() {
     )
 
     val applicationEngine = createApplicationEngine(
-        env, applicationState,
+        env,
+        applicationState,
         RuleService(HttpClients(env, vaultSecrets))
     )
 

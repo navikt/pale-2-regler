@@ -1,10 +1,9 @@
-package no.nav.syfo.no.nav.syfo.client
+package no.nav.syfo.client
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.kotest.core.spec.style.FunSpec
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.plugins.HttpRequestRetry
@@ -20,19 +19,21 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.mockk.coEvery
 import io.mockk.mockk
-import no.nav.syfo.client.AccessTokenClientV2
-import no.nav.syfo.client.Behandler
-import no.nav.syfo.client.Godkjenning
-import no.nav.syfo.client.NorskHelsenettClient
+import kotlinx.coroutines.runBlocking
 import no.nav.syfo.util.LoggingMeta
 import org.amshove.kluent.shouldBeEqualTo
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
 
-class NorskHelsenettClientTest : FunSpec({
-    val fnr = "12345647981"
-    val accessTokenClientV2 = mockk<AccessTokenClientV2>()
-    val httpClient = HttpClient(Apache) {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class NorskHelsenettClientTest {
+    private val fnr = "12345647981"
+    private val accessTokenClientV2 = mockk<AccessTokenClientV2>()
+    private val httpClient = HttpClient(Apache) {
         install(ContentNegotiation) {
             jackson {
                 registerKotlinModule()
@@ -50,10 +51,10 @@ class NorskHelsenettClientTest : FunSpec({
         expectSuccess = false
     }
 
-    val loggingMeta = LoggingMeta("23", "900323", "1231", "31311-31312313-13")
-    val mockHttpServerPort = ServerSocket(0).use { it.localPort }
-    val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
-    val mockServer = embeddedServer(Netty, mockHttpServerPort) {
+    private val loggingMeta = LoggingMeta("23", "900323", "1231", "31311-31312313-13")
+    private val mockHttpServerPort = ServerSocket(0).use { it.localPort }
+    private val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
+    private val mockServer = embeddedServer(Netty, mockHttpServerPort) {
         install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
             jackson {
                 registerKotlinModule()
@@ -66,31 +67,39 @@ class NorskHelsenettClientTest : FunSpec({
             get("/syfohelsenettproxy/api/v2/behandler") {
                 when {
                     call.request.headers["behandlerFnr"] == fnr -> call.respond(Behandler(listOf(Godkjenning())))
-                    call.request.headers["behandlerFnr"] == "behandlerFinnesIkke" -> call.respond(HttpStatusCode.NotFound, "Behandler finnes ikke")
+                    call.request.headers["behandlerFnr"] == "behandlerFinnesIkke" -> call.respond(
+                        HttpStatusCode.NotFound,
+                        "Behandler finnes ikke"
+                    )
+
                     else -> call.respond(HttpStatusCode.InternalServerError, "Noe gikk galt")
                 }
             }
         }
     }.start()
 
-    val norskHelsenettClient = NorskHelsenettClient("$mockHttpServerUrl/syfohelsenettproxy", accessTokenClientV2, "resourceId", httpClient)
+    private val norskHelsenettClient =
+        NorskHelsenettClient("$mockHttpServerUrl/syfohelsenettproxy", accessTokenClientV2, "resourceId", httpClient)
 
-    afterSpec {
-        mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
-    }
-
-    beforeSpec {
+    @BeforeAll
+    internal fun beforeAll() {
         coEvery { accessTokenClientV2.getAccessTokenV2(any()) } returns "token"
     }
 
-    context("NorskHelsenettClient") {
-        test("Happy-case") {
-            val behandler = norskHelsenettClient.finnBehandler(fnr, "1", loggingMeta)
-            behandler shouldBeEqualTo Behandler(listOf(Godkjenning()))
-        }
-        test("Returnerer null hvis respons er 404") {
-            val behandler = norskHelsenettClient.finnBehandler("behandlerFinnesIkke", "1", loggingMeta)
-            behandler shouldBeEqualTo null
-        }
+    @AfterAll
+    internal fun afterAll() {
+        mockServer.stop(TimeUnit.SECONDS.toMillis(1), TimeUnit.SECONDS.toMillis(10))
     }
-})
+
+    @Test
+    internal fun `NorskHelsenettClient happy-case`() {
+        val behandler = runBlocking { norskHelsenettClient.finnBehandler(fnr, "1", loggingMeta) }
+        behandler shouldBeEqualTo Behandler(listOf(Godkjenning()))
+    }
+
+    @Test
+    internal fun `NorskHelsenettClient Returnerer null hvis respons er 404`() {
+        val behandler = runBlocking { norskHelsenettClient.finnBehandler("behandlerFinnesIkke", "1", loggingMeta) }
+        behandler shouldBeEqualTo null
+    }
+}

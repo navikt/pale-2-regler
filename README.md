@@ -8,14 +8,14 @@ This project contains just the rules for validating legeerklæringer from pale-2
 * Gradle
 * Ktor
 * Jackson
-* Spek
+* Junit
 
 #### Requirements
 
 * JDK 17
 
 ### Getting github-package-registry packages NAV-IT
-Some packages used in this repo is uploaded to the Github Package Registry which requires authentication. It can, for example, be solved like this in Gradle:
+Some packages used in this repo is uploaded to the GitHub Package Registry which requires authentication. It can, for example, be solved like this in Gradle:
 ```
 val githubUser: String by project
 val githubPassword: String by project
@@ -59,3 +59,8 @@ Creating a docker image should be as simple as `docker build -t pale-2-regler .`
 
 #### Running a docker image
 `docker run --rm -it -p 8080:8080 pale-2-regler`
+
+### Upgrading the gradle wrapper
+Find the newest version of gradle here: https://gradle.org/releases/ Then run this command:
+
+```./gradlew wrapper --gradle-version $gradleVersjon```

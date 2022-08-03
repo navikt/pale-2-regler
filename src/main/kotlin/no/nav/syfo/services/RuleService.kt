@@ -27,7 +27,6 @@ class RuleService(
 
     private val log: Logger = LoggerFactory.getLogger("ruleservice")
     suspend fun executeRuleChains(receivedLegeerklaering: ReceivedLegeerklaering): ValidationResult {
-
         val loggingMeta = LoggingMeta(
             mottakId = receivedLegeerklaering.navLogId,
             orgNr = receivedLegeerklaering.legekontorOrgNr,

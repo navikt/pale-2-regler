@@ -29,15 +29,16 @@ enum class HPRRuleChain(
         1403,
         Status.INVALID,
         "Den som skrev legeerklæringen manglet autorisasjon.",
-        "Behandler har ikke til gyldig autorisasjon i HPR", { (_, behandler) ->
-        !behandler.godkjenninger.any {
-            it.autorisasjon?.aktiv != null &&
-                it.autorisasjon.aktiv &&
-                it.autorisasjon.oid == 7704 &&
-                it.autorisasjon.verdi != null &&
-                it.autorisasjon.verdi in arrayOf("1", "17", "4", "2", "14", "18")
+        "Behandler har ikke til gyldig autorisasjon i HPR",
+        { (_, behandler) ->
+            !behandler.godkjenninger.any {
+                it.autorisasjon?.aktiv != null &&
+                    it.autorisasjon.aktiv &&
+                    it.autorisasjon.oid == 7704 &&
+                    it.autorisasjon.verdi != null &&
+                    it.autorisasjon.verdi in arrayOf("1", "17", "4", "2", "14", "18")
+            }
         }
-    }
     ),
 
     BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(

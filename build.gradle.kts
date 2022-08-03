@@ -7,22 +7,22 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "2.0.1"
-val logbackVersion = "1.2.11"
-val logstashEncoderVersion = "7.1.1"
-val prometheusVersion = "0.15.0"
+val ktorVersion = "2.0.3"
+val logbackVersion =     "1.2.11"
+val logstashEncoderVersion = "7.2"
+val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.13.3"
 val pale2CommonVersion = "1.19e8b45"
-val kotestVersion = "5.3.0"
 val kluentVersion = "1.68"
 val mockkVersion = "1.12.4"
 val jfairyVersion = "0.6.5"
-val kotlinVersion = "1.6.21"
+val kotlinVersion = "1.7.10"
+val junitJupiterVersion = "5.8.2"
 
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.7.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.jmailen.kotlinter") version "3.10.0"
+    id("org.jmailen.kotlinter") version "3.11.1"
 }
 
 repositories {
@@ -71,7 +71,10 @@ dependencies {
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("com.devskiller:jfairy:$jfairyVersion")
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 }
 
 tasks {
