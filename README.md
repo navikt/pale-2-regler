@@ -64,3 +64,9 @@ Creating a docker image should be as simple as `docker build -t pale-2-regler .`
 Find the newest version of gradle here: https://gradle.org/releases/ Then run this command:
 
 ```./gradlew wrapper --gradle-version $gradleVersjon```
+
+### Inquiries
+Questions related to the code or the project can be asked as issues here on GitHub
+
+### For NAV employees
+We are available at the Slack channel #team-sykmelding
