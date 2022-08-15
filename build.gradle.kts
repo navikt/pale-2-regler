@@ -7,8 +7,8 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "2.0.3"
-val logbackVersion =     "1.2.11"
+val ktorVersion = "2.1.0"
+val logbackVersion = "1.2.11"
 val logstashEncoderVersion = "7.2"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.13.3"
@@ -17,7 +17,7 @@ val kluentVersion = "1.68"
 val mockkVersion = "1.12.4"
 val jfairyVersion = "0.6.5"
 val kotlinVersion = "1.7.10"
-val junitJupiterVersion = "5.8.2"
+val junitJupiterVersion = "5.9.0"
 
 plugins {
     kotlin("jvm") version "1.7.10"
@@ -27,7 +27,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven(url = "https://packages.confluent.io/maven/")
     maven {
         url = uri("https://maven.pkg.github.com/navikt/pale-2-common")
         credentials {
@@ -101,7 +100,8 @@ tasks {
         useJUnitPlatform {
         }
         testLogging {
-            showStandardStreams = true
+            showStackTraces = true
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
     }
 

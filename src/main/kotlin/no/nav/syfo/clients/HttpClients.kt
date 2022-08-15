@@ -14,16 +14,14 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.network.sockets.SocketTimeoutException
 import io.ktor.serialization.jackson.jackson
 import no.nav.syfo.Environment
-import no.nav.syfo.VaultSecrets
 import no.nav.syfo.application.exception.ServiceUnavailableException
 import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.LegeSuspensjonClient
 import no.nav.syfo.client.NorskHelsenettClient
-import no.nav.syfo.client.StsOidcClient
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner
 import java.net.ProxySelector
 
-class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
+class HttpClients(env: Environment) {
 
     private val baseConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
         install(ContentNegotiation) {
@@ -53,6 +51,7 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
             }
         }
     }
+
     private val proxyConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
         baseConfig().apply { install(HttpRequestRetry) }
         engine {
@@ -65,7 +64,6 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
     private val httpClientWithProxy = HttpClient(Apache, proxyConfig)
     private val httpClient = HttpClient(Apache, retryConfig)
 
-    private val oidcClient = StsOidcClient(vaultSecrets.serviceuserUsername, vaultSecrets.serviceuserPassword, env.securityTokenServiceURL)
     private val accessTokenClientV2 = AccessTokenClientV2(
         aadAccessTokenUrl = env.aadAccessTokenV2Url,
         clientId = env.clientIdV2,
@@ -75,10 +73,12 @@ class HttpClients(env: Environment, vaultSecrets: VaultSecrets) {
 
     val legeSuspensjonClient = LegeSuspensjonClient(
         env.legeSuspensjonEndpointURL,
-        vaultSecrets,
-        oidcClient,
-        httpClient
+        accessTokenClientV2,
+        httpClient,
+        env.legeSuspensjonProxyScope,
+        env.applicationName
     )
 
-    val norskHelsenettClient = NorskHelsenettClient(env.norskHelsenettEndpointURL, accessTokenClientV2, env.helsenettproxyScope, httpClient)
+    val norskHelsenettClient =
+        NorskHelsenettClient(env.norskHelsenettEndpointURL, accessTokenClientV2, env.helsenettproxyScope, httpClient)
 }
