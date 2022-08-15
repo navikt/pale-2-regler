@@ -14,10 +14,12 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.network.sockets.SocketTimeoutException
 import io.ktor.serialization.jackson.jackson
 import no.nav.syfo.Environment
-import no.nav.syfo.application.azuread.v2.AzureAdV2Client
 import no.nav.syfo.application.exception.ServiceUnavailableException
+import no.nav.syfo.client.AccessTokenClientV2
 import no.nav.syfo.client.LegeSuspensjonClient
 import no.nav.syfo.client.NorskHelsenettClient
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner
+import java.net.ProxySelector
 
 class HttpClients(env: Environment) {
 
@@ -50,18 +52,33 @@ class HttpClients(env: Environment) {
         }
     }
 
+    private val proxyConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
+        baseConfig().apply { install(HttpRequestRetry) }
+        engine {
+            customizeClient {
+                setRoutePlanner(SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+            }
+        }
+    }
+
+    private val httpClientWithProxy = HttpClient(Apache, proxyConfig)
     private val httpClient = HttpClient(Apache, retryConfig)
 
-    val azureAdV2Client = AzureAdV2Client(env, httpClient)
+    private val accessTokenClientV2 = AccessTokenClientV2(
+        aadAccessTokenUrl = env.aadAccessTokenV2Url,
+        clientId = env.clientIdV2,
+        clientSecret = env.clientSecretV2,
+        httpClient = httpClientWithProxy
+    )
 
     val legeSuspensjonClient = LegeSuspensjonClient(
         env.legeSuspensjonEndpointURL,
-        azureAdV2Client,
+        accessTokenClientV2,
         httpClient,
         env.legeSuspensjonProxyScope,
         env.applicationName
     )
 
     val norskHelsenettClient =
-        NorskHelsenettClient(env.norskHelsenettEndpointURL, azureAdV2Client, env.helsenettproxyScope, httpClient)
+        NorskHelsenettClient(env.norskHelsenettEndpointURL, accessTokenClientV2, env.helsenettproxyScope, httpClient)
 }

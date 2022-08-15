@@ -42,7 +42,7 @@ spec:
       rules:
         - application: pale-2
           namespace: teamsykmelding
-          cluster: dev-fss
+          cluster: dev-gcp
   vault:
     enabled: false
   webproxy: true

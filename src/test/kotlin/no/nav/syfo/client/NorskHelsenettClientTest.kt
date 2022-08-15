@@ -20,8 +20,6 @@ import io.ktor.server.routing.routing
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import no.nav.syfo.application.azuread.v2.AzureAdV2Client
-import no.nav.syfo.application.azuread.v2.AzureAdV2Token
 import no.nav.syfo.util.LoggingMeta
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.AfterAll
@@ -29,13 +27,12 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.net.ServerSocket
-import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class NorskHelsenettClientTest {
     private val fnr = "12345647981"
-    private val azureAdV2Client = mockk<AzureAdV2Client>()
+    private val accessTokenClientV2 = mockk<AccessTokenClientV2>()
     private val httpClient = HttpClient(Apache) {
         install(ContentNegotiation) {
             jackson {
@@ -82,14 +79,11 @@ class NorskHelsenettClientTest {
     }.start()
 
     private val norskHelsenettClient =
-        NorskHelsenettClient("$mockHttpServerUrl/syfohelsenettproxy", azureAdV2Client, "resourceId", httpClient)
+        NorskHelsenettClient("$mockHttpServerUrl/syfohelsenettproxy", accessTokenClientV2, "resourceId", httpClient)
 
     @BeforeAll
     internal fun beforeAll() {
-        coEvery { azureAdV2Client.getAccessToken(any()) } returns AzureAdV2Token(
-            "accessToken",
-            OffsetDateTime.now().plusHours(1)
-        )
+        coEvery { accessTokenClientV2.getAccessTokenV2(any()) } returns "token"
     }
 
     @AfterAll

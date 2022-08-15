@@ -18,7 +18,6 @@ val mockkVersion = "1.12.4"
 val jfairyVersion = "0.6.5"
 val kotlinVersion = "1.7.10"
 val junitJupiterVersion = "5.9.0"
-val caffeineVersion = "3.1.1"
 
 plugins {
     kotlin("jvm") version "1.7.10"
@@ -61,8 +60,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-
-    implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
 
     implementation("no.nav.syfo:pale-2-common-models:$pale2CommonVersion")
     implementation("no.nav.syfo:pale-2-common-rest-sts:$pale2CommonVersion")
