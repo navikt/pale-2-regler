@@ -11,14 +11,15 @@ import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import net.logstash.logback.argument.StructuredArguments.fields
+import no.nav.syfo.application.azuread.v2.AzureAdV2Client
 import no.nav.syfo.log
 import no.nav.syfo.util.LoggingMeta
 import java.io.IOException
 
 class NorskHelsenettClient(
     private val endpointUrl: String,
-    private val accessTokenClientV2: AccessTokenClientV2,
-    private val resourceId: String,
+    private val azureAdV2Client: AzureAdV2Client,
+    private val scope: String,
     private val httpClient: HttpClient
 ) {
 
@@ -26,9 +27,12 @@ class NorskHelsenettClient(
         log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
         val httpResponse: HttpResponse = httpClient.get("$endpointUrl/api/v2/behandler") {
             accept(ContentType.Application.Json)
-            val accessToken = accessTokenClientV2.getAccessTokenV2(resourceId)
+            val accessToken = azureAdV2Client.getAccessToken(scope)
+            if (accessToken?.accessToken == null) {
+                throw RuntimeException("Klarte ikke hente ut accesstoken for smgcp-proxy")
+            }
             headers {
-                append("Authorization", "Bearer $accessToken")
+                append("Authorization", "Bearer ${accessToken.accessToken}")
                 append("Nav-CallId", msgId)
                 append("behandlerFnr", behandlerFnr)
             }

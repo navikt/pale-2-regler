@@ -21,7 +21,7 @@ internal class SelfTest {
             applicationState.alive = true
             application.routing { registerNaisApi(applicationState) }
 
-            with(handleRequest(HttpMethod.Get, "/is_ready")) {
+            with(handleRequest(HttpMethod.Get, "/internal/is_ready")) {
                 response.status() shouldBeEqualTo HttpStatusCode.OK
                 response.content shouldBeEqualTo "I'm ready! :)"
             }
@@ -37,7 +37,7 @@ internal class SelfTest {
             applicationState.alive = true
             application.routing { registerNaisApi(applicationState) }
 
-            with(handleRequest(HttpMethod.Get, "/is_alive")) {
+            with(handleRequest(HttpMethod.Get, "/internal/is_alive")) {
                 response.status() shouldBeEqualTo HttpStatusCode.OK
                 response.content shouldBeEqualTo "I'm alive! :)"
             }
@@ -53,7 +53,7 @@ internal class SelfTest {
             applicationState.alive = false
             application.routing { registerNaisApi(applicationState) }
 
-            with(handleRequest(HttpMethod.Get, "/is_alive")) {
+            with(handleRequest(HttpMethod.Get, "/internal/is_alive")) {
                 response.status() shouldBeEqualTo HttpStatusCode.InternalServerError
                 response.content shouldBeEqualTo "I'm dead x_x"
             }
@@ -69,7 +69,7 @@ internal class SelfTest {
             applicationState.alive = false
             application.routing { registerNaisApi(applicationState) }
 
-            with(handleRequest(HttpMethod.Get, "/is_ready")) {
+            with(handleRequest(HttpMethod.Get, "/internal/is_ready")) {
                 response.status() shouldBeEqualTo HttpStatusCode.InternalServerError
                 response.content shouldBeEqualTo "Please wait! I'm not ready :("
             }

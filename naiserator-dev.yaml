@@ -13,19 +13,19 @@ spec:
     cpuThresholdPercentage: 90
   port: 8080
   liveness:
-    path: /is_alive
+    path: /internal/is_alive
     initialDelay: 10
     timeout: 5
     periodSeconds: 5
     failureThreshold: 30
   readiness:
-    path: /is_ready
+    path: /internal/is_ready
     initialDelay: 30
     periodSeconds: 5
     timeout: 1
   prometheus:
     enabled: true
-    path: /prometheus
+    path: /internal/prometheus
   resources:
     limits:
       cpu: 500m
@@ -37,16 +37,23 @@ spec:
     application:
       enabled: true
       tenant: trygdeetaten.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: pale-2
+          namespace: teamsykmelding
+          cluster: dev-fss
   vault:
-    enabled: true
-    paths:
-      - kvPath: serviceuser/data/dev/srvpale2rule
-        mountPath: /secrets/serviceuser
+    enabled: false
   webproxy: true
   ingresses:
-    - "https://pale-2-regler.nais.preprod.local"
+    - "https://pale-2-regler.dev.intern.nav.no"
   env:
     - name: HELSENETT_ENDPOINT_URL
-      value: https://syfohelsenettproxy.nais.preprod.local
+      value: https://syfohelsenettproxy.dev-fss-pub.nais.io
     - name: HELSENETT_SCOPE
       value: api://dev-fss.teamsykmelding.syfohelsenettproxy/.default
+    - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
+      value: https://smgcp-proxy.dev-fss-pub.nais.io
+    - name: LEGE_SUSPENSJON_PROXY_SCOPE
+      value: api://dev-fss.teamsykmelding.smgcp-proxy/.default
