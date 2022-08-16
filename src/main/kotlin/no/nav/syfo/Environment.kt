@@ -9,7 +9,9 @@ data class Environment(
     val aadAccessTokenV2Url: String = getEnvVar("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"),
     val clientIdV2: String = getEnvVar("AZURE_APP_CLIENT_ID"),
     val clientSecretV2: String = getEnvVar("AZURE_APP_CLIENT_SECRET"),
-    val helsenettproxyScope: String = getEnvVar("HELSENETT_SCOPE")
+    val helsenettproxyScope: String = getEnvVar("HELSENETT_SCOPE"),
+    val jwtIssuer: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
+    val jwkKeysUrl: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI")
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =
