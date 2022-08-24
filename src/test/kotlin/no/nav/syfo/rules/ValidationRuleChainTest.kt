@@ -6,17 +6,14 @@ import com.devskiller.jfairy.producer.person.PersonProvider
 import io.mockk.mockk
 import no.nav.syfo.model.Legeerklaering
 import no.nav.syfo.model.RuleMetadata
-import no.nav.syfo.validation.validatePersonAndDNumber
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 val fairy: Fairy = Fairy.create() // (Locale("no", "NO"))
-val personNumberDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyy")
 
-class ValidationRuleChainSpek {
+class ValidationRuleChainTest {
 
     private val legeerklaring = mockk<Legeerklaering>()
 
@@ -27,10 +24,11 @@ class ValidationRuleChainSpek {
         patientPersonNumber: String = "1234567891",
         legekontorOrgNr: String = "123456789",
         tssid: String? = "1314445",
-        avsenderfnr: String = "131515"
+        avsenderfnr: String = "131515",
+        patientBorndate: LocalDate = LocalDate.now()
     ): RuleData<RuleMetadata> = RuleData(
         legeerklaring,
-        RuleMetadata(signatureDate, receivedDate, patientPersonNumber, legekontorOrgNr, tssid, avsenderfnr)
+        RuleMetadata(signatureDate, receivedDate, patientPersonNumber, legekontorOrgNr, tssid, avsenderfnr, patientBorndate)
     )
 
     @Test
@@ -68,7 +66,7 @@ class ValidationRuleChainSpek {
         ValidationRuleChain.PASIENT_YNGRE_ENN_13(
             ruleData(
                 legeerklaring,
-                patientPersonNumber = generatePersonNumber(person.dateOfBirth, false)
+                patientBorndate = person.dateOfBirth
             )
         ) shouldBeEqualTo true
     }
@@ -82,7 +80,7 @@ class ValidationRuleChainSpek {
         ValidationRuleChain.PASIENT_YNGRE_ENN_13(
             ruleData(
                 legeerklaring,
-                patientPersonNumber = generatePersonNumber(person.dateOfBirth, false)
+                patientBorndate = person.dateOfBirth
             )
         ) shouldBeEqualTo false
     }
@@ -128,15 +126,4 @@ class ValidationRuleChainSpek {
             ruleData(legeerklaring, avsenderfnr = "04030350265", patientPersonNumber = "04030350261")
         ) shouldBeEqualTo false
     }
-}
-
-fun generatePersonNumber(bornDate: LocalDate, useDNumber: Boolean = false): String {
-    val personDate = bornDate.format(personNumberDateFormat).let {
-        if (useDNumber) "${it[0] + 4}${it.substring(1)}" else it
-    }
-    return (if (bornDate.year >= 2000) (75011..99999) else (11111..50099))
-        .map { "$personDate$it" }
-        .first {
-            validatePersonAndDNumber(it)
-        }
 }

@@ -2,7 +2,6 @@ package no.nav.syfo.rules
 
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Status
-import no.nav.syfo.validation.extractBornDate
 import no.nav.syfo.validation.validatePersonAndDNumber
 import no.nav.syfo.validation.validatePersonAndDNumber11Digits
 
@@ -40,7 +39,7 @@ enum class ValidationRuleChain(
         "Pasienten er under 13 år. Legeerklæring kan ikke benyttes.",
         "Pasienten er under 13 år. Legeerklæring kan ikke benyttes.",
         { (_, metadata) ->
-            metadata.signatureDate.toLocalDate() < extractBornDate(metadata.patientPersonNumber).plusYears(13)
+            metadata.signatureDate.toLocalDate() < metadata.patientBorndate.plusYears(13)
         }
     ),
 
