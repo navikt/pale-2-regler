@@ -2,28 +2,37 @@ package no.nav.syfo.services
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import net.logstash.logback.argument.StructuredArguments.fields
-import no.nav.syfo.clients.HttpClients
+import no.nav.syfo.client.LegeSuspensjonClient
+import no.nav.syfo.client.NorskHelsenettClient
+import no.nav.syfo.metrics.FODSELSDATO_FRA_IDENT_COUNTER
+import no.nav.syfo.metrics.FODSELSDATO_FRA_PDL_COUNTER
 import no.nav.syfo.model.ReceivedLegeerklaering
 import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
+import no.nav.syfo.pdl.service.PdlPersonService
 import no.nav.syfo.rules.HPRRuleChain
 import no.nav.syfo.rules.LegesuspensjonRuleChain
 import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.ValidationRuleChain
 import no.nav.syfo.rules.executeFlow
 import no.nav.syfo.util.LoggingMeta
+import no.nav.syfo.validation.extractBornDate
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @DelicateCoroutinesApi
 class RuleService(
-    httpClients: HttpClients
+    legeSuspensjonClient: LegeSuspensjonClient,
+    norskHelsenettClient: NorskHelsenettClient,
+    pdlService: PdlPersonService
 ) {
-    private val legeSuspensjonClient = httpClients.legeSuspensjonClient
-    private val norskHelsenettClient = httpClients.norskHelsenettClient
+    private val legeSuspensjonClient = legeSuspensjonClient
+    private val norskHelsenettClient = norskHelsenettClient
+    private val pdlService = pdlService
 
     private val log: Logger = LoggerFactory.getLogger("ruleservice")
     suspend fun executeRuleChains(receivedLegeerklaering: ReceivedLegeerklaering): ValidationResult {
@@ -50,6 +59,18 @@ class RuleService(
             loggingMeta = loggingMeta
         )
 
+        val pdlPerson = pdlService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
+        val fodsel = pdlPerson.foedsel?.firstOrNull()
+        val borndate = if (fodsel?.foedselsdato?.isNotEmpty() == true) {
+            log.info("Extracting borndate from PDL date")
+            FODSELSDATO_FRA_PDL_COUNTER.inc()
+            LocalDate.parse(fodsel.foedselsdato)
+        } else {
+            log.info("Extracting borndate from personNrPasient")
+            FODSELSDATO_FRA_IDENT_COUNTER.inc()
+            extractBornDate(legeerklaring.pasient.fnr)
+        }
+
         if (avsenderBehandler == null) {
             return ValidationResult(
                 status = Status.INVALID,
@@ -73,7 +94,8 @@ class RuleService(
                     patientPersonNumber = receivedLegeerklaering.personNrPasient,
                     legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
                     tssid = receivedLegeerklaering.tssid,
-                    avsenderfnr = receivedLegeerklaering.personNrLege
+                    avsenderfnr = receivedLegeerklaering.personNrLege,
+                    patientBorndate = borndate
                 )
             ),
             HPRRuleChain.values().executeFlow(legeerklaring, avsenderBehandler),

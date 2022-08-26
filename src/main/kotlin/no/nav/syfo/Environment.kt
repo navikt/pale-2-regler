@@ -11,7 +11,9 @@ data class Environment(
     val clientSecretV2: String = getEnvVar("AZURE_APP_CLIENT_SECRET"),
     val helsenettproxyScope: String = getEnvVar("HELSENETT_SCOPE"),
     val jwtIssuer: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
-    val jwkKeysUrl: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI")
+    val jwkKeysUrl: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
+    val pdlScope: String = getEnvVar("PDL_SCOPE"),
+    val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH")
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =
