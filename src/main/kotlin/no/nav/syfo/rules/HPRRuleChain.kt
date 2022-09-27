@@ -16,8 +16,7 @@ enum class HPRRuleChain(
         1402,
         Status.INVALID,
         "Den som skrev legeerklæringen manglet autorisasjon.",
-        "Legeerklæringen kan ikke rettes, det må skrives en ny. Grunnet følgende:" +
-            "Behandler er ikke gyldig i HPR på konsultasjonstidspunkt",
+        "Behandler er ikke gyldig i HPR på konsultasjonstidspunkt",
         { (_, behandler) ->
             !behandler.godkjenninger.any {
                 it.autorisasjon?.aktiv != null && it.autorisasjon.aktiv
@@ -29,7 +28,7 @@ enum class HPRRuleChain(
         1403,
         Status.INVALID,
         "Den som skrev legeerklæringen manglet autorisasjon.",
-        "Behandler har ikke til gyldig autorisasjon i HPR",
+        "Behandler har ikke gyldig autorisasjon i HPR",
         { (_, behandler) ->
             !behandler.godkjenninger.any {
                 it.autorisasjon?.aktiv != null &&
@@ -45,8 +44,7 @@ enum class HPRRuleChain(
         1407,
         Status.INVALID,
         "Den som skrev legeerklæringen manglet autorisasjon.",
-        "Legeerklæringen kan ikke rettes, det må skrives en ny. Grunnet følgende:" +
-            "Behandler finnes i HPR men er ikke lege, kiropraktor, fysioterapeut, manuellterapeut eller tannlege",
+        "Behandler finnes i HPR men er ikke lege, kiropraktor, fysioterapeut, manuellterapeut eller tannlege",
         { (_, behandler) ->
             !behandler.godkjenninger.any {
                 it.helsepersonellkategori?.aktiv != null &&

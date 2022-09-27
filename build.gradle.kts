@@ -8,13 +8,13 @@ val githubUser: String by project
 val githubPassword: String by project
 
 val ktorVersion = "2.1.1"
-val logbackVersion = "1.2.11"
+val logbackVersion = "1.4.1"
 val logstashEncoderVersion = "7.2"
 val prometheusVersion = "0.16.0"
-val jacksonVersion = "2.13.3"
-val pale2CommonVersion = "1.19e8b45"
+val jacksonVersion = "2.13.4"
+val pale2CommonVersion = "1.7dbd229"
 val kluentVersion = "1.68"
-val mockkVersion = "1.12.4"
+val mockkVersion = "1.12.8"
 val jfairyVersion = "0.6.5"
 val kotlinVersion = "1.7.10"
 val junitJupiterVersion = "5.9.0"
@@ -64,7 +64,6 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     implementation("no.nav.syfo:pale-2-common-models:$pale2CommonVersion")
-    implementation("no.nav.syfo:pale-2-common-rest-sts:$pale2CommonVersion")
 
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
