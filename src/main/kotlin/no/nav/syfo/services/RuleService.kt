@@ -6,6 +6,7 @@ import no.nav.syfo.client.LegeSuspensjonClient
 import no.nav.syfo.client.NorskHelsenettClient
 import no.nav.syfo.metrics.FODSELSDATO_FRA_IDENT_COUNTER
 import no.nav.syfo.metrics.FODSELSDATO_FRA_PDL_COUNTER
+import no.nav.syfo.metrics.RULE_HIT_COUNTER
 import no.nav.syfo.model.ReceivedLegeerklaering
 import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.RuleMetadata
@@ -102,6 +103,8 @@ class RuleService(
             LegesuspensjonRuleChain.values().executeFlow(legeerklaring, doctorSuspend)
         ).flatten()
 
+        logRuleResultMetrics(results)
+
         log.info("Rules hit {}, {}", results.map { it.name }, fields(loggingMeta))
 
         return validationResult(results)
@@ -122,4 +125,11 @@ class RuleService(
             )
         }
     )
+    private fun logRuleResultMetrics(result: List<Rule<Any>>) {
+        result
+            .filter { it.name.isEmpty() }
+            .forEach {
+                RULE_HIT_COUNTER.labels(it.name).inc()
+            }
+    }
 }
