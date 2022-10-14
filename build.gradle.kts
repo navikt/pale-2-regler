@@ -18,6 +18,7 @@ val mockkVersion = "1.13.2"
 val jfairyVersion = "0.6.5"
 val kotlinVersion = "1.7.20"
 val junitJupiterVersion = "5.9.0"
+val commonsTextVersion = "1.10.0"
 
 plugins {
     kotlin("jvm") version "1.7.20"
@@ -69,7 +70,11 @@ dependencies {
         exclude(group = "org.eclipse.jetty")
     }
     testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("com.devskiller:jfairy:$jfairyVersion")
+    testImplementation("com.devskiller:jfairy:$jfairyVersion") {
+        exclude(group = "org.apache.commons", module = "commons-text")
+    }
+
+    testImplementation("org.apache.commons:commons-text:$commonsTextVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
