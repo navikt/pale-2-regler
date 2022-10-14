@@ -21,8 +21,8 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.syfo.util.LoggingMeta
-import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -94,12 +94,12 @@ class NorskHelsenettClientTest {
     @Test
     internal fun `NorskHelsenettClient happy-case`() {
         val behandler = runBlocking { norskHelsenettClient.finnBehandler(fnr, "1", loggingMeta) }
-        behandler shouldBeEqualTo Behandler(listOf(Godkjenning()))
+        assertEquals(Behandler(listOf(Godkjenning())), behandler)
     }
 
     @Test
     internal fun `NorskHelsenettClient Returnerer null hvis respons er 404`() {
         val behandler = runBlocking { norskHelsenettClient.finnBehandler("behandlerFinnesIkke", "1", loggingMeta) }
-        behandler shouldBeEqualTo null
+        assertEquals(null, behandler)
     }
 }

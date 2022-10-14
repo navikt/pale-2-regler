@@ -3,6 +3,17 @@
 # pale-2-regler
 This project contains just the rules for validating legeerklæringer from pale-2 (https://github.com/navikt/pale-2). 
 
+## FlowChart
+This the high level flow of the application
+```mermaid
+  graph LR;
+      pale-2 --- pale-2-regler;
+      pale-2-regler --- PDL;
+      pale-2-regler --- BTSYS;
+      pale-2-regler --- syfohelsenettproxy
+      pale-2-regler --- azureAD
+```
+
 ## Technologies used
 * Kotlin
 * Gradle

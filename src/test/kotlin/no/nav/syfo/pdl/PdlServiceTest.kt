@@ -11,12 +11,11 @@ import no.nav.syfo.pdl.client.model.HentPerson
 import no.nav.syfo.pdl.client.model.IdentInformasjon
 import no.nav.syfo.pdl.client.model.Identliste
 import no.nav.syfo.pdl.client.model.PdlResponse
-import no.nav.syfo.pdl.error.PersonNotFoundInPdl
 import no.nav.syfo.pdl.service.PdlPersonService
 import no.nav.syfo.util.LoggingMeta
-import org.amshove.kluent.internal.assertFailsWith
-import org.amshove.kluent.shouldBeEqualTo
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class PdlServiceTest {
     val pdlClient = mockkClass(PdlClient::class)
@@ -45,8 +44,8 @@ class PdlServiceTest {
         )
 
         val person = pdlService.getPdlPerson("01245678901", loggingMeta)
-        person.fnr shouldBeEqualTo "01245678901"
-        person.foedsel?.firstOrNull()?.foedselsdato shouldBeEqualTo "1900-01-01"
+        assertEquals("01245678901", person.fnr)
+        assertEquals("1900-01-01", person.foedsel?.firstOrNull()?.foedselsdato)
     }
 
     @Test
@@ -57,12 +56,12 @@ class PdlServiceTest {
             errors = null
         )
 
-        val exception = assertFailsWith<PersonNotFoundInPdl> {
+        val personNotFoundInPdlException: Throwable = assertThrows {
             runBlocking {
                 pdlService.getPdlPerson("123", loggingMeta)
             }
         }
-        exception.message shouldBeEqualTo "Klarte ikke hente ut person fra PDL"
+        assertEquals("Klarte ikke hente ut person fra PDL", personNotFoundInPdlException.message)
     }
 
     @Test
@@ -77,11 +76,13 @@ class PdlServiceTest {
             ),
             errors = null
         )
-        val exception = assertFailsWith<PersonNotFoundInPdl> {
+
+        val personNotFoundInPdlException: Throwable = assertThrows {
             runBlocking {
                 pdlService.getPdlPerson("123", loggingMeta)
             }
         }
-        exception.message shouldBeEqualTo "Fant ikke ident i PDL"
+
+        assertEquals("Fant ikke ident i PDL", personNotFoundInPdlException.message)
     }
 }

@@ -7,20 +7,21 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "2.1.1"
-val logbackVersion = "1.4.1"
+val ktorVersion = "2.1.2"
+val logbackVersion = "1.4.3"
 val logstashEncoderVersion = "7.2"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.13.4"
 val pale2CommonVersion = "1.7dbd229"
 val kluentVersion = "1.68"
-val mockkVersion = "1.12.8"
+val mockkVersion = "1.13.2"
 val jfairyVersion = "0.6.5"
-val kotlinVersion = "1.7.10"
+val kotlinVersion = "1.7.20"
 val junitJupiterVersion = "5.9.0"
+val commonsTextVersion = "1.10.0"
 
 plugins {
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.7.20"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.jmailen.kotlinter") version "3.11.1"
 }
@@ -68,9 +69,12 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
-    testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("com.devskiller:jfairy:$jfairyVersion")
+    testImplementation("com.devskiller:jfairy:$jfairyVersion") {
+        exclude(group = "org.apache.commons", module = "commons-text")
+    }
+
+    testImplementation("org.apache.commons:commons-text:$commonsTextVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
