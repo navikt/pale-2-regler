@@ -6,7 +6,7 @@ import no.nav.syfo.client.Godkjenning
 import no.nav.syfo.client.Kode
 import no.nav.syfo.model.HelsepersonellKategori
 import no.nav.syfo.model.Legeerklaering
-import org.amshove.kluent.shouldBeEqualTo
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class HPRRuleChainTest {
@@ -29,8 +29,10 @@ internal class HPRRuleChainTest {
                 )
             )
         )
-
-        HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
+        assertEquals(
+            true,
+            HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler))
+        )
     }
 
     @Test
@@ -46,8 +48,10 @@ internal class HPRRuleChainTest {
                 )
             )
         )
-
-        HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
+        assertEquals(
+            false,
+            HPRRuleChain.BEHANDLER_IKKE_GYLDIG_I_HPR(ruleData(legeerklaring, behandler))
+        )
     }
 
     @Test
@@ -63,8 +67,10 @@ internal class HPRRuleChainTest {
                 )
             )
         )
-
-        HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
+        assertEquals(
+            true,
+            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler))
+        )
     }
 
     @Test
@@ -80,8 +86,10 @@ internal class HPRRuleChainTest {
                 )
             )
         )
-
-        HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
+        assertEquals(
+            false,
+            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler))
+        )
     }
 
     @Test
@@ -102,8 +110,10 @@ internal class HPRRuleChainTest {
                 )
             )
         )
-
-        HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
+        assertEquals(
+            true,
+            HPRRuleChain.BEHANDLER_MANGLER_AUTORISASJON_I_HPR(ruleData(legeerklaring, behandler))
+        )
     }
 
     @Test
@@ -124,8 +134,10 @@ internal class HPRRuleChainTest {
                 )
             )
         )
-
-        HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
+        assertEquals(
+            false,
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler))
+        )
     }
 
     @Test
@@ -146,8 +158,10 @@ internal class HPRRuleChainTest {
                 )
             )
         )
-
-        HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo true
+        assertEquals(
+            true,
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler))
+        )
     }
 
     @Test
@@ -168,7 +182,9 @@ internal class HPRRuleChainTest {
                 )
             )
         )
-
-        HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler)) shouldBeEqualTo false
+        assertEquals(
+            false,
+            HPRRuleChain.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(ruleData(legeerklaring, behandler))
+        )
     }
 }

@@ -2,7 +2,7 @@ package no.nav.syfo.rules
 
 import io.mockk.mockk
 import no.nav.syfo.model.Legeerklaering
-import org.amshove.kluent.shouldBeEqualTo
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class LegesuspensjonRuleChainTest {
@@ -17,14 +17,18 @@ internal class LegesuspensjonRuleChainTest {
     @Test
     internal fun `Should check rule BEHANDLER_SUSPENDERT, should trigger rule`() {
         val suspended = true
-
-        LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(legeerklaring, suspended)) shouldBeEqualTo true
+        assertEquals(
+            true,
+            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(legeerklaring, suspended))
+        )
     }
 
     @Test
     internal fun `Should check rule BEHANDLER_SUSPENDERT, should NOT trigger rule`() {
         val suspended = false
-
-        LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(legeerklaring, suspended)) shouldBeEqualTo false
+        assertEquals(
+            false,
+            LegesuspensjonRuleChain.BEHANDLER_SUSPENDERT(ruleData(legeerklaring, suspended))
+        )
     }
 }
