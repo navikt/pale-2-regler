@@ -16,8 +16,8 @@ import no.nav.syfo.rules.LegesuspensjonRuleChain
 import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.ValidationRuleChain
 import no.nav.syfo.rules.executeFlow
-import no.nav.syfo.services.error.MissingFodselsDatoException
 import no.nav.syfo.util.LoggingMeta
+import no.nav.syfo.util.extractBornDate
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -61,7 +61,8 @@ class RuleService(
             log.info("Extracting borndate from PDL date")
             LocalDate.parse(fodsel.foedselsdato)
         } else {
-            throw MissingFodselsDatoException("Missing foedselsdato for pasient")
+            log.info("Extracting borndate from personNrPasient")
+            extractBornDate(legeerklaring.pasient.fnr)
         }
 
         if (avsenderBehandler == null) {
