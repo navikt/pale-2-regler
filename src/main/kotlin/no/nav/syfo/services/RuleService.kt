@@ -4,8 +4,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import net.logstash.logback.argument.StructuredArguments.fields
 import no.nav.syfo.client.LegeSuspensjonClient
 import no.nav.syfo.client.NorskHelsenettClient
-import no.nav.syfo.metrics.FODSELSDATO_FRA_IDENT_COUNTER
-import no.nav.syfo.metrics.FODSELSDATO_FRA_PDL_COUNTER
 import no.nav.syfo.metrics.RULE_HIT_COUNTER
 import no.nav.syfo.model.ReceivedLegeerklaering
 import no.nav.syfo.model.RuleInfo
@@ -19,7 +17,7 @@ import no.nav.syfo.rules.Rule
 import no.nav.syfo.rules.ValidationRuleChain
 import no.nav.syfo.rules.executeFlow
 import no.nav.syfo.util.LoggingMeta
-import no.nav.syfo.validation.extractBornDate
+import no.nav.syfo.util.extractBornDate
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -27,13 +25,10 @@ import java.time.format.DateTimeFormatter
 
 @DelicateCoroutinesApi
 class RuleService(
-    legeSuspensjonClient: LegeSuspensjonClient,
-    norskHelsenettClient: NorskHelsenettClient,
-    pdlService: PdlPersonService
+    private val legeSuspensjonClient: LegeSuspensjonClient,
+    private val norskHelsenettClient: NorskHelsenettClient,
+    private val pdlService: PdlPersonService
 ) {
-    private val legeSuspensjonClient = legeSuspensjonClient
-    private val norskHelsenettClient = norskHelsenettClient
-    private val pdlService = pdlService
 
     private val log: Logger = LoggerFactory.getLogger("ruleservice")
     suspend fun executeRuleChains(receivedLegeerklaering: ReceivedLegeerklaering): ValidationResult {
@@ -64,11 +59,9 @@ class RuleService(
         val fodsel = pdlPerson.foedsel?.firstOrNull()
         val borndate = if (fodsel?.foedselsdato?.isNotEmpty() == true) {
             log.info("Extracting borndate from PDL date")
-            FODSELSDATO_FRA_PDL_COUNTER.inc()
             LocalDate.parse(fodsel.foedselsdato)
         } else {
             log.info("Extracting borndate from personNrPasient")
-            FODSELSDATO_FRA_IDENT_COUNTER.inc()
             extractBornDate(legeerklaring.pasient.fnr)
         }
 

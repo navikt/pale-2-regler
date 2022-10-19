@@ -19,6 +19,7 @@ val jfairyVersion = "0.6.5"
 val kotlinVersion = "1.7.20"
 val junitJupiterVersion = "5.9.0"
 val commonsTextVersion = "1.10.0"
+val commonsCodecVersion = "1.15"
 
 plugins {
     kotlin("jvm") version "1.7.20"
@@ -52,6 +53,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
+
+    implementation("commons-codec:commons-codec:$commonsCodecVersion")// override transient version 1.10
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")

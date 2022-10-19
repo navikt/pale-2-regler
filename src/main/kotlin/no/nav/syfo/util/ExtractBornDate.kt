@@ -1,11 +1,11 @@
-package no.nav.syfo.validation
+package no.nav.syfo.util
 
 import java.time.LocalDate
 
 fun extractBornDate(personIdent: String): LocalDate =
     LocalDate.of(extractBornYear(personIdent), extractBornMonth(personIdent), extractBornDay(personIdent))
 
-fun extractBornYear(personIdent: String): Int {
+private fun extractBornYear(personIdent: String): Int {
     val lastTwoDigitsOfYear = extractLastTwoDigistOfyear(personIdent)
     val individualDigits = extractIndividualDigits(personIdent)
     if (lastTwoDigitsOfYear in (0..99) && individualDigits in (0..499)) {
@@ -22,13 +22,13 @@ fun extractBornYear(personIdent: String): Int {
     return 1900 + lastTwoDigitsOfYear
 }
 
-fun extractBornDay(personIdent: String): Int {
+private fun extractBornDay(personIdent: String): Int {
     val day = personIdent.substring(0..1).toInt()
     return if (day < 40) day else day - 40
 }
 
-fun extractBornMonth(personIdent: String): Int = personIdent.substring(2..3).toInt()
+private fun extractIndividualDigits(personIdent: String): Int = personIdent.substring(6, 9).toInt()
 
-fun extractIndividualDigits(personIdent: String): Int = personIdent.substring(6, 9).toInt()
+private fun extractBornMonth(personIdent: String): Int = personIdent.substring(2..3).toInt()
 
-fun extractLastTwoDigistOfyear(personIdent: String): Int = personIdent.substring(4, 6).toInt()
+private fun extractLastTwoDigistOfyear(personIdent: String): Int = personIdent.substring(4, 6).toInt()
