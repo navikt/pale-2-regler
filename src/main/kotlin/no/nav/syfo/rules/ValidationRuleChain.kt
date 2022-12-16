@@ -39,5 +39,5 @@ enum class ValidationRuleChain(
         { (_, metadata) ->
             metadata.avsenderfnr.equals(metadata.patientPersonNumber)
         }
-    ),
+    )
 }

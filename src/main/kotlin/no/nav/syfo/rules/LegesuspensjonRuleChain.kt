@@ -17,5 +17,5 @@ enum class LegesuspensjonRuleChain(
         { (_, suspended) ->
             suspended
         }
-    ),
+    )
 }

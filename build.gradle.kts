@@ -7,24 +7,24 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "2.1.2"
-val logbackVersion = "1.4.3"
+val ktorVersion = "2.2.1"
+val logbackVersion = "1.4.5"
 val logstashEncoderVersion = "7.2"
 val prometheusVersion = "0.16.0"
-val jacksonVersion = "2.13.4"
-val pale2CommonVersion = "1.7dbd229"
-val kluentVersion = "1.68"
+val jacksonVersion = "2.14.1"
+val pale2CommonVersion = "1.87b67d7"
 val mockkVersion = "1.13.2"
 val jfairyVersion = "0.6.5"
-val kotlinVersion = "1.7.20"
+val kotlinVersion = "1.7.22"
 val junitJupiterVersion = "5.9.0"
 val commonsTextVersion = "1.10.0"
 val commonsCodecVersion = "1.15"
+val nettyCodecVersion = "4.1.86.Final"
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.7.22"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.jmailen.kotlinter") version "3.11.1"
+    id("org.jmailen.kotlinter") version "3.12.0"
 }
 
 repositories {
@@ -45,6 +45,9 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    // This is to override version that is in io.ktor:ktor-server-netty
+    // https://www.cve.org/CVERecord?id=CVE-2022-41915
+    implementation("io.netty:netty-codec:$nettyCodecVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
