@@ -62,7 +62,7 @@ enum class HPRRuleChain(
                     )
             }
         }
-    ),
+    )
 }
 
 fun harAktivHelsepersonellAutorisasjonsSom(behandler: Behandler, helsepersonerVerdi: List<String>): Boolean =
