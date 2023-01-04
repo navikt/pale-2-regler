@@ -12,17 +12,17 @@ val logbackVersion = "1.4.5"
 val logstashEncoderVersion = "7.2"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.14.1"
-val pale2CommonVersion = "1.87b67d7"
+val pale2CommonVersion = "1.ad083ef"
 val mockkVersion = "1.13.2"
 val jfairyVersion = "0.6.5"
-val kotlinVersion = "1.7.22"
+val kotlinVersion = "1.8.0"
 val junitJupiterVersion = "5.9.0"
 val commonsTextVersion = "1.10.0"
 val commonsCodecVersion = "1.15"
 val nettyCodecVersion = "4.1.86.Final"
 
 plugins {
-    kotlin("jvm") version "1.7.22"
+    kotlin("jvm") version "1.8.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("org.jmailen.kotlinter") version "3.12.0"
 }
@@ -111,6 +111,7 @@ tasks {
         useJUnitPlatform {
         }
         testLogging {
+            events("skipped", "failed")
             showStackTraces = true
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
