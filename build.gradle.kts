@@ -7,7 +7,7 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "2.2.1"
+val ktorVersion = "2.2.2"
 val logbackVersion = "1.4.5"
 val logstashEncoderVersion = "7.2"
 val prometheusVersion = "0.16.0"
@@ -19,7 +19,6 @@ val kotlinVersion = "1.8.0"
 val junitJupiterVersion = "5.9.0"
 val commonsTextVersion = "1.10.0"
 val commonsCodecVersion = "1.15"
-val nettyCodecVersion = "4.1.86.Final"
 
 plugins {
     kotlin("jvm") version "1.8.0"
@@ -45,9 +44,6 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    // This is to override version that is in io.ktor:ktor-server-netty
-    // https://www.cve.org/CVERecord?id=CVE-2022-41915
-    implementation("io.netty:netty-codec:$nettyCodecVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
