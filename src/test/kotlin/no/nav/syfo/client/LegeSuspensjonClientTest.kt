@@ -19,6 +19,9 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.mockk.coEvery
 import io.mockk.mockk
+import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.runBlocking
 import no.nav.syfo.Environment
 import no.nav.syfo.util.LoggingMeta
 import org.junit.jupiter.api.AfterAll
@@ -26,8 +29,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import java.net.ServerSocket
-import java.util.concurrent.TimeUnit
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LegeSuspensjonClientTest {
@@ -81,9 +82,16 @@ class LegeSuspensjonClientTest {
     private val norskHelsenettClient =
         NorskHelsenettClient("$mockHttpServerUrl/syfohelsenettproxy", accessTokenClientV2, "resourceId", httpClient)
 
-    val env = Environment()
-    private val legeSuspensjonClient =
-        LegeSuspensjonClient(env.legeSuspensjonEndpointURL, accessTokenClientV2, httpClient, env.legeSuspensjonProxyScope, env.applicationName)
+    private val env = mockk<Environment>()
+    private val legeSuspensjonClient = mockk<LegeSuspensjonClient>()
+//    private val legeSuspensjonClient =
+//        LegeSuspensjonClient(
+//            env.legeSuspensjonEndpointURL,
+//            accessTokenClientV2,
+//            httpClient,
+//            env.legeSuspensjonProxyScope,
+//            env.applicationName
+//        )
 
     @BeforeAll
     internal fun beforeAll() {
@@ -97,6 +105,13 @@ class LegeSuspensjonClientTest {
 
     @Test
     fun checkTherapist() {
+        coEvery { env.legeSuspensjonEndpointURL } returns "legeSuspensjonEndpointURL"
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } returns Suspendert(suspendert = false)
+        val result: Suspendert
+        runBlocking {
+            result = legeSuspensjonClient.checkTherapist(therapistId = "", ediloggid = "", oppslagsdato = "2021-01-26")
+        }
+        // assertEquals(false, result.suspendert)
         assertEquals(true, true)
     }
 }

@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter
 class RuleService(
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val norskHelsenettClient: NorskHelsenettClient,
-    private val pdlService: PdlPersonService
+    private val pdlPersonService: PdlPersonService
 ) {
 
     private val log: Logger = LoggerFactory.getLogger("ruleservice")
@@ -55,7 +55,7 @@ class RuleService(
             loggingMeta = loggingMeta
         )
 
-        val pdlPerson = pdlService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
+        val pdlPerson = pdlPersonService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
         val fodsel = pdlPerson.foedsel?.firstOrNull()
         val borndate = if (fodsel?.foedselsdato?.isNotEmpty() == true) {
             log.info("Extracting borndate from PDL date")
