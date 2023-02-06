@@ -27,53 +27,145 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykdomsopplysninger
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.pdl.client.model.Foedsel
-import no.nav.syfo.pdl.client.model.IdentInformasjon
 import no.nav.syfo.pdl.model.PdlPerson
 import no.nav.syfo.pdl.service.PdlPersonService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class RuleServiceTest {
     private val legeSuspensjonClient = mockk<LegeSuspensjonClient>()
     private val norskHelsenettClient = mockk<NorskHelsenettClient>()
     private val pdlPersonService = mockk<PdlPersonService>()
 
+    // Sette opp en godkjent behandler
     private val legeKode = Kode(aktiv = true, oid = 9060, HelsepersonellKategori.LEGE.verdi)
     private val helsepersonell = Kode(aktiv = true, oid = 7704, HelsepersonellKategori.MANUELLTERAPEUT.verdi)
     private val autorisasjonHPR = Kode(aktiv = true, oid = 7704, verdi = "17")
-
     private val godkjenningLege = Godkjenning(helsepersonellkategori = helsepersonell, autorisasjon = legeKode)
     private val godkjenningHPR = Godkjenning(helsepersonellkategori = null, autorisasjon = autorisasjonHPR)
     private val behandler = Behandler(listOf(godkjenningLege, godkjenningHPR), hprNummer = null)
 
     @DelicateCoroutinesApi
     @Test
-    fun `Test av noe`() {
+    fun `Test med utfyllt foedselsdato og pasient under 13 aar`() {
+        val foedselsdato = LocalDate.now().minusYears(13).plusDays(1)
+
         coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns behandler
         coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(
-            listOf<IdentInformasjon>(),
-            listOf<Foedsel>(Foedsel("1983-05-23"))
+            listOf(),
+            listOf(Foedsel(foedselsdato.format(DateTimeFormatter.ISO_DATE)))
         )
-
         val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
         val validationResult: ValidationResult
         runBlocking {
-            validationResult = ruleService.executeRuleChains(
-                getReceivedLegeerklaering(
-                    getLegeerklaering()
-                )
-            )
+            validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+        }
+        assertEquals("PASIENT_YNGRE_ENN_13", validationResult.ruleHits[0].ruleName)
+    }
+
+    @DelicateCoroutinesApi
+    @Test
+    fun `Test med utfyllt foedselsdato`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns behandler
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(
+            listOf(),
+            listOf(Foedsel("1985-05-17"))
+        )
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
+        val validationResult: ValidationResult
+        runBlocking {
+            validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
         }
         assertEquals(Status.OK, validationResult.status)
+    }
+
+    @DelicateCoroutinesApi
+    @Test
+    fun `Test uten utfyllt foedselsdato`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns behandler
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val validationResult: ValidationResult
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
+        runBlocking {
+            validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+        }
+        assertEquals(Status.OK, validationResult.status)
+    }
+
+    @DelicateCoroutinesApi
+    @Test
+    fun `Test uten utfyllt foedselsdato og pasient under 13 aar`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns behandler
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val foedselsdato = LocalDate.now().minusYears(13).plusDays(1)
+        val foedselsnr = foedselsdato.format(DateTimeFormatter.ofPattern("ddMMyy")) + "87654"
+        val legeerklaering = getReceivedLegeerklaering(getLegeerklaering(foedselsnr))
+        val validationResult: ValidationResult
+        runBlocking {
+            validationResult = ruleService.executeRuleChains(legeerklaering)
+        }
+        assertEquals("PASIENT_YNGRE_ENN_13", validationResult.ruleHits[0].ruleName)
+    }
+
+    @DelicateCoroutinesApi
+    @Test
+    fun `Finner ikke behandler`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns null
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
+        val validationResult: ValidationResult
+        runBlocking {
+            runBlocking {
+                validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            }
+        }
+        assertEquals("BEHANDLER_NOT_IN_HPR", validationResult.ruleHits[0].ruleName)
+    }
+
+    @Test
+    @DelicateCoroutinesApi
+    fun `Behandler ikke gyldig`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = true) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns Behandler(
+            listOf(
+                Godkjenning(
+                    Kode(aktiv = false, oid = 1234, verdi = "Kvakksalver")
+                )
+            )
+        )
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(
+            identer = listOf(),
+            foedsel = listOf()
+        )
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
+        val validationResult: ValidationResult
+        runBlocking {
+            runBlocking {
+                validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            }
+        }
+        assertEquals("BEHANDLER_IKKE_GYLDIG_I_HPR", validationResult.ruleHits[0].ruleName)
     }
 }
 
 fun getReceivedLegeerklaering(legeerklaering: Legeerklaering): ReceivedLegeerklaering {
     return ReceivedLegeerklaering(
         legeerklaering = legeerklaering,
-        personNrPasient = "23077238745",
+        personNrPasient = "54321",
         pasientAktoerId = "pasientAktoerId",
         personNrLege = "17037447234",
         legeAktoerId = "legeAktoerId",
@@ -89,7 +181,7 @@ fun getReceivedLegeerklaering(legeerklaering: Legeerklaering): ReceivedLegeerkla
     )
 }
 
-fun getLegeerklaering(): Legeerklaering {
+fun getLegeerklaering(foedselsnr: String = "23057245631"): Legeerklaering {
     return Legeerklaering(
         id = "12314",
         arbeidsvurderingVedSykefravaer = true,
@@ -100,7 +192,7 @@ fun getLegeerklaering(): Legeerklaering {
             fornavn = "Test",
             mellomnavn = "Testerino",
             etternavn = "Testsen",
-            fnr = "23047236431",
+            fnr = foedselsnr,
             navKontor = "NAV Stockholm",
             adresse = "Oppdiktet veg 99",
             postnummer = 9999,
