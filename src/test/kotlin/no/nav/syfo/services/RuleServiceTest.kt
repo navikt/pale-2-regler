@@ -25,7 +25,6 @@ import no.nav.syfo.model.ReceivedLegeerklaering
 import no.nav.syfo.model.Signatur
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.Sykdomsopplysninger
-import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.pdl.client.model.Foedsel
 import no.nav.syfo.pdl.model.PdlPerson
 import no.nav.syfo.pdl.service.PdlPersonService
@@ -46,11 +45,11 @@ class RuleServiceTest {
     private val autorisasjonHPR = Kode(aktiv = true, oid = 7704, verdi = "17")
     private val godkjenningLege = Godkjenning(helsepersonellkategori = helsepersonell, autorisasjon = legeKode)
     private val godkjenningHPR = Godkjenning(helsepersonellkategori = null, autorisasjon = autorisasjonHPR)
-    private val behandler = Behandler(listOf(godkjenningLege, godkjenningHPR), hprNummer = null)
+    private val behandler = Behandler(listOf(godkjenningLege, godkjenningHPR))
 
     @DelicateCoroutinesApi
     @Test
-    fun `Test med utfyllt foedselsdato og pasient under 13 aar`() {
+    fun `Utfyllt foedselsdato og pasient under 13 aar, regel truffet PASIENT_YNGRE_ENN_13`() {
         val foedselsdato = LocalDate.now().minusYears(13).plusDays(1)
 
         coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
@@ -61,16 +60,15 @@ class RuleServiceTest {
         )
         val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
-        val validationResult: ValidationResult
         runBlocking {
-            validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals("PASIENT_YNGRE_ENN_13", validationResult.ruleHits[0].ruleName)
         }
-        assertEquals("PASIENT_YNGRE_ENN_13", validationResult.ruleHits[0].ruleName)
     }
 
     @DelicateCoroutinesApi
     @Test
-    fun `Test med utfyllt foedselsdato`() {
+    fun `Test med utfyllt foedselsdato er godkjent`() {
         coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns behandler
         coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(
@@ -79,31 +77,29 @@ class RuleServiceTest {
         )
         val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
-        val validationResult: ValidationResult
         runBlocking {
-            validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals(Status.OK, validationResult.status)
         }
-        assertEquals(Status.OK, validationResult.status)
     }
 
     @DelicateCoroutinesApi
     @Test
-    fun `Test uten utfyllt foedselsdato`() {
+    fun `Test uten utfyllt foedselsdato er godkjent`() {
         coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns behandler
         coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
         val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
-        val validationResult: ValidationResult
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
         runBlocking {
-            validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals(Status.OK, validationResult.status)
         }
-        assertEquals(Status.OK, validationResult.status)
     }
 
     @DelicateCoroutinesApi
     @Test
-    fun `Test uten utfyllt foedselsdato og pasient under 13 aar`() {
+    fun `Test uten utfyllt foedselsdato og pasient under 13 aar treffer regel PASIENT_YNGRE_ENN_13`() {
         coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns behandler
         coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
@@ -111,33 +107,29 @@ class RuleServiceTest {
         val foedselsdato = LocalDate.now().minusYears(13).plusDays(1)
         val foedselsnr = foedselsdato.format(DateTimeFormatter.ofPattern("ddMMyy")) + "87654"
         val legeerklaering = getReceivedLegeerklaering(getLegeerklaering(foedselsnr))
-        val validationResult: ValidationResult
         runBlocking {
-            validationResult = ruleService.executeRuleChains(legeerklaering)
+            val validationResult = ruleService.executeRuleChains(legeerklaering)
+            assertEquals("PASIENT_YNGRE_ENN_13", validationResult.ruleHits[0].ruleName)
         }
-        assertEquals("PASIENT_YNGRE_ENN_13", validationResult.ruleHits[0].ruleName)
     }
 
     @DelicateCoroutinesApi
     @Test
-    fun `Finner ikke behandler`() {
+    fun `Treffer regel BEHANDLER_NOT_IN_HPR`() {
         coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns null
         coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
         val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
-        val validationResult: ValidationResult
         runBlocking {
-            runBlocking {
-                validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
-            }
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals("BEHANDLER_NOT_IN_HPR", validationResult.ruleHits[0].ruleName)
         }
-        assertEquals("BEHANDLER_NOT_IN_HPR", validationResult.ruleHits[0].ruleName)
     }
 
     @Test
     @DelicateCoroutinesApi
-    fun `Behandler ikke gyldig`() {
+    fun `Treffer regel BEHANDLER_IKKE_GYLDIG_I_HPR`() {
         coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = true) }
         coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns Behandler(
             listOf(
@@ -152,26 +144,149 @@ class RuleServiceTest {
         )
         val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
-        val validationResult: ValidationResult
         runBlocking {
-            runBlocking {
-                validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
-            }
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals("BEHANDLER_IKKE_GYLDIG_I_HPR", validationResult.ruleHits[0].ruleName)
         }
-        assertEquals("BEHANDLER_IKKE_GYLDIG_I_HPR", validationResult.ruleHits[0].ruleName)
+    }
+
+    @Test
+    @DelicateCoroutinesApi
+    fun `Treffer regel BEHANDLER_MANGLER_AUTORISASJON_I_HPR`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns Behandler(
+            godkjenninger = listOf(
+                Godkjenning(
+                    helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = HelsepersonellKategori.FYSIOTERAPAEUT.verdi),
+                    autorisasjon = Kode(aktiv = true, oid = 0, verdi = "1")
+                )
+            )
+        )
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
+        runBlocking {
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals("BEHANDLER_MANGLER_AUTORISASJON_I_HPR", validationResult.ruleHits[0].ruleName)
+        }
+    }
+
+    @Test
+    @DelicateCoroutinesApi
+    fun `Treffer regel BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns Behandler(
+            godkjenninger = listOf(
+                Godkjenning(
+                    helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "UKJENT"),
+                    autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1")
+                )
+            )
+        )
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
+        runBlocking {
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals("BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR", validationResult.ruleHits[0].ruleName)
+        }
+    }
+
+    @Test
+    @DelicateCoroutinesApi
+    fun `Treffer regel BEHANDLER_SUSPENDERT`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = true) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns Behandler(
+            godkjenninger = listOf(
+                Godkjenning(
+                    helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = HelsepersonellKategori.FYSIOTERAPAEUT.verdi),
+                    autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1")
+                )
+            )
+        )
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
+        runBlocking {
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals("BEHANDLER_SUSPENDERT", validationResult.ruleHits[0].ruleName)
+        }
+    }
+
+    @Test
+    @DelicateCoroutinesApi
+    fun `Treffer regel UGYLDIG_ORGNR_LENGDE`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns Behandler(
+            godkjenninger = listOf(
+                Godkjenning(
+                    helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = HelsepersonellKategori.FYSIOTERAPAEUT.verdi),
+                    autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1")
+                )
+            )
+        )
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering(), orgnr = "9876543219")
+        runBlocking {
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals("UGYLDIG_ORGNR_LENGDE", validationResult.ruleHits[0].ruleName)
+        }
+    }
+
+    @Test
+    @DelicateCoroutinesApi
+    fun `Treffer regel AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns Behandler(
+            godkjenninger = listOf(
+                Godkjenning(
+                    helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = HelsepersonellKategori.FYSIOTERAPAEUT.verdi),
+                    autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1")
+                )
+            )
+        )
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering(), personnrPasient = "17037447234")
+        runBlocking {
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals("AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR", validationResult.ruleHits[0].ruleName)
+        }
+    }
+
+    @Test
+    @DelicateCoroutinesApi
+    fun `Dette er en godkjent behandler`() {
+        coEvery { legeSuspensjonClient.checkTherapist(any(), any(), any()) } answers { Suspendert(suspendert = false) }
+        coEvery { norskHelsenettClient.finnBehandler(any(), any(), any()) } returns Behandler(
+            godkjenninger = listOf(
+                Godkjenning(
+                    helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = HelsepersonellKategori.FYSIOTERAPAEUT.verdi),
+                    autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1") // autorisasjon.verdi in arrayOf("1", "17", "4", "2", "14", "18")
+                )
+            )
+        )
+        coEvery { pdlPersonService.getPdlPerson(any(), any()) } returns PdlPerson(listOf(), listOf())
+        val ruleService = RuleService(legeSuspensjonClient, norskHelsenettClient, pdlPersonService)
+        val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
+        runBlocking {
+            val validationResult = ruleService.executeRuleChains(receivedLegeerklaering)
+            assertEquals(Status.OK, validationResult.status)
+        }
     }
 }
 
-fun getReceivedLegeerklaering(legeerklaering: Legeerklaering): ReceivedLegeerklaering {
+fun getReceivedLegeerklaering(legeerklaering: Legeerklaering, orgnr: String = "913459105", personnrPasient: String = "54321"): ReceivedLegeerklaering {
     return ReceivedLegeerklaering(
         legeerklaering = legeerklaering,
-        personNrPasient = "54321",
+        personNrPasient = personnrPasient,
         pasientAktoerId = "pasientAktoerId",
         personNrLege = "17037447234",
         legeAktoerId = "legeAktoerId",
         navLogId = "navLogId",
         msgId = "msgId",
-        legekontorOrgNr = "913459105",
+        legekontorOrgNr = orgnr,
         legekontorHerId = "721636",
         legekontorReshId = "3123",
         legekontorOrgName = "Ensjøbyen Medisinske Senter AS",
