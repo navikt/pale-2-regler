@@ -78,6 +78,9 @@ Find the newest version of gradle here: https://gradle.org/releases/ Then run th
 
 ```./gradlew wrapper --gradle-version $gradleVersjon```
 
+<!-- RULE_MARKER_START -->
+<!-- RULE_MARKER_END -->
+
 ### Contact
 
 This project is maintained by navikt/teamsykmelding
