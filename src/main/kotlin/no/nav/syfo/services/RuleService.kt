@@ -104,7 +104,6 @@ class RuleService(
             validationResult.ruleHits.firstOrNull()?.ruleName ?: validationResult.status.name
         ).inc()
 
-
         return validationResult
     }
 
@@ -124,5 +123,4 @@ class RuleService(
                 )
             }
     )
-
 }

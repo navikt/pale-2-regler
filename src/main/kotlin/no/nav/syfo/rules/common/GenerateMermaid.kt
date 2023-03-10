@@ -6,15 +6,13 @@ import no.nav.syfo.rules.dsl.RuleNode
 import no.nav.syfo.rules.dsl.TreeNode
 import no.nav.syfo.rules.hpr.hprRuleTree
 import no.nav.syfo.rules.legesuspensjon.legeSuspensjonRuleTree
-
 import no.nav.syfo.rules.validation.validationRuleTree
 
 fun main() {
-
     val ruleTrees = listOf(
         "Lege suspensjon" to legeSuspensjonRuleTree,
         "HPR" to hprRuleTree,
-        "Validation" to validationRuleTree,
+        "Validation" to validationRuleTree
     )
 
     ruleTrees.forEach {
@@ -34,7 +32,7 @@ fun main() {
 private fun <T> TreeNode<T, RuleResult>.traverseTree(
     builder: StringBuilder,
     thisNodeKey: String,
-    nodeKey: String,
+    nodeKey: String
 ) {
     when (this) {
         is ResultNode -> {

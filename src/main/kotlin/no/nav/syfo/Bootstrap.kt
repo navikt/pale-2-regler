@@ -24,6 +24,7 @@ import no.nav.syfo.client.LegeSuspensjonClient
 import no.nav.syfo.client.NorskHelsenettClient
 import no.nav.syfo.pdl.client.PdlClient
 import no.nav.syfo.pdl.service.PdlPersonService
+import no.nav.syfo.services.RuleExecutionService
 import no.nav.syfo.services.RuleService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -102,7 +103,7 @@ fun main() {
     val applicationEngine = createApplicationEngine(
         env,
         applicationState,
-        RuleService(legeSuspensjonClient, norskHelsenettClient, pdlService),
+        RuleService(legeSuspensjonClient, norskHelsenettClient, pdlService, RuleExecutionService()),
         jwkProviderAad
     )
 

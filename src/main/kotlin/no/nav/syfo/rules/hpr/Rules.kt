@@ -6,7 +6,6 @@ import no.nav.syfo.model.HelsepersonellKategori
 import no.nav.syfo.model.Legeerklaering
 import no.nav.syfo.rules.dsl.RuleResult
 
-
 typealias Rule<T> = (legeerklaring: Legeerklaering, behandler: Behandler) -> RuleResult<T>
 typealias HPRRule = Rule<HPRRules>
 
@@ -72,11 +71,9 @@ val behandlerIkkeLEKIMTTLFTPS: HPRRule = { _, behandler ->
     )
 }
 
-
-
 private fun harAktivHelsepersonellAutorisasjonsSom(
     behandlerGodkjenninger: List<Godkjenning>,
-    helsepersonerVerdi: List<String>,
+    helsepersonerVerdi: List<String>
 ): Boolean =
     behandlerGodkjenninger.any { godkjenning ->
         godkjenning.helsepersonellkategori?.aktiv != null &&

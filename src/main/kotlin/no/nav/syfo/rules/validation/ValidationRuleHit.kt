@@ -11,7 +11,7 @@ enum class ValidationRuleHit(
             rule = "PASIENT_YNGRE_ENN_13",
             status = Status.INVALID,
             messageForSender = "Pasienten er under 13 år. Sykmelding kan ikke benyttes.",
-            messageForUser = "Pasienten er under 13 år. Sykmelding kan ikke benyttes.",
+            messageForUser = "Pasienten er under 13 år. Sykmelding kan ikke benyttes."
         )
     ),
     UGYLDIG_ORGNR_LENGDE(
@@ -20,7 +20,7 @@ enum class ValidationRuleHit(
             status = Status.INVALID,
             messageForSender = "Legeerklæringen kan ikke rettes, det må skrives en ny. " +
                 "Feil format på organisasjonsnummer. Dette skal være 9 sifre.",
-            messageForUser = "Den må ha riktig organisasjonsnummer.",
+            messageForUser = "Den må ha riktig organisasjonsnummer."
         )
     ),
     AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR(
@@ -28,7 +28,7 @@ enum class ValidationRuleHit(
             rule = "AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR",
             status = Status.INVALID,
             messageForSender = "Avsender fnr er det samme som pasient fnr",
-            messageForUser = "Den som signert legeerklæringen er også pasient.",
+            messageForUser = "Den som signert legeerklæringen er også pasient."
         )
-    ),
+    )
 }

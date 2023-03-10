@@ -2,14 +2,12 @@ package no.nav.syfo.rules.validation
 
 import no.nav.syfo.model.Legeerklaering
 import no.nav.syfo.model.RuleMetadata
-
 import no.nav.syfo.rules.dsl.RuleResult
-
 
 typealias Rule<T> = (legeerklaring: Legeerklaering, ruleMetadata: RuleMetadata) -> RuleResult<T>
 typealias ValidationRule = Rule<ValidationRules>
 
-val pasientUnder13Aar: ValidationRule = { legeerklaring, ruleMetadata ->
+val pasientUnder13Aar: ValidationRule = { _, ruleMetadata ->
 
     val signatureDate = ruleMetadata.signatureDate.toLocalDate()
     val pasientFodselsdato = ruleMetadata.patientBorndate
@@ -22,8 +20,6 @@ val pasientUnder13Aar: ValidationRule = { legeerklaring, ruleMetadata ->
         ruleResult = pasientUnder13Aar
     )
 }
-
-
 
 val ugyldingOrgNummerLengde: ValidationRule = { _, ruleMetadata ->
     val legekontorOrgnr = ruleMetadata.legekontorOrgnr
@@ -50,4 +46,3 @@ val avsenderSammeSomPasient: ValidationRule = { _, ruleMetadata ->
         ruleResult = avsenderSammeSomPasient
     )
 }
-

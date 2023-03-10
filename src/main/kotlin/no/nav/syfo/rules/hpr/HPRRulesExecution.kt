@@ -6,7 +6,12 @@ import no.nav.syfo.model.Legeerklaering
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.rules.common.RuleExecution
 import no.nav.syfo.rules.common.RuleResult
-import no.nav.syfo.rules.dsl.*
+import no.nav.syfo.rules.dsl.ResultNode
+import no.nav.syfo.rules.dsl.RuleNode
+import no.nav.syfo.rules.dsl.TreeNode
+import no.nav.syfo.rules.dsl.TreeOutput
+import no.nav.syfo.rules.dsl.join
+import no.nav.syfo.rules.dsl.printRulePath
 
 typealias HPRTreeOutput = TreeOutput<HPRRules, RuleResult>
 typealias HPRTreeNode = TreeNode<HPRRules, RuleResult>
@@ -22,7 +27,7 @@ class HPRRulesExecution(private val rootNode: HPRTreeNode = hprRuleTree) : RuleE
 
 private fun TreeNode<HPRRules, RuleResult>.evaluate(
     legeerklaring: Legeerklaering,
-    behandler: Behandler,
+    behandler: Behandler
 ): HPRTreeOutput =
     when (this) {
         is ResultNode -> HPRTreeOutput(treeResult = result)

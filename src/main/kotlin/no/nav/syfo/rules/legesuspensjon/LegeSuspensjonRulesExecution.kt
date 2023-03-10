@@ -12,7 +12,6 @@ import no.nav.syfo.rules.dsl.TreeOutput
 import no.nav.syfo.rules.dsl.join
 import no.nav.syfo.rules.dsl.printRulePath
 
-
 typealias LegeSuspensjonTreeOutput = TreeOutput<LegeSuspensjonRules, RuleResult>
 typealias LegeSuspensjonTreeNode = TreeNode<LegeSuspensjonRules, RuleResult>
 
@@ -27,7 +26,7 @@ class LegeSuspensjonRulesExecution(val rootNode: TreeNode<LegeSuspensjonRules, R
 
 private fun TreeNode<LegeSuspensjonRules, RuleResult>.evaluate(
     sykmeldingId: String,
-    behandlerSuspendert: Boolean,
+    behandlerSuspendert: Boolean
 ): LegeSuspensjonTreeOutput =
     when (this) {
         is ResultNode -> LegeSuspensjonTreeOutput(treeResult = result)

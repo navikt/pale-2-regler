@@ -1,5 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
+import java.io.ByteArrayOutputStream
 
 group = "no.nav.syfo"
 version = "1.0.0"
@@ -14,7 +15,6 @@ val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.14.2"
 val pale2CommonVersion = "1.ad083ef"
 val mockkVersion = "1.13.2"
-val jfairyVersion = "0.6.5"
 val kotlinVersion = "1.8.10"
 val junitJupiterVersion = "5.9.0"
 val commonsTextVersion = "1.10.0"
@@ -72,9 +72,6 @@ dependencies {
         exclude(group = "org.eclipse.jetty")
     }
     testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("com.devskiller:jfairy:$jfairyVersion") {
-        exclude(group = "org.apache.commons", module = "commons-text")
-    }
 
     testImplementation("org.apache.commons:commons-text:$commonsTextVersion")
 

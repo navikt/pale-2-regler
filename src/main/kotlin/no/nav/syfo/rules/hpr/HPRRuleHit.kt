@@ -11,7 +11,7 @@ enum class HPRRuleHit(
             rule = "BEHANDLER_IKKE_GYLDIG_I_HPR",
             status = Status.INVALID,
             messageForSender = "Behandler er ikke gyldig i HPR på konsultasjonstidspunkt",
-            messageForUser = "Den som skrev legeerklæringen manglet autorisasjon",
+            messageForUser = "Den som skrev legeerklæringen manglet autorisasjon"
         )
     ),
     BEHANDLER_MANGLER_AUTORISASJON_I_HPR(
@@ -19,7 +19,7 @@ enum class HPRRuleHit(
             rule = "BEHANDLER_MANGLER_AUTORISASJON_I_HPR",
             status = Status.INVALID,
             messageForSender = "Behandler har ikke gyldig autorisasjon i HPR.",
-            messageForUser = "Den som skrev legeerklæringen manglet autorisasjon.",
+            messageForUser = "Den som skrev legeerklæringen manglet autorisasjon."
         )
     ),
     BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR(
@@ -27,8 +27,8 @@ enum class HPRRuleHit(
             rule = "BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR",
             status = Status.INVALID,
             messageForSender = "Behandler finnes i HPR men er ikke lege, kiropraktor, fysioterapeut, manuellterapeut," +
-                    " pysykolog eller tannlege",
-            messageForUser = "Den som skrev legeerklæringen manglet autorisasjon.",
+                " pysykolog eller tannlege",
+            messageForUser = "Den som skrev legeerklæringen manglet autorisasjon."
         )
     )
 }

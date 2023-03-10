@@ -6,7 +6,6 @@ import no.nav.syfo.model.Status
 import no.nav.syfo.rules.common.RuleExecution
 import no.nav.syfo.rules.common.RuleResult
 import no.nav.syfo.rules.dsl.TreeOutput
-
 import no.nav.syfo.rules.hpr.HPRRulesExecution
 import no.nav.syfo.rules.hpr.hprRuleTree
 import no.nav.syfo.rules.legesuspensjon.LegeSuspensjonRulesExecution
@@ -19,7 +18,7 @@ class RuleExecutionService() {
     private val ruleExecution = sequenceOf(
         LegeSuspensjonRulesExecution(legeSuspensjonRuleTree),
         HPRRulesExecution(hprRuleTree),
-        ValidationRulesExecution(validationRuleTree),
+        ValidationRulesExecution(validationRuleTree)
     )
 
     fun runRules(
