@@ -22,9 +22,9 @@ class RuleExecutionServiceTest {
     val ruleMetadata = mockk<RuleMetadata>(relaxed = true)
     val rulesExecution = mockk<RuleExecution<TestRules>>(relaxed = true)
     val ruleExecutionService = RuleExecutionService()
+
     @Test
     fun `Run ruleTrees`() {
-
         every {
             rulesExecution.runRules(
                 any(),
@@ -42,9 +42,9 @@ class RuleExecutionServiceTest {
         val rule = ruleExecutionService.runRules(sykmeldnig, ruleMetadata, sequenceOf(rulesExecution)).first()
         Assertions.assertEquals(Status.OK, rule.treeResult.status)
     }
+
     @Test
     fun `should not run all rules if first no OK`() {
-
         val okRule = mockk<RuleExecution<TestRules>>().also {
             every { it.runRules(any(), any()) } returns (
                 TreeOutput<TestRules, RuleResult>(
@@ -66,7 +66,7 @@ class RuleExecutionServiceTest {
                 )
         }
         val results = ruleExecutionService.runRules(sykmeldnig, ruleMetadata, sequenceOf(invalidRuleExecution, okRule))
-        Assertions.assertEquals(1,  results.size)
-        Assertions.assertEquals(Status.INVALID,  results.first().treeResult.status)
+        Assertions.assertEquals(1, results.size)
+        Assertions.assertEquals(Status.INVALID, results.first().treeResult.status)
     }
 }
