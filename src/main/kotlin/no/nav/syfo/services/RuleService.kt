@@ -4,18 +4,17 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import net.logstash.logback.argument.StructuredArguments.fields
 import no.nav.syfo.client.LegeSuspensjonClient
 import no.nav.syfo.client.NorskHelsenettClient
-import no.nav.syfo.metrics.RULE_HIT_COUNTER
+import no.nav.syfo.metrics.RULE_NODE_RULE_HIT_COUNTER
+import no.nav.syfo.metrics.RULE_NODE_RULE_PATH_COUNTER
 import no.nav.syfo.model.ReceivedLegeerklaering
 import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
 import no.nav.syfo.pdl.service.PdlPersonService
-import no.nav.syfo.rules.HPRRuleChain
-import no.nav.syfo.rules.LegesuspensjonRuleChain
-import no.nav.syfo.rules.Rule
-import no.nav.syfo.rules.ValidationRuleChain
-import no.nav.syfo.rules.executeFlow
+import no.nav.syfo.rules.common.RuleResult
+import no.nav.syfo.rules.dsl.TreeOutput
+import no.nav.syfo.rules.dsl.printRulePath
 import no.nav.syfo.util.LoggingMeta
 import no.nav.syfo.util.extractBornDate
 import org.slf4j.Logger
@@ -27,7 +26,8 @@ import java.time.format.DateTimeFormatter
 class RuleService(
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val norskHelsenettClient: NorskHelsenettClient,
-    private val pdlPersonService: PdlPersonService
+    private val pdlPersonService: PdlPersonService,
+    private val ruleExecutionService: RuleExecutionService
 ) {
 
     private val log: Logger = LoggerFactory.getLogger("ruleservice")
@@ -79,50 +79,48 @@ class RuleService(
             )
         }
 
-        val results = listOf(
-            ValidationRuleChain.values().executeFlow(
-                legeerklaring,
-                RuleMetadata(
-                    receivedDate = receivedLegeerklaering.mottattDato,
-                    signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
-                    patientPersonNumber = receivedLegeerklaering.personNrPasient,
-                    legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
-                    tssid = receivedLegeerklaering.tssid,
-                    avsenderfnr = receivedLegeerklaering.personNrLege,
-                    patientBorndate = borndate
-                )
-            ),
-            HPRRuleChain.values().executeFlow(legeerklaring, avsenderBehandler),
-            LegesuspensjonRuleChain.values().executeFlow(legeerklaring, doctorSuspend)
-        ).flatten()
+        val ruleMetadata = RuleMetadata(
+            receivedDate = receivedLegeerklaering.mottattDato,
+            signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
+            patientPersonNumber = receivedLegeerklaering.personNrPasient,
+            legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
+            tssid = receivedLegeerklaering.tssid,
+            avsenderfnr = receivedLegeerklaering.personNrLege,
+            patientBorndate = borndate,
+            behandler = avsenderBehandler,
+            doctorSuspensjon = doctorSuspend
+        )
 
-        logRuleResultMetrics(results)
+        val result = ruleExecutionService.runRules(legeerklaring, ruleMetadata)
+        result.forEach {
+            RULE_NODE_RULE_PATH_COUNTER.labels(
+                it.printRulePath()
+            ).inc()
+        }
 
-        log.info("Rules hit {}, {}", results.map { it.name }, fields(loggingMeta))
+        val validationResult = validationResult(result.map { it })
+        RULE_NODE_RULE_HIT_COUNTER.labels(
+            validationResult.status.name,
+            validationResult.ruleHits.firstOrNull()?.ruleName ?: validationResult.status.name
+        ).inc()
 
-        return validationResult(results)
+        return validationResult
     }
 
-    private fun validationResult(results: List<Rule<Any>>): ValidationResult = ValidationResult(
+    private fun validationResult(results: List<TreeOutput<out Enum<*>, RuleResult>>): ValidationResult = ValidationResult(
         status = results
-            .map { status -> status.status }.let {
+            .map { result -> result.treeResult.status }.let {
                 it.firstOrNull { status -> status == Status.INVALID }
                     ?: Status.OK
             },
-        ruleHits = results.map { rule ->
-            RuleInfo(
-                rule.name,
-                rule.messageForSender!!,
-                rule.messageForUser!!,
-                rule.status
-            )
-        }
-    )
-    private fun logRuleResultMetrics(result: List<Rule<Any>>) {
-        result
-            .filter { it.name.isEmpty() }
-            .forEach {
-                RULE_HIT_COUNTER.labels(it.name).inc()
+        ruleHits = results.mapNotNull { it.treeResult.ruleHit }
+            .map { result ->
+                RuleInfo(
+                    result.rule,
+                    result.messageForSender,
+                    result.messageForUser,
+                    result.status
+                )
             }
-    }
+    )
 }
