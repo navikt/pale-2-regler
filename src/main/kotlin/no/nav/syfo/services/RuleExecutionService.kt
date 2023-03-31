@@ -18,13 +18,13 @@ class RuleExecutionService() {
     private val ruleExecution = sequenceOf(
         LegeSuspensjonRulesExecution(legeSuspensjonRuleTree),
         HPRRulesExecution(hprRuleTree),
-        ValidationRulesExecution(validationRuleTree)
+        ValidationRulesExecution(validationRuleTree),
     )
 
     fun runRules(
         legeerklaring: Legeerklaering,
         ruleMetadata: RuleMetadata,
-        sequence: Sequence<RuleExecution<out Enum<*>>> = ruleExecution
+        sequence: Sequence<RuleExecution<out Enum<*>>> = ruleExecution,
     ): List<TreeOutput<out Enum<*>, RuleResult>> {
         var lastStatus = Status.OK
         val results = sequence

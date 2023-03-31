@@ -60,7 +60,7 @@ class LegeSuspensjonClientTest {
         accessTokenClientV2 = accessTokenClientV2,
         consumerAppName = "consumerAppName",
         httpClient = httpClient,
-        scope = "scope"
+        scope = "scope",
     )
 
     @BeforeAll
@@ -79,7 +79,7 @@ class LegeSuspensjonClientTest {
             val suspendert = legeSuspensjonClient.checkTherapist(
                 therapistId = "1",
                 ediloggid = "55-4321",
-                oppslagsdato = "2023-01-26"
+                oppslagsdato = "2023-01-26",
             )
             assertEquals(true, suspendert.suspendert)
         }
@@ -91,7 +91,7 @@ class LegeSuspensjonClientTest {
             val suspendert = legeSuspensjonClient.checkTherapist(
                 therapistId = "2",
                 ediloggid = "55-4321",
-                oppslagsdato = "2023-01-26"
+                oppslagsdato = "2023-01-26",
             )
             assertEquals(false, suspendert.suspendert)
         }
@@ -104,7 +104,7 @@ class LegeSuspensjonClientTest {
                 legeSuspensjonClient.checkTherapist(
                     therapistId = "3",
                     ediloggid = "55-4321",
-                    oppslagsdato = "2023-01-26"
+                    oppslagsdato = "2023-01-26",
                 )
             }
         }

@@ -19,7 +19,7 @@ val behanderIkkeGyldigHPR: HPRRule = { _, behandler ->
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
         rule = HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR,
-        ruleResult = !aktivAutorisasjon
+        ruleResult = !aktivAutorisasjon,
     )
 }
 
@@ -39,7 +39,7 @@ val behandlerManglerAutorisasjon: HPRRule = { _, behandler ->
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
         rule = HPRRules.BEHANDLER_MANGLER_AUTORISASJON_I_HPR,
-        ruleResult = !gyldigeGodkjenninger
+        ruleResult = !gyldigeGodkjenninger,
     )
 }
 
@@ -58,8 +58,8 @@ val behandlerIkkeLEKIMTTLFTPS: HPRRule = { _, behandler ->
                         HelsepersonellKategori.MANUELLTERAPEUT.verdi,
                         HelsepersonellKategori.TANNLEGE.verdi,
                         HelsepersonellKategori.FYSIOTERAPAEUT.verdi,
-                        HelsepersonellKategori.PSYKOLOG.verdi
-                    )
+                        HelsepersonellKategori.PSYKOLOG.verdi,
+                    ),
                 )
             )
     }
@@ -67,13 +67,13 @@ val behandlerIkkeLEKIMTTLFTPS: HPRRule = { _, behandler ->
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
         rule = HPRRules.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR,
-        ruleResult = !behandlerLEKIMTTLFT
+        ruleResult = !behandlerLEKIMTTLFT,
     )
 }
 
 private fun harAktivHelsepersonellAutorisasjonsSom(
     behandlerGodkjenninger: List<Godkjenning>,
-    helsepersonerVerdi: List<String>
+    helsepersonerVerdi: List<String>,
 ): Boolean =
     behandlerGodkjenninger.any { godkjenning ->
         godkjenning.helsepersonellkategori?.aktiv != null &&

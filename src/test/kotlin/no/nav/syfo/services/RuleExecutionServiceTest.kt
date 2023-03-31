@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 enum class TestRules {
-    RULE1
+    RULE1,
 }
 
 class RuleExecutionServiceTest {
@@ -28,14 +28,14 @@ class RuleExecutionServiceTest {
         every {
             rulesExecution.runRules(
                 any(),
-                any()
+                any(),
             )
         } returns (
             TreeOutput<TestRules, RuleResult>(
                 treeResult = RuleResult(
                     status = Status.OK,
-                    ruleHit = null
-                )
+                    ruleHit = null,
+                ),
             )
             )
 
@@ -50,8 +50,8 @@ class RuleExecutionServiceTest {
                 TreeOutput<TestRules, RuleResult>(
                     treeResult = RuleResult(
                         status = Status.OK,
-                        ruleHit = null
-                    )
+                        ruleHit = null,
+                    ),
                 )
                 )
         }
@@ -60,8 +60,8 @@ class RuleExecutionServiceTest {
                 TreeOutput<TestRules, RuleResult>(
                     treeResult = RuleResult(
                         status = Status.INVALID,
-                        ruleHit = RuleHit(Status.INVALID, TestRules.RULE1.name, "message", "message")
-                    )
+                        ruleHit = RuleHit(Status.INVALID, TestRules.RULE1.name, "message", "message"),
+                    ),
                 )
                 )
         }

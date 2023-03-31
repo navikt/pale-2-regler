@@ -17,7 +17,7 @@ class LegeSuspensjonClient(
     private val accessTokenClientV2: AccessTokenClientV2,
     private val httpClient: HttpClient,
     private val scope: String,
-    private val consumerAppName: String
+    private val consumerAppName: String,
 ) {
 
     suspend fun checkTherapist(therapistId: String, ediloggid: String, oppslagsdato: String): Suspendert {

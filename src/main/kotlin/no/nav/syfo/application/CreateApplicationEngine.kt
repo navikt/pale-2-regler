@@ -31,12 +31,12 @@ fun createApplicationEngine(
     environment: Environment,
     applicationState: ApplicationState,
     ruleService: RuleService,
-    jwkProviderAad: JwkProvider
+    jwkProviderAad: JwkProvider,
 ): ApplicationEngine =
     embeddedServer(Netty, environment.applicationPort) {
         setupAuth(
             environment = environment,
-            jwkProviderAadV2 = jwkProviderAad
+            jwkProviderAadV2 = jwkProviderAad,
         )
         routing {
             registerNaisApi(applicationState)

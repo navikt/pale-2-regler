@@ -35,12 +35,12 @@ class PdlServiceTest {
                         IdentInformasjon(
                             ident = "01245678901",
                             gruppe = "FOLKEREGISTERIDENT",
-                            historisk = false
-                        )
-                    )
-                )
+                            historisk = false,
+                        ),
+                    ),
+                ),
             ),
-            errors = null
+            errors = null,
         )
 
         val person = runBlocking { pdlService.getPdlPerson("01245678901", loggingMeta) }
@@ -53,7 +53,7 @@ class PdlServiceTest {
         coEvery { accessTokenClientV2Mock.getAccessTokenV2(any()) } returns "accessToken"
         coEvery { pdlClient.getPerson(any(), any()) } returns GraphQLResponse(
             PdlResponse(null, null),
-            errors = null
+            errors = null,
         )
 
         val personNotFoundInPdlException: Throwable = assertThrows {
@@ -70,11 +70,11 @@ class PdlServiceTest {
         coEvery { pdlClient.getPerson(any(), any()) } returns GraphQLResponse(
             PdlResponse(
                 hentPerson = HentPerson(
-                    foedsel = emptyList()
+                    foedsel = emptyList(),
                 ),
-                hentIdenter = Identliste(emptyList())
+                hentIdenter = Identliste(emptyList()),
             ),
-            errors = null
+            errors = null,
         )
 
         val personNotFoundInPdlException: Throwable = assertThrows {

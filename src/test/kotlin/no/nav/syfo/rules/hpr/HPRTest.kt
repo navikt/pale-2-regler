@@ -34,15 +34,15 @@ class HPRTest {
                     autorisasjon = Kode(
                         aktiv = true,
                         oid = 7704,
-                        verdi = "1"
+                        verdi = "1",
                     ),
                     helsepersonellkategori = Kode(
                         aktiv = true,
                         oid = 0,
-                        verdi = "LE"
-                    )
-                )
-            )
+                        verdi = "LE",
+                    ),
+                ),
+            ),
         )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
@@ -57,7 +57,7 @@ class HPRTest {
             avsenderfnr = receivedLegeerklaering.personNrLege,
             patientBorndate = borndate,
             behandler = behandler,
-            doctorSuspensjon = false
+            doctorSuspensjon = false,
         )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
@@ -67,9 +67,9 @@ class HPRTest {
             listOf(
                 HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR to false,
                 HPRRules.BEHANDLER_MANGLER_AUTORISASJON_I_HPR to false,
-                HPRRules.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR to false
+                HPRRules.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR to false,
             ),
-            status.rulePath.map { it.rule to it.ruleResult }
+            status.rulePath.map { it.rule to it.ruleResult },
         )
 
         Assertions.assertEquals(
@@ -78,8 +78,8 @@ class HPRTest {
                 "behandlerGodkjenninger" to behandler.godkjenninger,
                 "behandlerGodkjenninger" to behandler.godkjenninger,
                 "behandlerGodkjenninger" to behandler.godkjenninger,
-                "behandlerGodkjenninger" to behandler.godkjenninger
-            )
+                "behandlerGodkjenninger" to behandler.godkjenninger,
+            ),
         )
 
         Assertions.assertEquals(null, status.treeResult.ruleHit)
@@ -93,15 +93,15 @@ class HPRTest {
                     autorisasjon = Kode(
                         aktiv = false,
                         oid = 7704,
-                        verdi = "1"
+                        verdi = "1",
                     ),
                     helsepersonellkategori = Kode(
                         aktiv = true,
                         oid = 0,
-                        verdi = "LE"
-                    )
-                )
-            )
+                        verdi = "LE",
+                    ),
+                ),
+            ),
         )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
@@ -116,7 +116,7 @@ class HPRTest {
             avsenderfnr = receivedLegeerklaering.personNrLege,
             patientBorndate = borndate,
             behandler = behandler,
-            doctorSuspensjon = false
+            doctorSuspensjon = false,
         )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
@@ -124,16 +124,16 @@ class HPRTest {
         Assertions.assertEquals(Status.INVALID, status.treeResult.status)
         Assertions.assertEquals(
             listOf(
-                HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR to true
+                HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR to true,
             ),
-            status.rulePath.map { it.rule to it.ruleResult }
+            status.rulePath.map { it.rule to it.ruleResult },
         )
 
         Assertions.assertEquals(
             status.ruleInputs,
             mapOf(
-                "behandlerGodkjenninger" to behandler.godkjenninger
-            )
+                "behandlerGodkjenninger" to behandler.godkjenninger,
+            ),
         )
 
         Assertions.assertEquals(HPRRuleHit.BEHANDLER_IKKE_GYLDIG_I_HPR.ruleHit, status.treeResult.ruleHit)
@@ -147,15 +147,15 @@ class HPRTest {
                     autorisasjon = Kode(
                         aktiv = true,
                         oid = 7702,
-                        verdi = "19"
+                        verdi = "19",
                     ),
                     helsepersonellkategori = Kode(
                         aktiv = true,
                         oid = 0,
-                        verdi = "LE"
-                    )
-                )
-            )
+                        verdi = "LE",
+                    ),
+                ),
+            ),
         )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
@@ -170,7 +170,7 @@ class HPRTest {
             avsenderfnr = receivedLegeerklaering.personNrLege,
             patientBorndate = borndate,
             behandler = behandler,
-            doctorSuspensjon = false
+            doctorSuspensjon = false,
         )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
@@ -179,17 +179,17 @@ class HPRTest {
         Assertions.assertEquals(
             listOf(
                 HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR to false,
-                HPRRules.BEHANDLER_MANGLER_AUTORISASJON_I_HPR to true
+                HPRRules.BEHANDLER_MANGLER_AUTORISASJON_I_HPR to true,
             ),
-            status.rulePath.map { it.rule to it.ruleResult }
+            status.rulePath.map { it.rule to it.ruleResult },
         )
 
         Assertions.assertEquals(
             mapOf(
                 "behandlerGodkjenninger" to behandler.godkjenninger,
-                "behandlerGodkjenninger" to behandler.godkjenninger
+                "behandlerGodkjenninger" to behandler.godkjenninger,
             ),
-            status.ruleInputs
+            status.ruleInputs,
         )
 
         Assertions.assertEquals(HPRRuleHit.BEHANDLER_MANGLER_AUTORISASJON_I_HPR.ruleHit, status.treeResult.ruleHit)
@@ -203,15 +203,15 @@ class HPRTest {
                     autorisasjon = Kode(
                         aktiv = true,
                         oid = 7704,
-                        verdi = "18"
+                        verdi = "18",
                     ),
                     helsepersonellkategori = Kode(
                         aktiv = true,
                         oid = 0,
-                        verdi = "PL"
-                    )
-                )
-            )
+                        verdi = "PL",
+                    ),
+                ),
+            ),
         )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
@@ -226,7 +226,7 @@ class HPRTest {
             avsenderfnr = receivedLegeerklaering.personNrLege,
             patientBorndate = borndate,
             behandler = behandler,
-            doctorSuspensjon = false
+            doctorSuspensjon = false,
         )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
@@ -236,18 +236,18 @@ class HPRTest {
             listOf(
                 HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR to false,
                 HPRRules.BEHANDLER_MANGLER_AUTORISASJON_I_HPR to false,
-                HPRRules.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR to true
+                HPRRules.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR to true,
             ),
-            status.rulePath.map { it.rule to it.ruleResult }
+            status.rulePath.map { it.rule to it.ruleResult },
         )
 
         Assertions.assertEquals(
             mapOf(
                 "behandlerGodkjenninger" to behandler.godkjenninger,
                 "behandlerGodkjenninger" to behandler.godkjenninger,
-                "behandlerGodkjenninger" to behandler.godkjenninger
+                "behandlerGodkjenninger" to behandler.godkjenninger,
             ),
-            status.ruleInputs
+            status.ruleInputs,
         )
 
         Assertions.assertEquals(HPRRuleHit.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR.ruleHit, status.treeResult.ruleHit)
@@ -269,7 +269,7 @@ fun getReceivedLegeerklaering(legeerklaering: Legeerklaering, orgnr: String = "9
         legekontorOrgName = "Ensjøbyen Medisinske Senter AS",
         mottattDato = LocalDateTime.now(),
         fellesformat = "fellesformat",
-        tssid = "tssid"
+        tssid = "tssid",
     )
 }
 
@@ -294,38 +294,38 @@ fun getLegeerklaering(foedselsnr: String = "23057245631"): Legeerklaering {
                 navn = "NAV IKT",
                 adresse = "Sannergata 2",
                 postnummer = 557,
-                poststed = "Oslo"
-            )
+                poststed = "Oslo",
+            ),
         ),
         sykdomsopplysninger = Sykdomsopplysninger(
             hoveddiagnose = Diagnose(
                 tekst = "Fysikalsk behandling/rehabilitering",
-                kode = "-57"
+                kode = "-57",
             ),
             bidiagnose = listOf(
                 Diagnose(
                     tekst = "Engstelig for hjertesykdom",
-                    kode = "K24"
-                )
+                    kode = "K24",
+                ),
             ),
             arbeidsuforFra = LocalDateTime.now().minusDays(3),
             sykdomshistorie = "Tekst",
             statusPresens = "Tekst",
             borNavKontoretVurdereOmDetErEnYrkesskade = true,
-            yrkesSkadeDato = LocalDateTime.now().minusDays(4)
+            yrkesSkadeDato = LocalDateTime.now().minusDays(4),
         ),
         plan = Plan(
             utredning = null,
             behandling = Henvisning(
                 tekst = "2 timer i uken med svømming",
                 dato = LocalDateTime.now(),
-                antattVentetIUker = 1
+                antattVentetIUker = 1,
             ),
             utredningsplan = "Tekst",
             behandlingsplan = "Tekst",
             vurderingAvTidligerePlan = "Tekst",
             narSporreOmNyeLegeopplysninger = "Tekst",
-            videreBehandlingIkkeAktueltGrunn = "Tekst"
+            videreBehandlingIkkeAktueltGrunn = "Tekst",
         ),
         forslagTilTiltak = ForslagTilTiltak(
             behov = true,
@@ -337,7 +337,7 @@ fun getLegeerklaering(foedselsnr: String = "23057245631"): Legeerklaering {
             friskmeldingTilArbeidsformidling = false,
             andreTiltak = "Trenger taco i lunsjen",
             naermereOpplysninger = "Tacoen må bestå av ordentlige råvarer",
-            tekst = "Pasienten har store problemer med fordøying av annen mat enn Taco"
+            tekst = "Pasienten har store problemer med fordøying av annen mat enn Taco",
 
         ),
         funksjonsOgArbeidsevne = FunksjonsOgArbeidsevne(
@@ -354,13 +354,13 @@ fun getLegeerklaering(foedselsnr: String = "23057245631"): Legeerklaering {
             kanTaAnnetArbeidNa = true,
             kanTaAnnetArbeidEtterBehandling = true,
             kanIkkeGjenopptaNaverendeArbeid = "Spise annen mat enn Taco",
-            kanIkkeTaAnnetArbeid = "Spise annen mat enn Taco"
+            kanIkkeTaAnnetArbeid = "Spise annen mat enn Taco",
         ),
         prognose = Prognose(
             vilForbedreArbeidsevne = true,
             anslattVarighetSykdom = "1 uke",
             anslattVarighetFunksjonsnedsetting = "2 uker",
-            anslattVarighetNedsattArbeidsevne = "4 uker"
+            anslattVarighetNedsattArbeidsevne = "4 uker",
         ),
         arsakssammenheng = "Funksjonsnedsettelsen har stor betydning for at arbeidsevnen er nedsatt",
         andreOpplysninger = "Tekst",
@@ -369,7 +369,7 @@ fun getLegeerklaering(foedselsnr: String = "23057245631"): Legeerklaering {
             skalKontakteArbeidsgiver = true,
             skalKontakteBasisgruppe = false,
             kontakteAnnenInstans = null,
-            onskesKopiAvVedtak = true
+            onskesKopiAvVedtak = true,
         ),
         tilbakeholdInnhold = false,
         pasientenBurdeIkkeVite = null,
@@ -380,8 +380,8 @@ fun getLegeerklaering(foedselsnr: String = "23057245631"): Legeerklaering {
             postnummer = "9999",
             poststed = "Stockholm",
             signatur = "Lege Legesen",
-            tlfNummer = "98765432"
+            tlfNummer = "98765432",
         ),
-        signaturDato = LocalDateTime.now()
+        signaturDato = LocalDateTime.now(),
     )
 }

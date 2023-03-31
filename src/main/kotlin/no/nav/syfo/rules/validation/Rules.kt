@@ -17,7 +17,7 @@ val pasientUnder13Aar: ValidationRule = { _, ruleMetadata ->
     RuleResult(
         ruleInputs = mapOf("pasientUnder13Aar" to pasientUnder13Aar),
         rule = ValidationRules.PASIENT_YNGRE_ENN_13,
-        ruleResult = pasientUnder13Aar
+        ruleResult = pasientUnder13Aar,
     )
 }
 
@@ -29,7 +29,7 @@ val ugyldingOrgNummerLengde: ValidationRule = { _, ruleMetadata ->
     RuleResult(
         ruleInputs = mapOf("ugyldingOrgNummerLengde" to ugyldingOrgNummerLengde),
         rule = ValidationRules.UGYLDIG_ORGNR_LENGDE,
-        ruleResult = ugyldingOrgNummerLengde
+        ruleResult = ugyldingOrgNummerLengde,
     )
 }
 
@@ -43,6 +43,6 @@ val avsenderSammeSomPasient: ValidationRule = { _, ruleMetadata ->
     RuleResult(
         ruleInputs = mapOf("avsenderSammeSomPasient" to avsenderSammeSomPasient),
         rule = ValidationRules.AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR,
-        ruleResult = avsenderSammeSomPasient
+        ruleResult = avsenderSammeSomPasient,
     )
 }

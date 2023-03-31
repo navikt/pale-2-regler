@@ -79,7 +79,7 @@ fun main() {
         aadAccessTokenUrl = env.aadAccessTokenV2Url,
         clientId = env.clientIdV2,
         clientSecret = env.clientSecretV2,
-        httpClient = httpClient
+        httpClient = httpClient,
     )
 
     val legeSuspensjonClient = LegeSuspensjonClient(
@@ -87,7 +87,7 @@ fun main() {
         accessTokenClientV2,
         httpClient,
         env.legeSuspensjonProxyScope,
-        env.applicationName
+        env.applicationName,
     )
 
     val norskHelsenettClient =
@@ -96,7 +96,7 @@ fun main() {
     val pdlClient = PdlClient(
         httpClient,
         env.pdlGraphqlPath,
-        PdlClient::class.java.getResource("/graphql/getPerson.graphql")!!.readText().replace(Regex("[\n\t]"), "")
+        PdlClient::class.java.getResource("/graphql/getPerson.graphql")!!.readText().replace(Regex("[\n\t]"), ""),
     )
     val pdlService = PdlPersonService(pdlClient, accessTokenClientV2, env.pdlScope)
 
@@ -104,7 +104,7 @@ fun main() {
         env,
         applicationState,
         RuleService(legeSuspensjonClient, norskHelsenettClient, pdlService, RuleExecutionService()),
-        jwkProviderAad
+        jwkProviderAad,
     )
 
     DefaultExports.initialize()

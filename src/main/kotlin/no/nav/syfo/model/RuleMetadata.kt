@@ -13,5 +13,5 @@ data class RuleMetadata(
     val avsenderfnr: String,
     val patientBorndate: LocalDate,
     val behandler: Behandler,
-    val doctorSuspensjon: Boolean
+    val doctorSuspensjon: Boolean,
 )

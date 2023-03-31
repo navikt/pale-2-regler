@@ -69,7 +69,7 @@ class NorskHelsenettClientTest {
                     call.request.headers["behandlerFnr"] == fnr -> call.respond(Behandler(listOf(Godkjenning())))
                     call.request.headers["behandlerFnr"] == "behandlerFinnesIkke" -> call.respond(
                         HttpStatusCode.NotFound,
-                        "Behandler finnes ikke"
+                        "Behandler finnes ikke",
                     )
 
                     else -> call.respond(HttpStatusCode.InternalServerError, "Noe gikk galt")

@@ -9,7 +9,7 @@ import no.nav.syfo.rules.dsl.tree
 enum class HPRRules {
     BEHANDLER_IKKE_GYLDIG_I_HPR,
     BEHANDLER_MANGLER_AUTORISASJON_I_HPR,
-    BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR
+    BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR,
 }
 
 val hprRuleTree = tree<HPRRules, RuleResult>(HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR) {

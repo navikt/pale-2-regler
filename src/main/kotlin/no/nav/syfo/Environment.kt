@@ -13,7 +13,7 @@ data class Environment(
     val jwtIssuer: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
     val jwkKeysUrl: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
     val pdlScope: String = getEnvVar("PDL_SCOPE"),
-    val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH")
+    val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH"),
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =

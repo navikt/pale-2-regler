@@ -43,11 +43,10 @@ spec:
         - application: pale-2
           namespace: teamsykmelding
           cluster: prod-gcp
-  vault:
-    enabled: false
-  webproxy: true
-  ingresses:
-    - "https://pale-2-regler.intern.nav.no"
+      external:
+        - host: syfohelsenettproxy.prod-fss-pub.nais.io
+        - host: smgcp-proxy.prod-fss-pub.nais.io
+        - host: pdl-api.prod-fss-pub.nais.io
   env:
     - name: HELSENETT_ENDPOINT_URL
       value: https://syfohelsenettproxy.prod-fss-pub.nais.io

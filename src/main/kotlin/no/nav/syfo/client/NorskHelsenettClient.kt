@@ -19,7 +19,7 @@ class NorskHelsenettClient(
     private val endpointUrl: String,
     private val accessTokenClientV2: AccessTokenClientV2,
     private val scope: String,
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
 ) {
 
     suspend fun finnBehandler(behandlerFnr: String, msgId: String, loggingMeta: LoggingMeta): Behandler? {
@@ -58,16 +58,16 @@ class NorskHelsenettClient(
 
 data class Behandler(
     val godkjenninger: List<Godkjenning>,
-    val hprNummer: Int? = null
+    val hprNummer: Int? = null,
 )
 
 data class Godkjenning(
     val helsepersonellkategori: Kode? = null,
-    val autorisasjon: Kode? = null
+    val autorisasjon: Kode? = null,
 )
 
 data class Kode(
     val aktiv: Boolean,
     val oid: Int,
-    val verdi: String?
+    val verdi: String?,
 )

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory
 class PdlPersonService(
     private val pdlClient: PdlClient,
     private val accessTokenClientV2: AccessTokenClientV2,
-    private val pdlScope: String
+    private val pdlScope: String,
 ) {
     companion object {
         private val log = LoggerFactory.getLogger(PdlPersonService::class.java)

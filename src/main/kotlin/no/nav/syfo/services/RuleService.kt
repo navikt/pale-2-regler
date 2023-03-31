@@ -27,7 +27,7 @@ class RuleService(
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val norskHelsenettClient: NorskHelsenettClient,
     private val pdlPersonService: PdlPersonService,
-    private val ruleExecutionService: RuleExecutionService
+    private val ruleExecutionService: RuleExecutionService,
 ) {
 
     private val log: Logger = LoggerFactory.getLogger("ruleservice")
@@ -36,7 +36,7 @@ class RuleService(
             mottakId = receivedLegeerklaering.navLogId,
             orgNr = receivedLegeerklaering.legekontorOrgNr,
             msgId = receivedLegeerklaering.msgId,
-            legeerklaeringId = receivedLegeerklaering.legeerklaering.id
+            legeerklaeringId = receivedLegeerklaering.legeerklaering.id,
         )
 
         log.info("Mottatt legeerklæring, validerer mot regler, {}", fields(loggingMeta))
@@ -46,13 +46,13 @@ class RuleService(
         val doctorSuspend = legeSuspensjonClient.checkTherapist(
             receivedLegeerklaering.personNrLege,
             receivedLegeerklaering.msgId,
-            DateTimeFormatter.ISO_DATE.format(receivedLegeerklaering.legeerklaering.signaturDato)
+            DateTimeFormatter.ISO_DATE.format(receivedLegeerklaering.legeerklaering.signaturDato),
         ).suspendert
 
         val avsenderBehandler = norskHelsenettClient.finnBehandler(
             behandlerFnr = receivedLegeerklaering.personNrLege,
             msgId = receivedLegeerklaering.msgId,
-            loggingMeta = loggingMeta
+            loggingMeta = loggingMeta,
         )
 
         val pdlPerson = pdlPersonService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
@@ -73,9 +73,9 @@ class RuleService(
                         ruleName = "BEHANDLER_NOT_IN_HPR",
                         messageForSender = "Den som har skrevet legeerklæringen ble ikke funnet i Helsepersonellregisteret (HPR)",
                         messageForUser = "Avsenders fødselsnummer er ikke registert i Helsepersonellregisteret (HPR)",
-                        ruleStatus = Status.INVALID
-                    )
-                )
+                        ruleStatus = Status.INVALID,
+                    ),
+                ),
             )
         }
 
@@ -88,20 +88,20 @@ class RuleService(
             avsenderfnr = receivedLegeerklaering.personNrLege,
             patientBorndate = borndate,
             behandler = avsenderBehandler,
-            doctorSuspensjon = doctorSuspend
+            doctorSuspensjon = doctorSuspend,
         )
 
         val result = ruleExecutionService.runRules(legeerklaring, ruleMetadata)
         result.forEach {
             RULE_NODE_RULE_PATH_COUNTER.labels(
-                it.printRulePath()
+                it.printRulePath(),
             ).inc()
         }
 
         val validationResult = validationResult(result.map { it })
         RULE_NODE_RULE_HIT_COUNTER.labels(
             validationResult.status.name,
-            validationResult.ruleHits.firstOrNull()?.ruleName ?: validationResult.status.name
+            validationResult.ruleHits.firstOrNull()?.ruleName ?: validationResult.status.name,
         ).inc()
 
         return validationResult
@@ -119,8 +119,8 @@ class RuleService(
                     result.rule,
                     result.messageForSender,
                     result.messageForUser,
-                    result.status
+                    result.status,
                 )
-            }
+            },
     )
 }

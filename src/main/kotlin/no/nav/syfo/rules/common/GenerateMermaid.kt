@@ -12,7 +12,7 @@ fun main() {
     val ruleTrees = listOf(
         "Lege suspensjon" to legeSuspensjonRuleTree,
         "HPR" to hprRuleTree,
-        "Validation" to validationRuleTree
+        "Validation" to validationRuleTree,
     )
 
     ruleTrees.forEach {
@@ -32,7 +32,7 @@ fun main() {
 private fun <T> TreeNode<T, RuleResult>.traverseTree(
     builder: StringBuilder,
     thisNodeKey: String,
-    nodeKey: String
+    nodeKey: String,
 ) {
     when (this) {
         is ResultNode -> {

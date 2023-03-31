@@ -10,7 +10,7 @@ import no.nav.syfo.rules.dsl.tree
 enum class ValidationRules {
     PASIENT_YNGRE_ENN_13,
     UGYLDIG_ORGNR_LENGDE,
-    AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR
+    AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR,
 }
 
 val validationRuleTree = tree<ValidationRules, RuleResult>(ValidationRules.PASIENT_YNGRE_ENN_13) {

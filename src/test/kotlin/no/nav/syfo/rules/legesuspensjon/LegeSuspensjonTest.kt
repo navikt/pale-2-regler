@@ -25,15 +25,15 @@ class LegeSuspensjonTest {
                     autorisasjon = Kode(
                         aktiv = true,
                         oid = 7704,
-                        verdi = "1"
+                        verdi = "1",
                     ),
                     helsepersonellkategori = Kode(
                         aktiv = true,
                         oid = 0,
-                        verdi = "LE"
-                    )
-                )
-            )
+                        verdi = "LE",
+                    ),
+                ),
+            ),
         )
 
         val ruleMetadata = RuleMetadata(
@@ -45,7 +45,7 @@ class LegeSuspensjonTest {
             avsenderfnr = receivedLegeerklaering.personNrLege,
             patientBorndate = borndate,
             behandler = behandler,
-            doctorSuspensjon = false
+            doctorSuspensjon = false,
         )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
@@ -53,16 +53,16 @@ class LegeSuspensjonTest {
         Assertions.assertEquals(Status.OK, status.treeResult.status)
         Assertions.assertEquals(
             listOf(
-                LegeSuspensjonRules.BEHANDLER_SUSPENDERT to false
+                LegeSuspensjonRules.BEHANDLER_SUSPENDERT to false,
             ),
-            status.rulePath.map { it.rule to it.ruleResult }
+            status.rulePath.map { it.rule to it.ruleResult },
         )
 
         Assertions.assertEquals(
             mapOf(
-                "suspendert" to false
+                "suspendert" to false,
             ),
-            status.ruleInputs
+            status.ruleInputs,
         )
 
         Assertions.assertEquals(null, status.treeResult.ruleHit)
@@ -79,15 +79,15 @@ class LegeSuspensjonTest {
                     autorisasjon = Kode(
                         aktiv = true,
                         oid = 7704,
-                        verdi = "1"
+                        verdi = "1",
                     ),
                     helsepersonellkategori = Kode(
                         aktiv = true,
                         oid = 0,
-                        verdi = "LE"
-                    )
-                )
-            )
+                        verdi = "LE",
+                    ),
+                ),
+            ),
         )
 
         val ruleMetadata = RuleMetadata(
@@ -99,7 +99,7 @@ class LegeSuspensjonTest {
             avsenderfnr = receivedLegeerklaering.personNrLege,
             patientBorndate = borndate,
             behandler = behandler,
-            doctorSuspensjon = true
+            doctorSuspensjon = true,
         )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
@@ -107,16 +107,16 @@ class LegeSuspensjonTest {
         Assertions.assertEquals(Status.INVALID, status.treeResult.status)
         Assertions.assertEquals(
             listOf(
-                LegeSuspensjonRules.BEHANDLER_SUSPENDERT to true
+                LegeSuspensjonRules.BEHANDLER_SUSPENDERT to true,
             ),
-            status.rulePath.map { it.rule to it.ruleResult }
+            status.rulePath.map { it.rule to it.ruleResult },
         )
 
         Assertions.assertEquals(
             mapOf(
-                "suspendert" to true
+                "suspendert" to true,
             ),
-            status.ruleInputs
+            status.ruleInputs,
         )
 
         Assertions.assertEquals(LegeSuspensjonRuleHit.BEHANDLER_SUSPENDERT.ruleHit, status.treeResult.ruleHit)
