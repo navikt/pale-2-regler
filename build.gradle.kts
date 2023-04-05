@@ -15,13 +15,13 @@ val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.14.2"
 val pale2CommonVersion = "1.ad083ef"
 val mockkVersion = "1.13.2"
-val kotlinVersion = "1.8.10"
+val kotlinVersion = "1.8.20"
 val junitJupiterVersion = "5.9.0"
 val commonsTextVersion = "1.10.0"
 val commonsCodecVersion = "1.15"
 
 plugins {
-    kotlin("jvm") version "1.8.10"
+    kotlin("jvm") version "1.8.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.jmailen.kotlinter") version "3.14.0"
 }
