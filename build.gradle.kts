@@ -16,7 +16,7 @@ val jacksonVersion = "2.14.2"
 val pale2CommonVersion = "1.ad083ef"
 val mockkVersion = "1.13.2"
 val kotlinVersion = "1.8.20"
-val junitJupiterVersion = "5.9.0"
+val junitJupiterVersion = "5.9.2"
 val commonsTextVersion = "1.10.0"
 val commonsCodecVersion = "1.15"
 
