@@ -6,7 +6,6 @@ on:
 
 
 jobs:
-  monitor:
   build:
     permissions:
       contents: "read"
