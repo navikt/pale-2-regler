@@ -43,6 +43,7 @@ spec:
         - application: pale-2
           namespace: teamsykmelding
           cluster: prod-gcp
+    outbound:
       external:
         - host: syfohelsenettproxy.prod-fss-pub.nais.io
         - host: smgcp-proxy.prod-fss-pub.nais.io

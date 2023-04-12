@@ -43,6 +43,7 @@ spec:
         - application: pale-2
           namespace: teamsykmelding
           cluster: dev-gcp
+    outbound:
       external:
         - host: syfohelsenettproxy.dev-fss-pub.nais.io
         - host: smgcp-proxy.dev-fss-pub.nais.io
