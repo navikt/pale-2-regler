@@ -21,7 +21,7 @@ val commonsTextVersion = "1.10.0"
 val commonsCodecVersion = "1.15"
 
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "1.8.21"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.jmailen.kotlinter") version "3.14.0"
 }
