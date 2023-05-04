@@ -11,6 +11,7 @@ import io.ktor.client.engine.apache.Apache
 import io.ktor.client.engine.apache.ApacheEngineConfig
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.jackson.jackson
 import io.prometheus.client.hotspot.DefaultExports
@@ -44,7 +45,7 @@ fun main() {
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
 
-    val baseConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
+    val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
         install(ContentNegotiation) {
             jackson {
                 registerKotlinModule()
@@ -61,19 +62,30 @@ fun main() {
             }
         }
         expectSuccess = false
-    }
-    val retryConfig: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
-        baseConfig().apply {
-            install(HttpRequestRetry) {
-                maxRetries = 3
-                delayMillis { retry ->
-                    retry * 500L
+
+        install(HttpTimeout) {
+            socketTimeoutMillis = 120_000
+            connectTimeoutMillis = 40_000
+            requestTimeoutMillis = 40_000
+        }
+        install(HttpRequestRetry) {
+            constantDelay(100, 0, false)
+            retryOnExceptionIf(3) { request, throwable ->
+                log.warn("Caught exception ${throwable.message}, for url ${request.url}")
+                true
+            }
+            retryIf(maxRetries) { request, response ->
+                if (response.status.value.let { it in 500..599 }) {
+                    log.warn("Retrying for statuscode ${response.status.value}, for url ${request.url}")
+                    true
+                } else {
+                    false
                 }
             }
         }
     }
 
-    val httpClient = HttpClient(Apache, retryConfig)
+    val httpClient = HttpClient(Apache, config)
 
     val accessTokenClientV2 = AccessTokenClientV2(
         aadAccessTokenUrl = env.aadAccessTokenV2Url,

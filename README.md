@@ -1,4 +1,4 @@
-![Deploy to dev and prod](https://github.com/navikt/pale-2-regler/workflows/Deploy%20to%20dev%20and%20prod/badge.svg?branch=master)
+[![Deploy to dev and prod](https://github.com/navikt/pale-2-regler/actions/workflows/deploy.yml/badge.svg)](https://github.com/navikt/pale-2-regler/actions/workflows/deploy.yml)
 
 # pale-2-regler
 This project contains just the rules for validating legeerklæringer from pale-2 (https://github.com/navikt/pale-2)
@@ -6,12 +6,12 @@ This project contains just the rules for validating legeerklæringer from pale-2
 ## FlowChart
 This the high level flow of the application
 ```mermaid
-  graph LR;
-      pale-2 --- pale-2-regler;
-      pale-2-regler --- PDL;
-      pale-2-regler --- BTSYS;
+  graph LR
+      pale-2 --- pale-2-regler
+      pale-2-regler --- PDL
+      pale-2-regler --- BTSYS
       pale-2-regler --- syfohelsenettproxy
-      pale-2-regler --- azureAD
+      pale-2-regler --- azureAD;
 ```
 
 ## Technologies used
