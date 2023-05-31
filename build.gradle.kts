@@ -8,7 +8,7 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "2.3.0"
+val ktorVersion = "2.3.1"
 val logbackVersion = "1.4.6"
 val logstashEncoderVersion = "7.3"
 val prometheusVersion = "0.16.0"
