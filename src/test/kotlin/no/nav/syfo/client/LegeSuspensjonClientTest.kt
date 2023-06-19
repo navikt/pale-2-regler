@@ -20,6 +20,8 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.mockk.coEvery
 import io.mockk.mockk
+import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -27,41 +29,40 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import java.net.ServerSocket
-import java.util.concurrent.TimeUnit
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LegeSuspensjonClientTest {
     private val accessTokenClientV2 = mockk<AccessTokenClientV2>()
-    private val httpClient = HttpClient(Apache) {
-        install(ContentNegotiation) {
-            jackson {
-                registerKotlinModule()
-                registerModule(JavaTimeModule())
-                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    private val httpClient =
+        HttpClient(Apache) {
+            install(ContentNegotiation) {
+                jackson {
+                    registerKotlinModule()
+                    registerModule(JavaTimeModule())
+                    configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                }
             }
-        }
-        install(HttpRequestRetry) {
-            maxRetries = 3
-            delayMillis { retry ->
-                retry * 100L
+            install(HttpRequestRetry) {
+                maxRetries = 3
+                delayMillis { retry -> retry * 100L }
             }
+            expectSuccess = false
         }
-        expectSuccess = false
-    }
 
     private val mockHttpServerPort = ServerSocket(0).use { it.localPort }
     private val mockHttpServerUrl = "http://localhost:$mockHttpServerPort"
-    private val mockServer = embeddedServer(Netty, mockHttpServerPort, module = Application::myApplicationModule).start()
+    private val mockServer =
+        embeddedServer(Netty, mockHttpServerPort, module = Application::myApplicationModule).start()
 
-    private val legeSuspensjonClient = LegeSuspensjonClient(
-        endpointUrl = mockHttpServerUrl,
-        accessTokenClientV2 = accessTokenClientV2,
-        consumerAppName = "consumerAppName",
-        httpClient = httpClient,
-        scope = "scope",
-    )
+    private val legeSuspensjonClient =
+        LegeSuspensjonClient(
+            endpointUrl = mockHttpServerUrl,
+            accessTokenClientV2 = accessTokenClientV2,
+            consumerAppName = "consumerAppName",
+            httpClient = httpClient,
+            scope = "scope",
+        )
 
     @BeforeAll
     internal fun beforeAll() {
@@ -76,11 +77,12 @@ class LegeSuspensjonClientTest {
     @Test
     fun `CheckTherapist should return Suspendert true`() {
         runBlocking {
-            val suspendert = legeSuspensjonClient.checkTherapist(
-                therapistId = "1",
-                ediloggid = "55-4321",
-                oppslagsdato = "2023-01-26",
-            )
+            val suspendert =
+                legeSuspensjonClient.checkTherapist(
+                    therapistId = "1",
+                    ediloggid = "55-4321",
+                    oppslagsdato = "2023-01-26",
+                )
             assertEquals(true, suspendert.suspendert)
         }
     }
@@ -88,11 +90,12 @@ class LegeSuspensjonClientTest {
     @Test
     fun `CheckTherapist should return Suspendert false`() {
         runBlocking {
-            val suspendert = legeSuspensjonClient.checkTherapist(
-                therapistId = "2",
-                ediloggid = "55-4321",
-                oppslagsdato = "2023-01-26",
-            )
+            val suspendert =
+                legeSuspensjonClient.checkTherapist(
+                    therapistId = "2",
+                    ediloggid = "55-4321",
+                    oppslagsdato = "2023-01-26",
+                )
             assertEquals(false, suspendert.suspendert)
         }
     }
@@ -108,7 +111,10 @@ class LegeSuspensjonClientTest {
                 )
             }
         }
-        assertEquals("Btsys svarte med uventet kode 500 Internal Server Error for 55-4321", btsysException.message)
+        assertEquals(
+            "Btsys svarte med uventet kode 500 Internal Server Error for 55-4321",
+            btsysException.message
+        )
     }
 }
 

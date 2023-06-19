@@ -9,11 +9,12 @@ import no.nav.syfo.rules.legesuspensjon.legeSuspensjonRuleTree
 import no.nav.syfo.rules.validation.validationRuleTree
 
 fun main() {
-    val ruleTrees = listOf(
-        "Lege suspensjon" to legeSuspensjonRuleTree,
-        "HPR" to hprRuleTree,
-        "Validation" to validationRuleTree,
-    )
+    val ruleTrees =
+        listOf(
+            "Lege suspensjon" to legeSuspensjonRuleTree,
+            "HPR" to hprRuleTree,
+            "Validation" to validationRuleTree,
+        )
 
     ruleTrees.forEach {
         val builder = StringBuilder()
@@ -44,7 +45,9 @@ private fun <T> TreeNode<T, RuleResult>.traverseTree(
             if (yes is ResultNode) {
                 val childResult = (yes as ResultNode<T, RuleResult>).result.status
                 val childKey = "${currentNodeKey}_$childResult"
-                builder.append("    $thisNodeKey($rule) -->|Yes| $childKey($childResult)${getStyle(childResult)}\n")
+                builder.append(
+                    "    $thisNodeKey($rule) -->|Yes| $childKey($childResult)${getStyle(childResult)}\n"
+                )
             } else {
                 val childRule = (yes as RuleNode<T, RuleResult>).rule
                 val childKey = "${currentNodeKey}_$childRule"
@@ -54,7 +57,9 @@ private fun <T> TreeNode<T, RuleResult>.traverseTree(
             if (no is ResultNode) {
                 val childResult = (no as ResultNode<T, RuleResult>).result.status
                 val childKey = "${currentNodeKey}_$childResult"
-                builder.append("    $thisNodeKey($rule) -->|No| $childKey($childResult)${getStyle(childResult)}\n")
+                builder.append(
+                    "    $thisNodeKey($rule) -->|No| $childKey($childResult)${getStyle(childResult)}\n"
+                )
             } else {
                 val childRule = (no as RuleNode<T, RuleResult>).rule
                 val childKey = "${currentNodeKey}_$childRule"

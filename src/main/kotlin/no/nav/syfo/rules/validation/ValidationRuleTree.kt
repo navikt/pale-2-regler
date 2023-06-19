@@ -13,22 +13,29 @@ enum class ValidationRules {
     AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR,
 }
 
-val validationRuleTree = tree<ValidationRules, RuleResult>(ValidationRules.PASIENT_YNGRE_ENN_13) {
-    yes(INVALID, ValidationRuleHit.PASIENT_YNGRE_ENN_13)
-    no(ValidationRules.UGYLDIG_ORGNR_LENGDE) {
-        yes(INVALID, ValidationRuleHit.UGYLDIG_ORGNR_LENGDE)
-        no(ValidationRules.AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR) {
-            yes(INVALID, ValidationRuleHit.AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR)
-            no(OK)
+val validationRuleTree =
+    tree<ValidationRules, RuleResult>(ValidationRules.PASIENT_YNGRE_ENN_13) {
+        yes(INVALID, ValidationRuleHit.PASIENT_YNGRE_ENN_13)
+        no(ValidationRules.UGYLDIG_ORGNR_LENGDE) {
+            yes(INVALID, ValidationRuleHit.UGYLDIG_ORGNR_LENGDE)
+            no(ValidationRules.AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR) {
+                yes(INVALID, ValidationRuleHit.AVSENDER_FNR_ER_SAMME_SOM_PASIENT_FNR)
+                no(OK)
+            }
         }
     }
-}
 
-internal fun RuleNode<ValidationRules, RuleResult>.yes(status: Status, ruleHit: ValidationRuleHit? = null) {
+internal fun RuleNode<ValidationRules, RuleResult>.yes(
+    status: Status,
+    ruleHit: ValidationRuleHit? = null
+) {
     yes(RuleResult(status, ruleHit?.ruleHit))
 }
 
-internal fun RuleNode<ValidationRules, RuleResult>.no(status: Status, ruleHit: ValidationRuleHit? = null) {
+internal fun RuleNode<ValidationRules, RuleResult>.no(
+    status: Status,
+    ruleHit: ValidationRuleHit? = null
+) {
     no(RuleResult(status, ruleHit?.ruleHit))
 }
 

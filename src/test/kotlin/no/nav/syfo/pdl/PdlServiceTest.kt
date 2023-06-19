@@ -27,21 +27,23 @@ class PdlServiceTest {
     @Test
     internal fun `hente person fra pdl`() {
         coEvery { accessTokenClientV2Mock.getAccessTokenV2(any()) } returns "accessToken"
-        coEvery { pdlClient.getPerson(any(), any()) } returns GraphQLResponse(
-            PdlResponse(
-                hentPerson = HentPerson(listOf(Foedsel("1900-01-01"))),
-                hentIdenter = Identliste(
-                    listOf(
-                        IdentInformasjon(
-                            ident = "01245678901",
-                            gruppe = "FOLKEREGISTERIDENT",
-                            historisk = false,
+        coEvery { pdlClient.getPerson(any(), any()) } returns
+            GraphQLResponse(
+                PdlResponse(
+                    hentPerson = HentPerson(listOf(Foedsel("1900-01-01"))),
+                    hentIdenter =
+                        Identliste(
+                            listOf(
+                                IdentInformasjon(
+                                    ident = "01245678901",
+                                    gruppe = "FOLKEREGISTERIDENT",
+                                    historisk = false,
+                                ),
+                            ),
                         ),
-                    ),
                 ),
-            ),
-            errors = null,
-        )
+                errors = null,
+            )
 
         val person = runBlocking { pdlService.getPdlPerson("01245678901", loggingMeta) }
         assertEquals("01245678901", person.fnr)
@@ -51,15 +53,14 @@ class PdlServiceTest {
     @Test
     internal fun `Skal feile naar person ikke finnes`() {
         coEvery { accessTokenClientV2Mock.getAccessTokenV2(any()) } returns "accessToken"
-        coEvery { pdlClient.getPerson(any(), any()) } returns GraphQLResponse(
-            PdlResponse(null, null),
-            errors = null,
-        )
+        coEvery { pdlClient.getPerson(any(), any()) } returns
+            GraphQLResponse(
+                PdlResponse(null, null),
+                errors = null,
+            )
 
         val personNotFoundInPdlException: Throwable = assertThrows {
-            runBlocking {
-                pdlService.getPdlPerson("123", loggingMeta)
-            }
+            runBlocking { pdlService.getPdlPerson("123", loggingMeta) }
         }
         assertEquals("Klarte ikke hente ut person fra PDL", personNotFoundInPdlException.message)
     }
@@ -67,20 +68,20 @@ class PdlServiceTest {
     @Test
     internal fun `Skal feile naar ident er tom liste`() {
         coEvery { accessTokenClientV2Mock.getAccessTokenV2(any()) } returns "accessToken"
-        coEvery { pdlClient.getPerson(any(), any()) } returns GraphQLResponse(
-            PdlResponse(
-                hentPerson = HentPerson(
-                    foedsel = emptyList(),
+        coEvery { pdlClient.getPerson(any(), any()) } returns
+            GraphQLResponse(
+                PdlResponse(
+                    hentPerson =
+                        HentPerson(
+                            foedsel = emptyList(),
+                        ),
+                    hentIdenter = Identliste(emptyList()),
                 ),
-                hentIdenter = Identliste(emptyList()),
-            ),
-            errors = null,
-        )
+                errors = null,
+            )
 
         val personNotFoundInPdlException: Throwable = assertThrows {
-            runBlocking {
-                pdlService.getPdlPerson("123", loggingMeta)
-            }
+            runBlocking { pdlService.getPdlPerson("123", loggingMeta) }
         }
 
         assertEquals("Fant ikke ident i PDL", personNotFoundInPdlException.message)

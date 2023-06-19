@@ -40,9 +40,7 @@ fun createApplicationEngine(
         )
         routing {
             registerNaisApi(applicationState)
-            authenticate("servicebrukerAAD") {
-                registerRuleApi(ruleService)
-            }
+            authenticate("servicebrukerAAD") { registerRuleApi(ruleService) }
         }
         install(ContentNegotiation) {
             jackson {

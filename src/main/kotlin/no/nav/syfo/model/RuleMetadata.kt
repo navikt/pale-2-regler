@@ -1,8 +1,8 @@
 package no.nav.syfo.model
 
-import no.nav.syfo.client.Behandler
 import java.time.LocalDate
 import java.time.LocalDateTime
+import no.nav.syfo.client.Behandler
 
 data class RuleMetadata(
     val signatureDate: LocalDateTime,

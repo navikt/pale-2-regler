@@ -13,15 +13,15 @@ import no.nav.syfo.rules.dsl.join
 import no.nav.syfo.rules.dsl.printRulePath
 
 typealias ValidationTreeOutput = TreeOutput<ValidationRules, RuleResult>
+
 typealias ValidationTreeNode = TreeNode<ValidationRules, RuleResult>
 
-class ValidationRulesExecution(private val rootNode: ValidationTreeNode = validationRuleTree) : RuleExecution<ValidationRules> {
+class ValidationRulesExecution(private val rootNode: ValidationTreeNode = validationRuleTree) :
+    RuleExecution<ValidationRules> {
     override fun runRules(legeerklaring: Legeerklaering, ruleMetadata: RuleMetadata) =
-        rootNode
-            .evaluate(legeerklaring, ruleMetadata)
-            .also { validationRulePath ->
-                log.info("Rules ${legeerklaring.id}, ${validationRulePath.printRulePath()}")
-            }
+        rootNode.evaluate(legeerklaring, ruleMetadata).also { validationRulePath ->
+            log.info("Rules ${legeerklaring.id}, ${validationRulePath.printRulePath()}")
+        }
 }
 
 private fun TreeNode<ValidationRules, RuleResult>.evaluate(

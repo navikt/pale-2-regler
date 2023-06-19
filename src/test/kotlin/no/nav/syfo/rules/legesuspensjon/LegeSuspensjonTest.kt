@@ -19,34 +19,38 @@ class LegeSuspensjonTest {
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
         val borndate = extractBornDate(receivedLegeerklaering.legeerklaering.pasient.fnr)
 
-        val behandler = Behandler(
-            listOf(
-                Godkjenning(
-                    autorisasjon = Kode(
-                        aktiv = true,
-                        oid = 7704,
-                        verdi = "1",
-                    ),
-                    helsepersonellkategori = Kode(
-                        aktiv = true,
-                        oid = 0,
-                        verdi = "LE",
+        val behandler =
+            Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon =
+                            Kode(
+                                aktiv = true,
+                                oid = 7704,
+                                verdi = "1",
+                            ),
+                        helsepersonellkategori =
+                            Kode(
+                                aktiv = true,
+                                oid = 0,
+                                verdi = "LE",
+                            ),
                     ),
                 ),
-            ),
-        )
+            )
 
-        val ruleMetadata = RuleMetadata(
-            receivedDate = receivedLegeerklaering.mottattDato,
-            signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
-            patientPersonNumber = receivedLegeerklaering.personNrPasient,
-            legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
-            tssid = receivedLegeerklaering.tssid,
-            avsenderfnr = receivedLegeerklaering.personNrLege,
-            patientBorndate = borndate,
-            behandler = behandler,
-            doctorSuspensjon = false,
-        )
+        val ruleMetadata =
+            RuleMetadata(
+                receivedDate = receivedLegeerklaering.mottattDato,
+                signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
+                patientPersonNumber = receivedLegeerklaering.personNrPasient,
+                legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
+                tssid = receivedLegeerklaering.tssid,
+                avsenderfnr = receivedLegeerklaering.personNrLege,
+                patientBorndate = borndate,
+                behandler = behandler,
+                doctorSuspensjon = false,
+            )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
 
@@ -73,34 +77,38 @@ class LegeSuspensjonTest {
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
         val borndate = extractBornDate(receivedLegeerklaering.legeerklaering.pasient.fnr)
 
-        val behandler = Behandler(
-            listOf(
-                Godkjenning(
-                    autorisasjon = Kode(
-                        aktiv = true,
-                        oid = 7704,
-                        verdi = "1",
-                    ),
-                    helsepersonellkategori = Kode(
-                        aktiv = true,
-                        oid = 0,
-                        verdi = "LE",
+        val behandler =
+            Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon =
+                            Kode(
+                                aktiv = true,
+                                oid = 7704,
+                                verdi = "1",
+                            ),
+                        helsepersonellkategori =
+                            Kode(
+                                aktiv = true,
+                                oid = 0,
+                                verdi = "LE",
+                            ),
                     ),
                 ),
-            ),
-        )
+            )
 
-        val ruleMetadata = RuleMetadata(
-            receivedDate = receivedLegeerklaering.mottattDato,
-            signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
-            patientPersonNumber = receivedLegeerklaering.personNrPasient,
-            legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
-            tssid = receivedLegeerklaering.tssid,
-            avsenderfnr = receivedLegeerklaering.personNrLege,
-            patientBorndate = borndate,
-            behandler = behandler,
-            doctorSuspensjon = true,
-        )
+        val ruleMetadata =
+            RuleMetadata(
+                receivedDate = receivedLegeerklaering.mottattDato,
+                signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
+                patientPersonNumber = receivedLegeerklaering.personNrPasient,
+                legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
+                tssid = receivedLegeerklaering.tssid,
+                avsenderfnr = receivedLegeerklaering.personNrLege,
+                patientBorndate = borndate,
+                behandler = behandler,
+                doctorSuspensjon = true,
+            )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
 
@@ -119,6 +127,9 @@ class LegeSuspensjonTest {
             status.ruleInputs,
         )
 
-        Assertions.assertEquals(LegeSuspensjonRuleHit.BEHANDLER_SUSPENDERT.ruleHit, status.treeResult.ruleHit)
+        Assertions.assertEquals(
+            LegeSuspensjonRuleHit.BEHANDLER_SUSPENDERT.ruleHit,
+            status.treeResult.ruleHit
+        )
     }
 }

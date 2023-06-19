@@ -3,7 +3,11 @@ package no.nav.syfo.util
 import java.time.LocalDate
 
 fun extractBornDate(personIdent: String): LocalDate =
-    LocalDate.of(extractBornYear(personIdent), extractBornMonth(personIdent), extractBornDay(personIdent))
+    LocalDate.of(
+        extractBornYear(personIdent),
+        extractBornMonth(personIdent),
+        extractBornDay(personIdent)
+    )
 
 private fun extractBornYear(personIdent: String): Int {
     val lastTwoDigitsOfYear = extractLastTwoDigistOfyear(personIdent)
@@ -31,4 +35,5 @@ private fun extractIndividualDigits(personIdent: String): Int = personIdent.subs
 
 private fun extractBornMonth(personIdent: String): Int = personIdent.substring(2..3).toInt()
 
-private fun extractLastTwoDigistOfyear(personIdent: String): Int = personIdent.substring(4, 6).toInt()
+private fun extractLastTwoDigistOfyear(personIdent: String): Int =
+    personIdent.substring(4, 6).toInt()

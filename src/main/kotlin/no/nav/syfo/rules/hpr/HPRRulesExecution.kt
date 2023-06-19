@@ -14,15 +14,14 @@ import no.nav.syfo.rules.dsl.join
 import no.nav.syfo.rules.dsl.printRulePath
 
 typealias HPRTreeOutput = TreeOutput<HPRRules, RuleResult>
+
 typealias HPRTreeNode = TreeNode<HPRRules, RuleResult>
 
 class HPRRulesExecution(private val rootNode: HPRTreeNode = hprRuleTree) : RuleExecution<HPRRules> {
     override fun runRules(legeerklaring: Legeerklaering, ruleMetadata: RuleMetadata) =
-        rootNode
-            .evaluate(legeerklaring, ruleMetadata.behandler)
-            .also { hprRulePath ->
-                log.info("Rules ${legeerklaring.id}, ${hprRulePath.printRulePath()}")
-            }
+        rootNode.evaluate(legeerklaring, ruleMetadata.behandler).also { hprRulePath ->
+            log.info("Rules ${legeerklaring.id}, ${hprRulePath.printRulePath()}")
+        }
 }
 
 private fun TreeNode<HPRRules, RuleResult>.evaluate(

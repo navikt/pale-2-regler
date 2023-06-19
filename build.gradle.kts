@@ -19,11 +19,12 @@ val kotlinVersion = "1.8.22"
 val junitJupiterVersion = "5.9.3"
 val commonsTextVersion = "1.10.0"
 val commonsCodecVersion = "1.15"
+val ktfmtVersion = "0.44"
 
 plugins {
     kotlin("jvm") version "1.8.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("org.jmailen.kotlinter") version "3.15.0"
+    id("com.diffplug.spotless") version "6.19.0"
 }
 
 repositories {
@@ -140,9 +141,12 @@ tasks {
             readme.writeText(newLines.joinToString("\n"))
         }
     }
-
-    "check" {
-        dependsOn("formatKotlin")
-        dependsOn("generateRuleMermaid")
+    spotless {
+        kotlin { ktfmt(ktfmtVersion).kotlinlangStyle() }
+        check {
+            dependsOn("generateRuleMermaid")
+            dependsOn("spotlessApply")
+        }
     }
+
 }

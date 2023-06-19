@@ -30,42 +30,58 @@ class RuleExecutionServiceTest {
                 any(),
                 any(),
             )
-        } returns (
-            TreeOutput<TestRules, RuleResult>(
-                treeResult = RuleResult(
-                    status = Status.OK,
-                    ruleHit = null,
-                ),
-            )
-            )
+        } returns
+            (TreeOutput<TestRules, RuleResult>(
+                treeResult =
+                    RuleResult(
+                        status = Status.OK,
+                        ruleHit = null,
+                    ),
+            ))
 
-        val rule = ruleExecutionService.runRules(sykmeldnig, ruleMetadata, sequenceOf(rulesExecution)).first()
+        val rule =
+            ruleExecutionService
+                .runRules(sykmeldnig, ruleMetadata, sequenceOf(rulesExecution))
+                .first()
         Assertions.assertEquals(Status.OK, rule.treeResult.status)
     }
 
     @Test
     fun `should not run all rules if first no OK`() {
-        val okRule = mockk<RuleExecution<TestRules>>().also {
-            every { it.runRules(any(), any()) } returns (
-                TreeOutput<TestRules, RuleResult>(
-                    treeResult = RuleResult(
-                        status = Status.OK,
-                        ruleHit = null,
-                    ),
-                )
-                )
-        }
-        val invalidRuleExecution = mockk<RuleExecution<TestRules>>().also {
-            every { it.runRules(any(), any()) } returns (
-                TreeOutput<TestRules, RuleResult>(
-                    treeResult = RuleResult(
-                        status = Status.INVALID,
-                        ruleHit = RuleHit(Status.INVALID, TestRules.RULE1.name, "message", "message"),
-                    ),
-                )
-                )
-        }
-        val results = ruleExecutionService.runRules(sykmeldnig, ruleMetadata, sequenceOf(invalidRuleExecution, okRule))
+        val okRule =
+            mockk<RuleExecution<TestRules>>().also {
+                every { it.runRules(any(), any()) } returns
+                    (TreeOutput<TestRules, RuleResult>(
+                        treeResult =
+                            RuleResult(
+                                status = Status.OK,
+                                ruleHit = null,
+                            ),
+                    ))
+            }
+        val invalidRuleExecution =
+            mockk<RuleExecution<TestRules>>().also {
+                every { it.runRules(any(), any()) } returns
+                    (TreeOutput<TestRules, RuleResult>(
+                        treeResult =
+                            RuleResult(
+                                status = Status.INVALID,
+                                ruleHit =
+                                    RuleHit(
+                                        Status.INVALID,
+                                        TestRules.RULE1.name,
+                                        "message",
+                                        "message"
+                                    ),
+                            ),
+                    ))
+            }
+        val results =
+            ruleExecutionService.runRules(
+                sykmeldnig,
+                ruleMetadata,
+                sequenceOf(invalidRuleExecution, okRule)
+            )
         Assertions.assertEquals(1, results.size)
         Assertions.assertEquals(Status.INVALID, results.first().treeResult.status)
     }

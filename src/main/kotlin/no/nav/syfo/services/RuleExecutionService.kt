@@ -15,11 +15,12 @@ import no.nav.syfo.rules.validation.validationRuleTree
 
 class RuleExecutionService() {
 
-    private val ruleExecution = sequenceOf(
-        LegeSuspensjonRulesExecution(legeSuspensjonRuleTree),
-        HPRRulesExecution(hprRuleTree),
-        ValidationRulesExecution(validationRuleTree),
-    )
+    private val ruleExecution =
+        sequenceOf(
+            LegeSuspensjonRulesExecution(legeSuspensjonRuleTree),
+            HPRRulesExecution(hprRuleTree),
+            ValidationRulesExecution(validationRuleTree),
+        )
 
     fun runRules(
         legeerklaring: Legeerklaering,
@@ -27,16 +28,17 @@ class RuleExecutionService() {
         sequence: Sequence<RuleExecution<out Enum<*>>> = ruleExecution,
     ): List<TreeOutput<out Enum<*>, RuleResult>> {
         var lastStatus = Status.OK
-        val results = sequence
-            .map { it.runRules(legeerklaring, ruleMetadata) }
-            .takeWhile {
-                if (lastStatus == Status.OK) {
-                    lastStatus = it.treeResult.status
-                    true
-                } else {
-                    false
+        val results =
+            sequence
+                .map { it.runRules(legeerklaring, ruleMetadata) }
+                .takeWhile {
+                    if (lastStatus == Status.OK) {
+                        lastStatus = it.treeResult.status
+                        true
+                    } else {
+                        false
+                    }
                 }
-            }
         return results.toList()
     }
 }

@@ -7,14 +7,14 @@ import no.nav.syfo.model.Legeerklaering
 import no.nav.syfo.rules.dsl.RuleResult
 
 typealias Rule<T> = (legeerklaring: Legeerklaering, behandler: Behandler) -> RuleResult<T>
+
 typealias HPRRule = Rule<HPRRules>
 
 val behanderIkkeGyldigHPR: HPRRule = { _, behandler ->
     val behandlerGodkjenninger = behandler.godkjenninger
 
-    val aktivAutorisasjon = behandlerGodkjenninger.any {
-        (it.autorisasjon?.aktiv != null && it.autorisasjon.aktiv)
-    }
+    val aktivAutorisasjon =
+        behandlerGodkjenninger.any { (it.autorisasjon?.aktiv != null && it.autorisasjon.aktiv) }
 
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
@@ -26,15 +26,14 @@ val behanderIkkeGyldigHPR: HPRRule = { _, behandler ->
 val behandlerManglerAutorisasjon: HPRRule = { _, behandler ->
     val behandlerGodkjenninger = behandler.godkjenninger
 
-    val gyldigeGodkjenninger = behandlerGodkjenninger.any {
-        (
-            it.autorisasjon?.aktiv != null &&
+    val gyldigeGodkjenninger =
+        behandlerGodkjenninger.any {
+            (it.autorisasjon?.aktiv != null &&
                 it.autorisasjon.aktiv &&
                 it.autorisasjon.oid == 7704 &&
                 it.autorisasjon.verdi != null &&
-                it.autorisasjon.verdi in arrayOf("1", "17", "4", "2", "14", "18")
-            )
-    }
+                it.autorisasjon.verdi in arrayOf("1", "17", "4", "2", "14", "18"))
+        }
 
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
@@ -46,10 +45,11 @@ val behandlerManglerAutorisasjon: HPRRule = { _, behandler ->
 val behandlerIkkeLEKIMTTLFTPS: HPRRule = { _, behandler ->
     val behandlerGodkjenninger = behandler.godkjenninger
 
-    val behandlerLEKIMTTLFT = behandlerGodkjenninger.any {
-        (
-            it.helsepersonellkategori?.aktiv != null &&
-                it.autorisasjon?.aktiv == true && it.helsepersonellkategori.verdi != null &&
+    val behandlerLEKIMTTLFT =
+        behandlerGodkjenninger.any {
+            (it.helsepersonellkategori?.aktiv != null &&
+                it.autorisasjon?.aktiv == true &&
+                it.helsepersonellkategori.verdi != null &&
                 harAktivHelsepersonellAutorisasjonsSom(
                     behandlerGodkjenninger,
                     listOf(
@@ -60,9 +60,8 @@ val behandlerIkkeLEKIMTTLFTPS: HPRRule = { _, behandler ->
                         HelsepersonellKategori.FYSIOTERAPAEUT.verdi,
                         HelsepersonellKategori.PSYKOLOG.verdi,
                     ),
-                )
-            )
-    }
+                ))
+        }
 
     RuleResult(
         ruleInputs = mapOf("behandlerGodkjenninger" to behandlerGodkjenninger),
@@ -77,8 +76,7 @@ private fun harAktivHelsepersonellAutorisasjonsSom(
 ): Boolean =
     behandlerGodkjenninger.any { godkjenning ->
         godkjenning.helsepersonellkategori?.aktiv != null &&
-            godkjenning.autorisasjon?.aktiv == true && godkjenning.helsepersonellkategori.verdi != null &&
-            godkjenning.helsepersonellkategori.let {
-                it.aktiv && it.verdi in helsepersonerVerdi
-            }
+            godkjenning.autorisasjon?.aktiv == true &&
+            godkjenning.helsepersonellkategori.verdi != null &&
+            godkjenning.helsepersonellkategori.let { it.aktiv && it.verdi in helsepersonerVerdi }
     }

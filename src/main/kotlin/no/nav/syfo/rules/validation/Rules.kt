@@ -5,10 +5,10 @@ import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.rules.dsl.RuleResult
 
 typealias Rule<T> = (legeerklaring: Legeerklaering, ruleMetadata: RuleMetadata) -> RuleResult<T>
+
 typealias ValidationRule = Rule<ValidationRules>
 
 val pasientUnder13Aar: ValidationRule = { _, ruleMetadata ->
-
     val signatureDate = ruleMetadata.signatureDate.toLocalDate()
     val pasientFodselsdato = ruleMetadata.patientBorndate
 

@@ -15,6 +15,9 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.jackson.jackson
 import io.prometheus.client.hotspot.DefaultExports
+import java.net.SocketTimeoutException
+import java.net.URL
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.DelicateCoroutinesApi
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
@@ -29,9 +32,6 @@ import no.nav.syfo.services.RuleExecutionService
 import no.nav.syfo.services.RuleService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.SocketTimeoutException
-import java.net.URL
-import java.util.concurrent.TimeUnit
 
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.pale-2-regler")
 
@@ -40,10 +40,11 @@ fun main() {
     val env = Environment()
     val applicationState = ApplicationState()
 
-    val jwkProviderAad = JwkProviderBuilder(URL(env.jwkKeysUrl))
-        .cached(10, 24, TimeUnit.HOURS)
-        .rateLimited(10, 1, TimeUnit.MINUTES)
-        .build()
+    val jwkProviderAad =
+        JwkProviderBuilder(URL(env.jwkKeysUrl))
+            .cached(10, 24, TimeUnit.HOURS)
+            .rateLimited(10, 1, TimeUnit.MINUTES)
+            .build()
 
     val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
         install(ContentNegotiation) {
@@ -57,7 +58,8 @@ fun main() {
         HttpResponseValidator {
             handleResponseExceptionWithRequest { exception, _ ->
                 when (exception) {
-                    is SocketTimeoutException -> throw ServiceUnavailableException(exception.message)
+                    is SocketTimeoutException ->
+                        throw ServiceUnavailableException(exception.message)
                 }
             }
         }
@@ -76,7 +78,9 @@ fun main() {
             }
             retryIf(maxRetries) { request, response ->
                 if (response.status.value.let { it in 500..599 }) {
-                    log.warn("Retrying for statuscode ${response.status.value}, for url ${request.url}")
+                    log.warn(
+                        "Retrying for statuscode ${response.status.value}, for url ${request.url}"
+                    )
                     true
                 } else {
                     false
@@ -87,37 +91,55 @@ fun main() {
 
     val httpClient = HttpClient(Apache, config)
 
-    val accessTokenClientV2 = AccessTokenClientV2(
-        aadAccessTokenUrl = env.aadAccessTokenV2Url,
-        clientId = env.clientIdV2,
-        clientSecret = env.clientSecretV2,
-        httpClient = httpClient,
-    )
+    val accessTokenClientV2 =
+        AccessTokenClientV2(
+            aadAccessTokenUrl = env.aadAccessTokenV2Url,
+            clientId = env.clientIdV2,
+            clientSecret = env.clientSecretV2,
+            httpClient = httpClient,
+        )
 
-    val legeSuspensjonClient = LegeSuspensjonClient(
-        env.legeSuspensjonEndpointURL,
-        accessTokenClientV2,
-        httpClient,
-        env.legeSuspensjonProxyScope,
-        env.applicationName,
-    )
+    val legeSuspensjonClient =
+        LegeSuspensjonClient(
+            env.legeSuspensjonEndpointURL,
+            accessTokenClientV2,
+            httpClient,
+            env.legeSuspensjonProxyScope,
+            env.applicationName,
+        )
 
     val norskHelsenettClient =
-        NorskHelsenettClient(env.norskHelsenettEndpointURL, accessTokenClientV2, env.helsenettproxyScope, httpClient)
+        NorskHelsenettClient(
+            env.norskHelsenettEndpointURL,
+            accessTokenClientV2,
+            env.helsenettproxyScope,
+            httpClient
+        )
 
-    val pdlClient = PdlClient(
-        httpClient,
-        env.pdlGraphqlPath,
-        PdlClient::class.java.getResource("/graphql/getPerson.graphql")!!.readText().replace(Regex("[\n\t]"), ""),
-    )
+    val pdlClient =
+        PdlClient(
+            httpClient,
+            env.pdlGraphqlPath,
+            PdlClient::class
+                .java
+                .getResource("/graphql/getPerson.graphql")!!
+                .readText()
+                .replace(Regex("[\n\t]"), ""),
+        )
     val pdlService = PdlPersonService(pdlClient, accessTokenClientV2, env.pdlScope)
 
-    val applicationEngine = createApplicationEngine(
-        env,
-        applicationState,
-        RuleService(legeSuspensjonClient, norskHelsenettClient, pdlService, RuleExecutionService()),
-        jwkProviderAad,
-    )
+    val applicationEngine =
+        createApplicationEngine(
+            env,
+            applicationState,
+            RuleService(
+                legeSuspensjonClient,
+                norskHelsenettClient,
+                pdlService,
+                RuleExecutionService()
+            ),
+            jwkProviderAad,
+        )
 
     DefaultExports.initialize()
 

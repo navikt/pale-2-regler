@@ -1,5 +1,6 @@
 package no.nav.syfo.rules.hpr
 
+import java.time.LocalDateTime
 import no.nav.syfo.client.Behandler
 import no.nav.syfo.client.Godkjenning
 import no.nav.syfo.client.Kode
@@ -21,44 +22,47 @@ import no.nav.syfo.model.Sykdomsopplysninger
 import no.nav.syfo.util.extractBornDate
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 class HPRTest {
     private val ruleTree = HPRRulesExecution()
 
     @Test
     internal fun `Should check all the hpr rules, Status OK`() {
-        val behandler = Behandler(
-            listOf(
-                Godkjenning(
-                    autorisasjon = Kode(
-                        aktiv = true,
-                        oid = 7704,
-                        verdi = "1",
-                    ),
-                    helsepersonellkategori = Kode(
-                        aktiv = true,
-                        oid = 0,
-                        verdi = "LE",
+        val behandler =
+            Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon =
+                            Kode(
+                                aktiv = true,
+                                oid = 7704,
+                                verdi = "1",
+                            ),
+                        helsepersonellkategori =
+                            Kode(
+                                aktiv = true,
+                                oid = 0,
+                                verdi = "LE",
+                            ),
                     ),
                 ),
-            ),
-        )
+            )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
         val borndate = extractBornDate(receivedLegeerklaering.legeerklaering.pasient.fnr)
 
-        val ruleMetadata = RuleMetadata(
-            receivedDate = receivedLegeerklaering.mottattDato,
-            signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
-            patientPersonNumber = receivedLegeerklaering.personNrPasient,
-            legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
-            tssid = receivedLegeerklaering.tssid,
-            avsenderfnr = receivedLegeerklaering.personNrLege,
-            patientBorndate = borndate,
-            behandler = behandler,
-            doctorSuspensjon = false,
-        )
+        val ruleMetadata =
+            RuleMetadata(
+                receivedDate = receivedLegeerklaering.mottattDato,
+                signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
+                patientPersonNumber = receivedLegeerklaering.personNrPasient,
+                legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
+                tssid = receivedLegeerklaering.tssid,
+                avsenderfnr = receivedLegeerklaering.personNrLege,
+                patientBorndate = borndate,
+                behandler = behandler,
+                doctorSuspensjon = false,
+            )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
 
@@ -87,37 +91,41 @@ class HPRTest {
 
     @Test
     internal fun `Should trigger rule BEHANDLER_IKKE_GYLDIG_I_HPR, Status INVALID`() {
-        val behandler = Behandler(
-            listOf(
-                Godkjenning(
-                    autorisasjon = Kode(
-                        aktiv = false,
-                        oid = 7704,
-                        verdi = "1",
-                    ),
-                    helsepersonellkategori = Kode(
-                        aktiv = true,
-                        oid = 0,
-                        verdi = "LE",
+        val behandler =
+            Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon =
+                            Kode(
+                                aktiv = false,
+                                oid = 7704,
+                                verdi = "1",
+                            ),
+                        helsepersonellkategori =
+                            Kode(
+                                aktiv = true,
+                                oid = 0,
+                                verdi = "LE",
+                            ),
                     ),
                 ),
-            ),
-        )
+            )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
         val borndate = extractBornDate(receivedLegeerklaering.legeerklaering.pasient.fnr)
 
-        val ruleMetadata = RuleMetadata(
-            receivedDate = receivedLegeerklaering.mottattDato,
-            signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
-            patientPersonNumber = receivedLegeerklaering.personNrPasient,
-            legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
-            tssid = receivedLegeerklaering.tssid,
-            avsenderfnr = receivedLegeerklaering.personNrLege,
-            patientBorndate = borndate,
-            behandler = behandler,
-            doctorSuspensjon = false,
-        )
+        val ruleMetadata =
+            RuleMetadata(
+                receivedDate = receivedLegeerklaering.mottattDato,
+                signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
+                patientPersonNumber = receivedLegeerklaering.personNrPasient,
+                legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
+                tssid = receivedLegeerklaering.tssid,
+                avsenderfnr = receivedLegeerklaering.personNrLege,
+                patientBorndate = borndate,
+                behandler = behandler,
+                doctorSuspensjon = false,
+            )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
 
@@ -136,42 +144,49 @@ class HPRTest {
             ),
         )
 
-        Assertions.assertEquals(HPRRuleHit.BEHANDLER_IKKE_GYLDIG_I_HPR.ruleHit, status.treeResult.ruleHit)
+        Assertions.assertEquals(
+            HPRRuleHit.BEHANDLER_IKKE_GYLDIG_I_HPR.ruleHit,
+            status.treeResult.ruleHit
+        )
     }
 
     @Test
     internal fun `Should trigger rule BEHANDLER_MANGLER_AUTORISASJON_I_HPR, Status INVALID`() {
-        val behandler = Behandler(
-            listOf(
-                Godkjenning(
-                    autorisasjon = Kode(
-                        aktiv = true,
-                        oid = 7702,
-                        verdi = "19",
-                    ),
-                    helsepersonellkategori = Kode(
-                        aktiv = true,
-                        oid = 0,
-                        verdi = "LE",
+        val behandler =
+            Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon =
+                            Kode(
+                                aktiv = true,
+                                oid = 7702,
+                                verdi = "19",
+                            ),
+                        helsepersonellkategori =
+                            Kode(
+                                aktiv = true,
+                                oid = 0,
+                                verdi = "LE",
+                            ),
                     ),
                 ),
-            ),
-        )
+            )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
         val borndate = extractBornDate(receivedLegeerklaering.legeerklaering.pasient.fnr)
 
-        val ruleMetadata = RuleMetadata(
-            receivedDate = receivedLegeerklaering.mottattDato,
-            signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
-            patientPersonNumber = receivedLegeerklaering.personNrPasient,
-            legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
-            tssid = receivedLegeerklaering.tssid,
-            avsenderfnr = receivedLegeerklaering.personNrLege,
-            patientBorndate = borndate,
-            behandler = behandler,
-            doctorSuspensjon = false,
-        )
+        val ruleMetadata =
+            RuleMetadata(
+                receivedDate = receivedLegeerklaering.mottattDato,
+                signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
+                patientPersonNumber = receivedLegeerklaering.personNrPasient,
+                legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
+                tssid = receivedLegeerklaering.tssid,
+                avsenderfnr = receivedLegeerklaering.personNrLege,
+                patientBorndate = borndate,
+                behandler = behandler,
+                doctorSuspensjon = false,
+            )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
 
@@ -192,42 +207,49 @@ class HPRTest {
             status.ruleInputs,
         )
 
-        Assertions.assertEquals(HPRRuleHit.BEHANDLER_MANGLER_AUTORISASJON_I_HPR.ruleHit, status.treeResult.ruleHit)
+        Assertions.assertEquals(
+            HPRRuleHit.BEHANDLER_MANGLER_AUTORISASJON_I_HPR.ruleHit,
+            status.treeResult.ruleHit
+        )
     }
 
     @Test
     internal fun `Should trigger rule BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR, Status INVALID`() {
-        val behandler = Behandler(
-            listOf(
-                Godkjenning(
-                    autorisasjon = Kode(
-                        aktiv = true,
-                        oid = 7704,
-                        verdi = "18",
-                    ),
-                    helsepersonellkategori = Kode(
-                        aktiv = true,
-                        oid = 0,
-                        verdi = "PL",
+        val behandler =
+            Behandler(
+                listOf(
+                    Godkjenning(
+                        autorisasjon =
+                            Kode(
+                                aktiv = true,
+                                oid = 7704,
+                                verdi = "18",
+                            ),
+                        helsepersonellkategori =
+                            Kode(
+                                aktiv = true,
+                                oid = 0,
+                                verdi = "PL",
+                            ),
                     ),
                 ),
-            ),
-        )
+            )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
         val borndate = extractBornDate(receivedLegeerklaering.legeerklaering.pasient.fnr)
 
-        val ruleMetadata = RuleMetadata(
-            receivedDate = receivedLegeerklaering.mottattDato,
-            signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
-            patientPersonNumber = receivedLegeerklaering.personNrPasient,
-            legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
-            tssid = receivedLegeerklaering.tssid,
-            avsenderfnr = receivedLegeerklaering.personNrLege,
-            patientBorndate = borndate,
-            behandler = behandler,
-            doctorSuspensjon = false,
-        )
+        val ruleMetadata =
+            RuleMetadata(
+                receivedDate = receivedLegeerklaering.mottattDato,
+                signatureDate = receivedLegeerklaering.legeerklaering.signaturDato,
+                patientPersonNumber = receivedLegeerklaering.personNrPasient,
+                legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
+                tssid = receivedLegeerklaering.tssid,
+                avsenderfnr = receivedLegeerklaering.personNrLege,
+                patientBorndate = borndate,
+                behandler = behandler,
+                doctorSuspensjon = false,
+            )
 
         val status = ruleTree.runRules(receivedLegeerklaering.legeerklaering, ruleMetadata)
 
@@ -250,11 +272,18 @@ class HPRTest {
             status.ruleInputs,
         )
 
-        Assertions.assertEquals(HPRRuleHit.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR.ruleHit, status.treeResult.ruleHit)
+        Assertions.assertEquals(
+            HPRRuleHit.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR.ruleHit,
+            status.treeResult.ruleHit
+        )
     }
 }
 
-fun getReceivedLegeerklaering(legeerklaering: Legeerklaering, orgnr: String = "913459105", personnrPasient: String = "54321"): ReceivedLegeerklaering {
+fun getReceivedLegeerklaering(
+    legeerklaering: Legeerklaering,
+    orgnr: String = "913459105",
+    personnrPasient: String = "54321"
+): ReceivedLegeerklaering {
     return ReceivedLegeerklaering(
         legeerklaering = legeerklaering,
         personNrPasient = personnrPasient,
@@ -280,108 +309,120 @@ fun getLegeerklaering(foedselsnr: String = "23057245631"): Legeerklaering {
         arbeidsavklaringspenger = true,
         yrkesrettetAttforing = false,
         uforepensjon = true,
-        pasient = Pasient(
-            fornavn = "Test",
-            mellomnavn = "Testerino",
-            etternavn = "Testsen",
-            fnr = foedselsnr,
-            navKontor = "NAV Stockholm",
-            adresse = "Oppdiktet veg 99",
-            postnummer = 9999,
-            poststed = "Stockholm",
-            yrke = "Taco spesialist",
-            arbeidsgiver = Arbeidsgiver(
-                navn = "NAV IKT",
-                adresse = "Sannergata 2",
-                postnummer = 557,
-                poststed = "Oslo",
+        pasient =
+            Pasient(
+                fornavn = "Test",
+                mellomnavn = "Testerino",
+                etternavn = "Testsen",
+                fnr = foedselsnr,
+                navKontor = "NAV Stockholm",
+                adresse = "Oppdiktet veg 99",
+                postnummer = 9999,
+                poststed = "Stockholm",
+                yrke = "Taco spesialist",
+                arbeidsgiver =
+                    Arbeidsgiver(
+                        navn = "NAV IKT",
+                        adresse = "Sannergata 2",
+                        postnummer = 557,
+                        poststed = "Oslo",
+                    ),
             ),
-        ),
-        sykdomsopplysninger = Sykdomsopplysninger(
-            hoveddiagnose = Diagnose(
-                tekst = "Fysikalsk behandling/rehabilitering",
-                kode = "-57",
+        sykdomsopplysninger =
+            Sykdomsopplysninger(
+                hoveddiagnose =
+                    Diagnose(
+                        tekst = "Fysikalsk behandling/rehabilitering",
+                        kode = "-57",
+                    ),
+                bidiagnose =
+                    listOf(
+                        Diagnose(
+                            tekst = "Engstelig for hjertesykdom",
+                            kode = "K24",
+                        ),
+                    ),
+                arbeidsuforFra = LocalDateTime.now().minusDays(3),
+                sykdomshistorie = "Tekst",
+                statusPresens = "Tekst",
+                borNavKontoretVurdereOmDetErEnYrkesskade = true,
+                yrkesSkadeDato = LocalDateTime.now().minusDays(4),
             ),
-            bidiagnose = listOf(
-                Diagnose(
-                    tekst = "Engstelig for hjertesykdom",
-                    kode = "K24",
-                ),
+        plan =
+            Plan(
+                utredning = null,
+                behandling =
+                    Henvisning(
+                        tekst = "2 timer i uken med svømming",
+                        dato = LocalDateTime.now(),
+                        antattVentetIUker = 1,
+                    ),
+                utredningsplan = "Tekst",
+                behandlingsplan = "Tekst",
+                vurderingAvTidligerePlan = "Tekst",
+                narSporreOmNyeLegeopplysninger = "Tekst",
+                videreBehandlingIkkeAktueltGrunn = "Tekst",
             ),
-            arbeidsuforFra = LocalDateTime.now().minusDays(3),
-            sykdomshistorie = "Tekst",
-            statusPresens = "Tekst",
-            borNavKontoretVurdereOmDetErEnYrkesskade = true,
-            yrkesSkadeDato = LocalDateTime.now().minusDays(4),
-        ),
-        plan = Plan(
-            utredning = null,
-            behandling = Henvisning(
-                tekst = "2 timer i uken med svømming",
-                dato = LocalDateTime.now(),
-                antattVentetIUker = 1,
+        forslagTilTiltak =
+            ForslagTilTiltak(
+                behov = true,
+                kjopAvHelsetjenester = true,
+                reisetilskudd = false,
+                aktivSykmelding = false,
+                hjelpemidlerArbeidsplassen = true,
+                arbeidsavklaringspenger = true,
+                friskmeldingTilArbeidsformidling = false,
+                andreTiltak = "Trenger taco i lunsjen",
+                naermereOpplysninger = "Tacoen må bestå av ordentlige råvarer",
+                tekst = "Pasienten har store problemer med fordøying av annen mat enn Taco",
             ),
-            utredningsplan = "Tekst",
-            behandlingsplan = "Tekst",
-            vurderingAvTidligerePlan = "Tekst",
-            narSporreOmNyeLegeopplysninger = "Tekst",
-            videreBehandlingIkkeAktueltGrunn = "Tekst",
-        ),
-        forslagTilTiltak = ForslagTilTiltak(
-            behov = true,
-            kjopAvHelsetjenester = true,
-            reisetilskudd = false,
-            aktivSykmelding = false,
-            hjelpemidlerArbeidsplassen = true,
-            arbeidsavklaringspenger = true,
-            friskmeldingTilArbeidsformidling = false,
-            andreTiltak = "Trenger taco i lunsjen",
-            naermereOpplysninger = "Tacoen må bestå av ordentlige råvarer",
-            tekst = "Pasienten har store problemer med fordøying av annen mat enn Taco",
-
-        ),
-        funksjonsOgArbeidsevne = FunksjonsOgArbeidsevne(
-            vurderingFunksjonsevne = "Kan ikke spise annet enn Taco",
-            inntektsgivendeArbeid = false,
-            hjemmearbeidende = false,
-            student = false,
-            annetArbeid = "Reisende taco tester",
-            kravTilArbeid = "Kun taco i kantina",
-            kanGjenopptaTidligereArbeid = true,
-            kanGjenopptaTidligereArbeidNa = true,
-            kanGjenopptaTidligereArbeidEtterBehandling = true,
-            kanTaAnnetArbeid = true,
-            kanTaAnnetArbeidNa = true,
-            kanTaAnnetArbeidEtterBehandling = true,
-            kanIkkeGjenopptaNaverendeArbeid = "Spise annen mat enn Taco",
-            kanIkkeTaAnnetArbeid = "Spise annen mat enn Taco",
-        ),
-        prognose = Prognose(
-            vilForbedreArbeidsevne = true,
-            anslattVarighetSykdom = "1 uke",
-            anslattVarighetFunksjonsnedsetting = "2 uker",
-            anslattVarighetNedsattArbeidsevne = "4 uker",
-        ),
-        arsakssammenheng = "Funksjonsnedsettelsen har stor betydning for at arbeidsevnen er nedsatt",
+        funksjonsOgArbeidsevne =
+            FunksjonsOgArbeidsevne(
+                vurderingFunksjonsevne = "Kan ikke spise annet enn Taco",
+                inntektsgivendeArbeid = false,
+                hjemmearbeidende = false,
+                student = false,
+                annetArbeid = "Reisende taco tester",
+                kravTilArbeid = "Kun taco i kantina",
+                kanGjenopptaTidligereArbeid = true,
+                kanGjenopptaTidligereArbeidNa = true,
+                kanGjenopptaTidligereArbeidEtterBehandling = true,
+                kanTaAnnetArbeid = true,
+                kanTaAnnetArbeidNa = true,
+                kanTaAnnetArbeidEtterBehandling = true,
+                kanIkkeGjenopptaNaverendeArbeid = "Spise annen mat enn Taco",
+                kanIkkeTaAnnetArbeid = "Spise annen mat enn Taco",
+            ),
+        prognose =
+            Prognose(
+                vilForbedreArbeidsevne = true,
+                anslattVarighetSykdom = "1 uke",
+                anslattVarighetFunksjonsnedsetting = "2 uker",
+                anslattVarighetNedsattArbeidsevne = "4 uker",
+            ),
+        arsakssammenheng =
+            "Funksjonsnedsettelsen har stor betydning for at arbeidsevnen er nedsatt",
         andreOpplysninger = "Tekst",
-        kontakt = Kontakt(
-            skalKontakteBehandlendeLege = true,
-            skalKontakteArbeidsgiver = true,
-            skalKontakteBasisgruppe = false,
-            kontakteAnnenInstans = null,
-            onskesKopiAvVedtak = true,
-        ),
+        kontakt =
+            Kontakt(
+                skalKontakteBehandlendeLege = true,
+                skalKontakteArbeidsgiver = true,
+                skalKontakteBasisgruppe = false,
+                kontakteAnnenInstans = null,
+                onskesKopiAvVedtak = true,
+            ),
         tilbakeholdInnhold = false,
         pasientenBurdeIkkeVite = null,
-        signatur = Signatur(
-            dato = LocalDateTime.now().minusDays(1),
-            navn = "Lege Legesen",
-            adresse = "Legeveien 33",
-            postnummer = "9999",
-            poststed = "Stockholm",
-            signatur = "Lege Legesen",
-            tlfNummer = "98765432",
-        ),
+        signatur =
+            Signatur(
+                dato = LocalDateTime.now().minusDays(1),
+                navn = "Lege Legesen",
+                adresse = "Legeveien 33",
+                postnummer = "9999",
+                poststed = "Stockholm",
+                signatur = "Lege Legesen",
+                tlfNummer = "98765432",
+            ),
         signaturDato = LocalDateTime.now(),
     )
 }

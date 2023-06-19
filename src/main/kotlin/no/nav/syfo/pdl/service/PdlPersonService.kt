@@ -22,19 +22,25 @@ class PdlPersonService(
 
         val pdlResponse = pdlClient.getPerson(fnr, accessToken)
         if (pdlResponse.errors != null) {
-            pdlResponse.errors.forEach {
-                log.error("PDL kastet error: {} ", it)
-            }
+            pdlResponse.errors.forEach { log.error("PDL kastet error: {} ", it) }
         }
         if (pdlResponse.data.hentPerson == null) {
-            log.error("Klarte ikke hente ut person fra PDL {}", StructuredArguments.fields(loggingMeta))
+            log.error(
+                "Klarte ikke hente ut person fra PDL {}",
+                StructuredArguments.fields(loggingMeta)
+            )
             throw PersonNotFoundInPdl("Klarte ikke hente ut person fra PDL")
         }
-        if (pdlResponse.data.hentIdenter == null || pdlResponse.data.hentIdenter.identer.isEmpty()) {
+        if (
+            pdlResponse.data.hentIdenter == null || pdlResponse.data.hentIdenter.identer.isEmpty()
+        ) {
             log.error("Fant ikke ident i PDL {}", StructuredArguments.fields(loggingMeta))
             throw PersonNotFoundInPdl("Fant ikke ident i PDL")
         }
 
-        return PdlPerson(pdlResponse.data.hentIdenter.identer, foedsel = pdlResponse.data.hentPerson.foedsel)
+        return PdlPerson(
+            pdlResponse.data.hentIdenter.identer,
+            foedsel = pdlResponse.data.hentPerson.foedsel
+        )
     }
 }
