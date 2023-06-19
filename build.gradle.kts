@@ -10,7 +10,7 @@ val githubPassword: String by project
 
 val ktorVersion = "2.3.1"
 val logbackVersion = "1.4.8"
-val logstashEncoderVersion = "7.3"
+val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.15.2"
 val pale2CommonVersion = "1.0.2"
