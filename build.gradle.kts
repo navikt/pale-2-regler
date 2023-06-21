@@ -18,7 +18,7 @@ val mockkVersion = "1.13.5"
 val kotlinVersion = "1.8.22"
 val junitJupiterVersion = "5.9.3"
 val commonsTextVersion = "1.10.0"
-val commonsCodecVersion = "1.15"
+val commonsCodecVersion = "1.16.0"
 val ktfmtVersion = "0.44"
 
 plugins {
