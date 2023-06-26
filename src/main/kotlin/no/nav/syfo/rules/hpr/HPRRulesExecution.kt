@@ -1,7 +1,7 @@
 package no.nav.syfo.rules.hpr
 
 import no.nav.syfo.client.Behandler
-import no.nav.syfo.log
+import no.nav.syfo.logger
 import no.nav.syfo.model.Legeerklaering
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.rules.common.RuleExecution
@@ -20,7 +20,7 @@ typealias HPRTreeNode = TreeNode<HPRRules, RuleResult>
 class HPRRulesExecution(private val rootNode: HPRTreeNode = hprRuleTree) : RuleExecution<HPRRules> {
     override fun runRules(legeerklaring: Legeerklaering, ruleMetadata: RuleMetadata) =
         rootNode.evaluate(legeerklaring, ruleMetadata.behandler).also { hprRulePath ->
-            log.info("Rules ${legeerklaring.id}, ${hprRulePath.printRulePath()}")
+            logger.info("Rules ${legeerklaring.id}, ${hprRulePath.printRulePath()}")
         }
 }
 

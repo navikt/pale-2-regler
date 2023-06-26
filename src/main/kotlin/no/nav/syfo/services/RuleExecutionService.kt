@@ -13,7 +13,7 @@ import no.nav.syfo.rules.legesuspensjon.legeSuspensjonRuleTree
 import no.nav.syfo.rules.validation.ValidationRulesExecution
 import no.nav.syfo.rules.validation.validationRuleTree
 
-class RuleExecutionService() {
+class RuleExecutionService {
 
     private val ruleExecution =
         sequenceOf(

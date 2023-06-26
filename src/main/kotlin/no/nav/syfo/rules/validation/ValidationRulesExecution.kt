@@ -1,6 +1,6 @@
 package no.nav.syfo.rules.validation
 
-import no.nav.syfo.log
+import no.nav.syfo.logger
 import no.nav.syfo.model.Legeerklaering
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.rules.common.RuleExecution
@@ -20,7 +20,7 @@ class ValidationRulesExecution(private val rootNode: ValidationTreeNode = valida
     RuleExecution<ValidationRules> {
     override fun runRules(legeerklaring: Legeerklaering, ruleMetadata: RuleMetadata) =
         rootNode.evaluate(legeerklaring, ruleMetadata).also { validationRulePath ->
-            log.info("Rules ${legeerklaring.id}, ${validationRulePath.printRulePath()}")
+            logger.info("Rules ${legeerklaring.id}, ${validationRulePath.printRulePath()}")
         }
 }
 

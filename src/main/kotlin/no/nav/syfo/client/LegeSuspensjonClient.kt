@@ -10,7 +10,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import java.io.IOException
-import no.nav.syfo.log
+import no.nav.syfo.logger
 
 class LegeSuspensjonClient(
     private val endpointUrl: String,
@@ -41,11 +41,11 @@ class LegeSuspensjonClient(
             }
         when (httpResponse.status) {
             HttpStatusCode.OK -> {
-                log.info("Hentet supensjonstatus for ediloggId {}", ediloggid)
+                logger.info("Hentet supensjonstatus for ediloggId {}", ediloggid)
                 return httpResponse.call.response.body<Suspendert>()
             }
             else -> {
-                log.error(
+                logger.error(
                     "Btsys (smgcp-proxy) svarte med kode {} for ediloggId {}",
                     httpResponse.status,
                     ediloggid

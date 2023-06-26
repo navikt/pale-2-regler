@@ -12,7 +12,7 @@ import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import java.io.IOException
 import net.logstash.logback.argument.StructuredArguments.fields
-import no.nav.syfo.log
+import no.nav.syfo.logger
 import no.nav.syfo.util.LoggingMeta
 
 class NorskHelsenettClient(
@@ -27,7 +27,7 @@ class NorskHelsenettClient(
         msgId: String,
         loggingMeta: LoggingMeta
     ): Behandler? {
-        log.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
+        logger.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
         val httpResponse: HttpResponse =
             httpClient.get("$endpointUrl/api/v2/behandler") {
                 accept(ContentType.Application.Json)
@@ -40,7 +40,7 @@ class NorskHelsenettClient(
             }
         when (httpResponse.status) {
             InternalServerError -> {
-                log.error(
+                logger.error(
                     "Syfohelsenettproxy svarte med feilmelding for msgId {}, {}",
                     msgId,
                     fields(loggingMeta)
@@ -48,7 +48,7 @@ class NorskHelsenettClient(
                 throw IOException("Syfohelsenettproxy svarte med feilmelding for $msgId")
             }
             BadRequest -> {
-                log.error(
+                logger.error(
                     "BehandlerFnr mangler i request for msgId {}, {}",
                     msgId,
                     fields(loggingMeta)
@@ -56,11 +56,11 @@ class NorskHelsenettClient(
                 return null
             }
             NotFound -> {
-                log.warn("BehandlerFnr ikke funnet {}, {}", msgId, fields(loggingMeta))
+                logger.warn("BehandlerFnr ikke funnet {}, {}", msgId, fields(loggingMeta))
                 return null
             }
             else -> {
-                log.info("Hentet behandler for msgId {}, {}", msgId, fields(loggingMeta))
+                logger.info("Hentet behandler for msgId {}, {}", msgId, fields(loggingMeta))
                 return httpResponse.call.response.body<Behandler>()
             }
         }

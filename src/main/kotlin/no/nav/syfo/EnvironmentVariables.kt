@@ -1,6 +1,6 @@
 package no.nav.syfo
 
-data class Environment(
+data class EnvironmentVariables(
     val applicationPort: Int = getEnvVar("APPLICATION_PORT", "8080").toInt(),
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "pale-2-regler"),
     val legeSuspensjonEndpointURL: String = getEnvVar("LEGE_SUSPENSJON_PROXY_ENDPOINT_URL"),
