@@ -298,6 +298,7 @@ fun getReceivedLegeerklaering(
         legekontorOrgName = "Ensjøbyen Medisinske Senter AS",
         mottattDato = LocalDateTime.now(),
         fellesformat = "fellesformat",
+        conversationRef = null,
         tssid = "tssid",
     )
 }
