@@ -5,7 +5,7 @@ data class EnvironmentVariables(
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "pale-2-regler"),
     val legeSuspensjonEndpointURL: String = getEnvVar("LEGE_SUSPENSJON_PROXY_ENDPOINT_URL"),
     val legeSuspensjonProxyScope: String = getEnvVar("LEGE_SUSPENSJON_PROXY_SCOPE"),
-    val norskHelsenettEndpointURL: String = getEnvVar("HELSENETT_ENDPOINT_URL"),
+    val norskHelsenettEndpointURL: String = "http://syfohelsenettproxy",
     val aadAccessTokenV2Url: String = getEnvVar("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"),
     val clientIdV2: String = getEnvVar("AZURE_APP_CLIENT_ID"),
     val clientSecretV2: String = getEnvVar("AZURE_APP_CLIENT_SECRET"),

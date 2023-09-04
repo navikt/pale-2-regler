@@ -43,15 +43,15 @@ spec:
           namespace: teamsykmelding
           cluster: dev-gcp
     outbound:
+      rules:
+        - application: syfohelsenettproxy
       external:
         - host: syfohelsenettproxy.dev-fss-pub.nais.io
         - host: smgcp-proxy.dev-fss-pub.nais.io
         - host: pdl-api.dev-fss-pub.nais.io
   env:
-    - name: HELSENETT_ENDPOINT_URL
-      value: https://syfohelsenettproxy.dev-fss-pub.nais.io
     - name: HELSENETT_SCOPE
-      value: api://dev-fss.teamsykmelding.syfohelsenettproxy/.default
+      value: api://dev-gcp.teamsykmelding.syfohelsenettproxy/.default
     - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
       value: https://smgcp-proxy.dev-fss-pub.nais.io
     - name: LEGE_SUSPENSJON_PROXY_SCOPE
