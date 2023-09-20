@@ -8,14 +8,14 @@ version = "1.0.0"
 val githubUser: String by project
 val githubPassword: String by project
 
-val ktorVersion = "2.3.3"
+val ktorVersion = "2.3.4"
 val logbackVersion = "1.4.11"
 val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.15.2"
 val pale2CommonVersion = "1.0.8"
 val mockkVersion = "1.13.7"
-val kotlinVersion = "1.9.0"
+val kotlinVersion = "1.9.10"
 val junitJupiterVersion = "5.10.0"
 val commonsTextVersion = "1.10.0"
 val commonsCodecVersion = "1.16.0"
@@ -30,10 +30,10 @@ application {
 }
 
 plugins {
-    kotlin("jvm") version "1.9.0"
-    id("io.ktor.plugin") version "2.3.3"
+    kotlin("jvm") version "1.9.10"
+    id("io.ktor.plugin") version "2.3.4"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.diffplug.spotless") version "6.20.0"
+    id("com.diffplug.spotless") version "6.21.0"
     id("org.cyclonedx.bom") version "1.7.4"
 }
 
