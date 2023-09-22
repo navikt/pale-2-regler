@@ -1,19 +1,14 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 import java.io.ByteArrayOutputStream
 
 group = "no.nav.syfo"
 version = "1.0.0"
-
-val githubUser: String by project
-val githubPassword: String by project
 
 val ktorVersion = "2.3.4"
 val logbackVersion = "1.4.11"
 val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.15.2"
-val pale2CommonVersion = "1.0.8"
+val pale2CommonVersion = "2.0.0"
 val mockkVersion = "1.13.7"
 val kotlinVersion = "1.9.10"
 val junitJupiterVersion = "5.10.0"
@@ -30,24 +25,18 @@ application {
 }
 
 plugins {
+    id("application")
     kotlin("jvm") version "1.9.10"
-    id("io.ktor.plugin") version "2.3.4"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.21.0"
-    id("org.cyclonedx.bom") version "1.7.4"
 }
 
 repositories {
     mavenCentral()
     maven {
-        url = uri("https://maven.pkg.github.com/navikt/pale-2-common")
-        credentials {
-            username = githubUser
-            password = githubPassword
-        }
+        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
     }
 }
-
 
 
 dependencies {
@@ -63,8 +52,9 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
-
-    implementation("commons-codec:commons-codec:$commonsCodecVersion")// override transient version 1.10
+    {
+        exclude(group = "commons-codec")
+    }
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
@@ -89,26 +79,25 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks {
-    withType<Jar> {
-        manifest.attributes["Main-Class"] = "no.nav.syfo.ApplicationKt"
-    }
-    create("printVersion") {
-        doLast {
-            println(project.version)
+
+    shadowJar {
+        archiveBaseName.set("app")
+        archiveClassifier.set("")
+        isZip64 = true
+        manifest {
+            attributes(
+                mapOf(
+                    "Main-Class" to "no.nav.syfo.ApplicationKt",
+                ),
+            )
         }
     }
 
-    withType<ShadowJar> {
-        transform(ServiceFileTransformer::class.java) {
-            setPath("META-INF/cxf")
-            include("bus-extensions.txt")
-        }
-    }
-
-    withType<Test> {
+    test {
         useJUnitPlatform {
         }
         testLogging {
