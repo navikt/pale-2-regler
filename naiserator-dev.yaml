@@ -46,7 +46,6 @@ spec:
       rules:
         - application: syfohelsenettproxy
       external:
-        - host: syfohelsenettproxy.dev-fss-pub.nais.io
         - host: smgcp-proxy.dev-fss-pub.nais.io
         - host: pdl-api.dev-fss-pub.nais.io
   env:
