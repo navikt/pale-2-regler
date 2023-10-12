@@ -52,7 +52,7 @@ spec:
     - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
       value: https://btsys.prod-fss-pub.nais.io
     - name: LEGE_SUSPENSJON_PROXY_SCOPE
-      value: api://dev-fss.team-rocket.btsys/.default
+      value: api://prod-fss.team-rocket.btsys/.default
     - name: PDL_GRAPHQL_PATH
       value: https://pdl-api.prod-fss-pub.nais.io/graphql
     - name: PDL_SCOPE
