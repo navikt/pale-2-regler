@@ -27,8 +27,6 @@ spec:
     enabled: true
     path: /internal/prometheus
   resources:
-    limits:
-      memory: 1024Mi
     requests:
       cpu: 50m
       memory: 512Mi
@@ -46,15 +44,15 @@ spec:
       rules:
         - application: syfohelsenettproxy
       external:
-        - host: smgcp-proxy.prod-fss-pub.nais.io
         - host: pdl-api.prod-fss-pub.nais.io
+        - host: btsys.prod-fss-pub.nais.io
   env:
     - name: HELSENETT_SCOPE
       value: api://prod-gcp.teamsykmelding.syfohelsenettproxy/.default
     - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
-      value: https://smgcp-proxy.prod-fss-pub.nais.io
+      value: https://btsys.prod-fss-pub.nais.io
     - name: LEGE_SUSPENSJON_PROXY_SCOPE
-      value: api://prod-fss.teamsykmelding.smgcp-proxy/.default
+      value: api://dev-fss.team-rocket.btsys/.default
     - name: PDL_GRAPHQL_PATH
       value: https://pdl-api.prod-fss-pub.nais.io/graphql
     - name: PDL_SCOPE
