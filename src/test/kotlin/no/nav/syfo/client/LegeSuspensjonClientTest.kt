@@ -128,7 +128,7 @@ fun Application.myApplicationModule() {
         }
     }
     routing {
-        get("/btsys/api/v1/suspensjon/status") {
+        get("/api/v1/suspensjon/status") {
             when {
                 call.request.headers["Nav-Personident"] == "1" -> call.respond(Suspendert(true))
                 call.request.headers["Nav-Personident"] == "2" -> call.respond(Suspendert(false))
