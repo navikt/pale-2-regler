@@ -46,7 +46,7 @@ class LegeSuspensjonClient(
             }
             else -> {
                 logger.error(
-                    "Btsys (smgcp-proxy) svarte med kode {} for ediloggId {}",
+                    "Btsys svarte med kode {} for ediloggId {}",
                     httpResponse.status,
                     ediloggid
                 )
