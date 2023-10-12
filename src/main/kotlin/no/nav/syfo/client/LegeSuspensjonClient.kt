@@ -26,7 +26,7 @@ class LegeSuspensjonClient(
         oppslagsdato: String
     ): Suspendert {
         val httpResponse: HttpResponse =
-            httpClient.get("$endpointUrl/btsys/api/v1/suspensjon/status") {
+            httpClient.get("$endpointUrl/api/v1/suspensjon/status") {
                 accept(ContentType.Application.Json)
                 val accessToken = accessTokenClientV2.getAccessTokenV2(scope)
 
