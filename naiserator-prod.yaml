@@ -38,11 +38,10 @@ spec:
     inbound:
       rules:
         - application: pale-2
-          namespace: teamsykmelding
-          cluster: prod-gcp
     outbound:
       rules:
         - application: syfohelsenettproxy
+        - application: pale-2
       external:
         - host: pdl-api.prod-fss-pub.nais.io
         - host: btsys.prod-fss-pub.nais.io
