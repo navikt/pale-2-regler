@@ -10,7 +10,7 @@ val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.16.0"
 val pale2CommonVersion = "2.0.3"
 val mockkVersion = "1.13.8"
-val kotlinVersion = "1.9.20"
+val kotlinVersion = "1.9.21"
 val junitJupiterVersion = "5.10.1"
 val commonsTextVersion = "1.11.0"
 val commonsCodecVersion = "1.16.0"
@@ -26,7 +26,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.20"
+    kotlin("jvm") version "1.9.21"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.22.0"
 }
