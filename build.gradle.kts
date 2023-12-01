@@ -4,7 +4,7 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val ktorVersion = "2.3.6"
-val logbackVersion = "1.4.13"
+val logbackVersion = "1.4.14"
 val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.16.0"
