@@ -7,10 +7,10 @@ val ktorVersion = "2.3.7"
 val logbackVersion = "1.4.14"
 val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
-val jacksonVersion = "2.16.0"
+val jacksonVersion = "2.16.1"
 val pale2CommonVersion = "2.0.4"
 val mockkVersion = "1.13.8"
-val kotlinVersion = "1.9.21"
+val kotlinVersion = "1.9.22"
 val junitJupiterVersion = "5.10.1"
 val commonsTextVersion = "1.11.0"
 val commonsCodecVersion = "1.16.0"
@@ -26,7 +26,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.diffplug.spotless") version "6.23.3"
 }
