@@ -48,7 +48,7 @@ spec:
     - name: HELSENETT_SCOPE
       value: api://prod-gcp.teamsykmelding.syfohelsenettproxy/.default
     - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
-      value: https://btsys-api.intern.dev.nav.no
+      value: https://btsys-api.intern.nav.no
     - name: LEGE_SUSPENSJON_PROXY_SCOPE
       value: https://btsys-api.intern.nav.no
     - name: PDL_GRAPHQL_PATH
