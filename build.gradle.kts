@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.ByteArrayOutputStream
 
 group = "no.nav.syfo"
@@ -15,6 +16,7 @@ val junitJupiterVersion = "5.10.2"
 val commonsTextVersion = "1.12.0"
 val commonsCodecVersion = "1.17.0"
 val ktfmtVersion = "0.44"
+val javaVersion = JvmTarget.JVM_21
 
 
 application {
@@ -84,6 +86,11 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = javaVersion
+    }
+}
 tasks {
 
     shadowJar {
