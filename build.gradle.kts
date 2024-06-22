@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val ktorVersion = "2.3.11"
+val ktorVersion = "2.3.12"
 val logbackVersion = "1.5.6"
 val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
