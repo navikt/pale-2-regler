@@ -9,7 +9,6 @@ val logbackVersion = "1.5.7"
 val logstashEncoderVersion = "8.0"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.17.2"
-val pale2CommonVersion = "2.0.9"
 val mockkVersion = "1.13.12"
 val kotlinVersion = "2.0.10"
 val junitJupiterVersion = "5.11.0"
@@ -35,9 +34,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-    }
 }
 
 
@@ -70,8 +66,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-
-    implementation("no.nav.syfo:pale-2-common-models:$pale2CommonVersion")
 
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
