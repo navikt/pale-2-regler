@@ -66,8 +66,8 @@ class NorskHelsenettClient(
         }
     }
 
-    suspend fun hentfastlegeinformasjon() {
-        logger.info("Henter fastlegeinformasjonexport fra syfohelsenettproxy for msgId")
+    suspend fun hentfastlegeinformasjon(msgId: String) {
+        logger.info("Henter fastlegeinformasjonexport fra syfohelsenettproxy for msgId: $msgId")
         val httpResponse: HttpResponse =
             httpClient.get("$endpointUrl/api/v2/fastlegeinformasjon") {
                 accept(ContentType.Application.Json)
@@ -88,7 +88,6 @@ class NorskHelsenettClient(
             BadRequest -> {
                 logger.error(
                     "Syfohelsenettproxy svarte med feilmelding http statuscode: ${httpResponse.status.value}",
-
                 )
             }
             NotFound -> {
@@ -96,7 +95,12 @@ class NorskHelsenettClient(
             }
             else -> {
                 logger.info("Hentet fastlegeinformasjonexport")
-                logger.info(httpResponse.call.response.body<ExportGPContracts>().exportGPContractsResult.toString())
+                logger.info(
+                    httpResponse.call.response
+                        .body<ExportGPContracts>()
+                        .exportGPContractsResult
+                        .toString()
+                )
             }
         }
     }
