@@ -65,13 +65,6 @@ class RuleService(
                 loggingMeta = loggingMeta,
             )
 
-        try {
-            norskHelsenettClient.hentfastlegeinformasjon(receivedLegeerklaering.msgId)
-        } catch (exception: Exception) {
-            log.warn(
-                "exception happend during fastlegeinformasjonexport fra syfohelsenettproxy: $exception"
-            )
-        }
 
         val pdlPerson = pdlPersonService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
         val fodsel = pdlPerson.foedsel?.firstOrNull()
