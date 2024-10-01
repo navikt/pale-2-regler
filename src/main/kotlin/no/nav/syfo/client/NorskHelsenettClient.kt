@@ -90,7 +90,7 @@ class NorskHelsenettClient(
                 )
             }
             NotFound -> {
-                logger.warn("BehandlerFnr ikke funnet")
+                logger.warn("fastlegeinformasjonexport ikke funnet")
             }
             else -> {
                 logger.info("Hentet fastlegeinformasjonexport")
