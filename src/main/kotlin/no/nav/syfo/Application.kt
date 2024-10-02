@@ -132,9 +132,9 @@ fun Application.module() {
         expectSuccess = false
 
         install(HttpTimeout) {
-            socketTimeoutMillis = 120_000
-            connectTimeoutMillis = 40_000
-            requestTimeoutMillis = 40_000
+            socketTimeoutMillis = 300_000
+            connectTimeoutMillis = 300_000
+            requestTimeoutMillis = 300_000
         }
         install(HttpRequestRetry) {
             constantDelay(100, 0, false)

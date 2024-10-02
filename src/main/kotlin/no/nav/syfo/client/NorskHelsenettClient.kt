@@ -65,6 +65,39 @@ class NorskHelsenettClient(
             }
         }
     }
+
+    suspend fun hentfastlegeinformasjonexport (msgId: String) {
+        logger.info("Henter fastlegeinformasjonexport fra syfohelsenettproxy for msgId: $msgId")
+        val httpResponse: HttpResponse =
+            httpClient.get("$endpointUrl/api/v2/fastlegeinformasjon") {
+                accept(ContentType.Application.Json)
+                val accessToken = accessTokenClientV2.getAccessTokenV2(scope)
+                headers {
+                    append("Authorization", "Bearer $accessToken")
+                    append("Nav-CallId", msgId)
+                    append("kommunenr", "301")
+                }
+            }
+        when (httpResponse.status) {
+            InternalServerError -> {
+                logger.error(
+                    "Syfohelsenettproxy svarte med feilmelding http statuscode: ${httpResponse.status.value}",
+                )
+                throw IOException("Syfohelsenettproxy svarte med feilmelding")
+            }
+            BadRequest -> {
+                logger.error(
+                    "Syfohelsenettproxy svarte med feilmelding http statuscode: ${httpResponse.status.value}",
+                )
+            }
+            NotFound -> {
+                logger.warn("fastlegeinformasjonexport ikke funnet")
+            }
+            else -> {
+                logger.info("Hentet fastlegeinformasjonexport med http statuscode: ${httpResponse.status.value}")
+            }
+        }
+    }
 }
 
 data class Behandler(
