@@ -74,7 +74,7 @@ class NorskHelsenettClient(
                 headers {
                     append("Authorization", "Bearer $accessToken")
                     append("Nav-CallId", msgId)
-                    append("kommunenr", "301")
+                    append("kommunenr", "5636")
                 }
             }
         when (httpResponse.status) {
