@@ -65,7 +65,6 @@ class RuleService(
                 loggingMeta = loggingMeta,
             )
 
-        /*
         try {
             norskHelsenettClient.hentfastlegeinformasjonexport(receivedLegeerklaering.msgId)
             log.info("all god with hentfastlegeinformasjonexport")
@@ -75,7 +74,6 @@ class RuleService(
             )
         }
 
-         */
 
         val pdlPerson = pdlPersonService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
         val fodsel = pdlPerson.foedsel?.firstOrNull()
