@@ -28,7 +28,7 @@ application {
 plugins {
     id("application")
     kotlin("jvm") version "2.0.20"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.3"
     id("com.diffplug.spotless") version "6.25.0"
 }
 
