@@ -43,8 +43,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.pale-2-regler")
+val applicationState = ApplicationState()
 
 fun main() {
+    val applicationState = ApplicationState()
     val embeddedServer =
         embeddedServer(
             Netty,
@@ -57,6 +59,10 @@ fun main() {
                 embeddedServer.stop(TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10))
             },
         )
+    embeddedServer.monitor.subscribe(ApplicationStopped) {
+        applicationState.ready = false
+        applicationState.alive = false
+    }
     embeddedServer.start(true)
 }
 
@@ -99,18 +105,12 @@ fun Application.configureRouting(
 @OptIn(DelicateCoroutinesApi::class)
 fun Application.module() {
     val environmentVariables = EnvironmentVariables()
-    val applicationState = ApplicationState()
 
     val jwkProviderAad =
         JwkProviderBuilder(URI.create(environmentVariables.jwkKeysUrl).toURL())
             .cached(10, Duration.ofHours(24))
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
-
-    environment.monitor.subscribe(ApplicationStopped) {
-        applicationState.ready = false
-        applicationState.alive = false
-    }
 
     val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
         install(ContentNegotiation) {
@@ -231,7 +231,7 @@ fun harTilgang(credentials: JWTCredential, clientId: String): Boolean {
     return credentials.payload.audience.contains(clientId)
 }
 
-fun unauthorized(credentials: JWTCredential): Principal? {
+fun unauthorized(credentials: JWTCredential): Unit? {
     logger.warn(
         "Auth: Unexpected audience for jwt {}, {}",
         StructuredArguments.keyValue("issuer", credentials.payload.issuer),

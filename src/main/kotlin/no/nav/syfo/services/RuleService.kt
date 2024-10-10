@@ -76,7 +76,6 @@ class RuleService(
         }
         */
 
-
         val pdlPerson = pdlPersonService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
         val fodsel = pdlPerson.foedsel?.firstOrNull()
         val borndate =
