@@ -3,7 +3,8 @@ package no.nav.syfo
 data class EnvironmentVariables(
     val applicationPort: Int = getEnvVar("APPLICATION_PORT", "8080").toInt(),
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "pale-2-regler"),
-    val legeSuspensjonEndpointURL: String = getEnvVar("LEGE_SUSPENSJON_PROXY_ENDPOINT_URL"),
+    val legeSuspensjonEndpointURL: String =
+        getEnvVar("LEGE_SUSPENSJON_PROXY_ENDPOINT_URL", "http://btsys-api.team-rocket"),
     val legeSuspensjonProxyScope: String = getEnvVar("LEGE_SUSPENSJON_PROXY_SCOPE"),
     val norskHelsenettEndpointURL: String = "http://syfohelsenettproxy",
     val aadAccessTokenV2Url: String = getEnvVar("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"),
