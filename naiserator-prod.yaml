@@ -51,12 +51,9 @@ spec:
         - application: syfohelsenettproxy
       external:
         - host: pdl-api.prod-fss-pub.nais.io
-        - host: btsys-api.intern.nav.no
   env:
     - name: HELSENETT_SCOPE
       value: api://prod-gcp.teamsykmelding.syfohelsenettproxy/.default
-    - name: LEGE_SUSPENSJON_PROXY_ENDPOINT_URL
-      value: https://btsys-api.intern.nav.no
     - name: LEGE_SUSPENSJON_PROXY_SCOPE
       value: api://prod-gcp.team-rocket.btsys-api/.default
     - name: PDL_GRAPHQL_PATH
