@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream
 group = "no.nav.syfo"
 version = "1.0.0"
 
+val javaVersion = JvmTarget.JVM_21
+
 val ktorVersion = "3.0.1"
 val logbackVersion = "1.5.12"
 val logstashEncoderVersion = "8.0"
@@ -12,10 +14,13 @@ val jacksonVersion = "2.18.1"
 val mockkVersion = "1.13.13"
 val kotlinVersion = "2.1.0"
 val junitJupiterVersion = "5.11.3"
+val ktfmtVersion = "0.44"
+
+//Due to vulnerabilities
 val commonsTextVersion = "1.12.0"
 val commonsCodecVersion = "1.17.1"
-val ktfmtVersion = "0.44"
-val javaVersion = JvmTarget.JVM_21
+val nettycommonVersion = "4.1.115.Final"
+
 
 
 application {
@@ -42,6 +47,11 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    constraints {
+        implementation("io.netty:netty-common:$nettycommonVersion") {
+            because("Due to vulnerabilities in io.ktor:ktor-server-netty")
+        }
+    }
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
