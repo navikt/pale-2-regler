@@ -17,7 +17,7 @@ val junitJupiterVersion = "5.11.3"
 val ktfmtVersion = "0.44"
 
 //Due to vulnerabilities
-val commonsTextVersion = "1.12.0"
+val commonsTextVersion = "1.13.0"
 val commonsCodecVersion = "1.17.1"
 val nettycommonVersion = "4.1.115.Final"
 
