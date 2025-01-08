@@ -18,7 +18,7 @@ val ktfmtVersion = "0.44"
 
 //Due to vulnerabilities
 val commonsTextVersion = "1.13.0"
-val commonsCodecVersion = "1.17.1"
+val commonsCodecVersion = "1.17.2"
 val nettycommonVersion = "4.1.116.Final"
 
 
@@ -34,7 +34,7 @@ plugins {
     id("application")
     kotlin("jvm") version "2.1.0"
     id("com.gradleup.shadow") version "8.3.5"
-    id("com.diffplug.spotless") version "6.25.0"
+    id("com.diffplug.spotless") version "7.0.1"
 }
 
 repositories {
