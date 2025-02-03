@@ -12,13 +12,13 @@ val logstashEncoderVersion = "8.0"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.18.2"
 val mockkVersion = "1.13.16"
-val kotlinVersion = "2.1.0"
+val kotlinVersion = "2.1.10"
 val junitJupiterVersion = "5.11.4"
 val ktfmtVersion = "0.44"
 
 //Due to vulnerabilities
 val commonsTextVersion = "1.13.0"
-val commonsCodecVersion = "1.17.2"
+val commonsCodecVersion = "1.18.0"
 val nettycommonVersion = "4.1.117.Final"
 
 
@@ -32,8 +32,8 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.1.0"
-    id("com.gradleup.shadow") version "8.3.5"
+    kotlin("jvm") version "2.1.10"
+    id("com.gradleup.shadow") version "8.3.6"
     id("com.diffplug.spotless") version "7.0.2"
 }
 
