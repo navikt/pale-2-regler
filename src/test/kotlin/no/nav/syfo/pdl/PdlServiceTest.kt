@@ -47,7 +47,7 @@ class PdlServiceTest {
 
         val person = runBlocking { pdlService.getPdlPerson("01245678901", loggingMeta) }
         assertEquals("01245678901", person.fnr)
-        assertEquals("1900-01-01", person.foedsel?.firstOrNull()?.foedselsdato)
+        assertEquals("1900-01-01", person.foedselsdato?.firstOrNull()?.foedselsdato)
     }
 
     @Test
@@ -73,7 +73,7 @@ class PdlServiceTest {
                 PdlResponse(
                     hentPerson =
                         HentPerson(
-                            foedsel = emptyList(),
+                            foedselsdato = emptyList(),
                         ),
                     hentIdenter = Identliste(emptyList()),
                 ),

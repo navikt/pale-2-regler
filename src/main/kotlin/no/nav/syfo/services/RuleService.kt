@@ -77,7 +77,7 @@ class RuleService(
         */
 
         val pdlPerson = pdlPersonService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
-        val fodsel = pdlPerson.foedsel?.firstOrNull()
+        val fodsel = pdlPerson.foedselsdato?.firstOrNull()
         val borndate =
             if (fodsel?.foedselsdato?.isNotEmpty() == true) {
                 log.info("Extracting borndate from PDL date")
