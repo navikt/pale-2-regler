@@ -19,7 +19,7 @@ val ktfmtVersion = "0.44"
 //Due to vulnerabilities
 val commonsTextVersion = "1.13.0"
 val commonsCodecVersion = "1.18.0"
-val nettycommonVersion = "4.1.117.Final"
+val nettycommonVersion = "4.1.118.Final"
 
 
 
