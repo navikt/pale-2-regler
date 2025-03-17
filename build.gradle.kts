@@ -13,7 +13,7 @@ val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.18.3"
 val mockkVersion = "1.13.17"
 val kotlinVersion = "2.1.10"
-val junitJupiterVersion = "5.12.0"
+val junitJupiterVersion = "5.12.1"
 val ktfmtVersion = "0.44"
 
 //Due to vulnerabilities
