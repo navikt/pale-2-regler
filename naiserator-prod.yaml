@@ -36,8 +36,8 @@ spec:
         - id: elastic
   resources:
     requests:
-      cpu: 50m
-      memory: 512Mi
+      cpu: 20m
+      memory: 370Mi
   azure:
     application:
       enabled: true
