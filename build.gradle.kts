@@ -7,12 +7,12 @@ version = "1.0.0"
 val javaVersion = JvmTarget.JVM_21
 
 val ktorVersion = "3.1.1"
-val logbackVersion = "1.5.17"
+val logbackVersion = "1.5.18"
 val logstashEncoderVersion = "8.0"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.18.3"
 val mockkVersion = "1.13.17"
-val kotlinVersion = "2.1.10"
+val kotlinVersion = "2.1.20"
 val junitJupiterVersion = "5.12.1"
 val ktfmtVersion = "0.44"
 
@@ -32,7 +32,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.1.10"
+    kotlin("jvm") version "2.1.20"
     id("com.gradleup.shadow") version "8.3.6"
     id("com.diffplug.spotless") version "7.0.2"
 }
