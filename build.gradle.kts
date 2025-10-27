@@ -12,7 +12,7 @@ val logstashEncoderVersion = "8.1"
 val prometheusVersion = "0.16.0"
 val jacksonVersion = "2.20.0"
 val mockkVersion = "1.14.6"
-val kotlinVersion = "2.2.20"
+val kotlinVersion = "2.2.21"
 val junitJupiterVersion = "6.0.0"
 val ktfmtVersion = "0.44"
 
@@ -32,7 +32,7 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version "2.2.21"
     id("com.diffplug.spotless") version "8.0.0"
 }
 
