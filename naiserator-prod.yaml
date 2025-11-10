@@ -39,7 +39,7 @@ spec:
   resources:
     requests:
       cpu: 20m
-      memory: 400Mi
+      memory: 450Mi
   azure:
     application:
       enabled: true
