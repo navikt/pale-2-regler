@@ -6,20 +6,20 @@ version = "1.0.0"
 
 val javaVersion = JvmTarget.JVM_21
 
-val ktorVersion = "3.3.1"
-val logbackVersion = "1.5.19"
-val logstashEncoderVersion = "8.1"
+val ktorVersion = "3.3.2"
+val logbackVersion = "1.5.21"
+val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
-val jacksonVersion = "2.20.0"
+val jacksonVersion = "2.20.1"
 val mockkVersion = "1.14.6"
 val kotlinVersion = "2.2.21"
-val junitJupiterVersion = "6.0.0"
+val junitJupiterVersion = "6.0.1"
 val ktfmtVersion = "0.44"
 
 //Due to vulnerabilities
 val commonsTextVersion = "1.14.0"
-val commonsCodecVersion = "1.19.0"
-val nettycommonVersion = "4.2.6.Final"
+val commonsCodecVersion = "1.20.0"
+val nettycommonVersion = "4.2.7.Final"
 
 
 
