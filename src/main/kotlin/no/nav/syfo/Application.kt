@@ -132,17 +132,17 @@ fun Application.module() {
         expectSuccess = false
 
         install(HttpTimeout) {
-            socketTimeoutMillis = 600_000
-            connectTimeoutMillis = 500_000
-            requestTimeoutMillis = 500_000
+            socketTimeoutMillis = 30_000
+            connectTimeoutMillis = 30_000
+            requestTimeoutMillis = 30_000
         }
         install(HttpRequestRetry) {
-            constantDelay(100, 0, false)
-            retryOnExceptionIf(3) { request, throwable ->
+            exponentialDelay(maxDelayMs = 30_000)
+            retryOnExceptionIf(5) { request, throwable ->
                 logger.warn("Caught exception ${throwable.message}, for url ${request.url}")
                 true
             }
-            retryIf(maxRetries) { request, response ->
+            retryIf(5) { request, response ->
                 if (response.status.value.let { it in 500..599 }) {
                     logger.warn(
                         "Retrying for statuscode ${response.status.value}, for url ${request.url}"
