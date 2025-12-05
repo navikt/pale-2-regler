@@ -34,11 +34,11 @@ import no.nav.syfo.metrics.monitorHttpRequests
 import no.nav.syfo.nais.isalive.naisIsAliveRoute
 import no.nav.syfo.nais.isready.naisIsReadyRoute
 import no.nav.syfo.nais.prometheus.naisPrometheusRoute
-import no.nav.syfo.pdl.client.PdlClient
-import no.nav.syfo.pdl.service.PdlPersonService
 import no.nav.syfo.rules.api.registerRuleApi
 import no.nav.syfo.services.RuleExecutionService
 import no.nav.syfo.services.RuleService
+import no.nav.tsm.texas.TexasClient
+import no.nav.tsm.`tsm-pdl`.TsmPdlClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -182,20 +182,22 @@ fun Application.module() {
             httpClient
         )
 
-    val pdlClient =
-        PdlClient(
+    val texasClient = TexasClient(environmentVariables.texasUrl, httpClient)
+    val tsmPdlClient =
+        TsmPdlClient(
+            texasClient,
             httpClient,
-            environmentVariables.pdlGraphqlPath,
-            PdlClient::class
-                .java
-                .getResource("/graphql/getPerson.graphql")!!
-                .readText()
-                .replace(Regex("[\n\t]"), ""),
+            environmentVariables.tsmPdlUrl,
+            environmentVariables.tsmPdlScope
         )
-    val pdlService = PdlPersonService(pdlClient, accessTokenClientV2, environmentVariables.pdlScope)
 
     val ruleService =
-        RuleService(legeSuspensjonClient, norskHelsenettClient, pdlService, RuleExecutionService())
+        RuleService(
+            legeSuspensjonClient,
+            norskHelsenettClient,
+            tsmPdlClient,
+            RuleExecutionService()
+        )
 
     configureRouting(
         applicationState = applicationState,
