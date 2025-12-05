@@ -52,6 +52,8 @@ spec:
         - application: btsys-api
           namespace: team-rocket
           cluster: dev-gcp
+        - application: tsm-pdl-cache
+          namespace: tsm
       external:
         - host: pdl-api.dev-fss-pub.nais.io
   env:

@@ -15,6 +15,10 @@ data class EnvironmentVariables(
     val jwkKeysUrl: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
     val pdlScope: String = getEnvVar("PDL_SCOPE"),
     val pdlGraphqlPath: String = getEnvVar("PDL_GRAPHQL_PATH"),
+    val texasUrl: String = getEnvVar("NAIS_TOKEN_ENDPOINT"),
+    val cluster: String = getEnvVar("NAIS_CLUSTER_NAME"),
+    val tsmPdlUrl: String = "http://tsm-pdl-cache.tsm",
+    val tsmPdlScope: String = "api://$cluster.tsm.tsm-pdl-cache/.default",
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =

@@ -1,6 +1,5 @@
 package no.nav.syfo.services
 
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.DelicateCoroutinesApi
 import net.logstash.logback.argument.StructuredArguments.fields
@@ -13,12 +12,12 @@ import no.nav.syfo.model.RuleInfo
 import no.nav.syfo.model.RuleMetadata
 import no.nav.syfo.model.Status
 import no.nav.syfo.model.ValidationResult
-import no.nav.syfo.pdl.service.PdlPersonService
 import no.nav.syfo.rules.common.RuleResult
 import no.nav.syfo.rules.dsl.TreeOutput
 import no.nav.syfo.rules.dsl.printRulePath
 import no.nav.syfo.util.LoggingMeta
 import no.nav.syfo.util.extractBornDate
+import no.nav.tsm.`tsm-pdl`.TsmPdlClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory
 class RuleService(
     private val legeSuspensjonClient: LegeSuspensjonClient,
     private val norskHelsenettClient: NorskHelsenettClient,
-    private val pdlPersonService: PdlPersonService,
+    private val tsmPdlClient: TsmPdlClient,
     private val ruleExecutionService: RuleExecutionService,
 ) {
 
@@ -65,27 +64,10 @@ class RuleService(
                 loggingMeta = loggingMeta,
             )
 
-        /*
-        try {
-            norskHelsenettClient.hentfastlegeinformasjonexport(receivedLegeerklaering.msgId)
-            log.info("all god with hentfastlegeinformasjonexport")
-        } catch (exception: Exception) {
-            log.warn(
-                "exception happend during fastlegeinformasjonexport fra syfohelsenettproxy: $exception"
-            )
-        }
-        */
+        val pdlPerson = tsmPdlClient.getPerson(legeerklaring.pasient.fnr)
+        requireNotNull(pdlPerson) { "Fant ikke person i PDL" }
 
-        val pdlPerson = pdlPersonService.getPdlPerson(legeerklaring.pasient.fnr, loggingMeta)
-        val fodsel = pdlPerson.foedselsdato?.firstOrNull()
-        val borndate =
-            if (fodsel?.foedselsdato?.isNotEmpty() == true) {
-                log.info("Extracting borndate from PDL date")
-                LocalDate.parse(fodsel.foedselsdato)
-            } else {
-                log.info("Extracting borndate from personNrPasient")
-                extractBornDate(legeerklaring.pasient.fnr)
-            }
+        val fodselsdato = pdlPerson.foedselsdato ?: extractBornDate(legeerklaring.pasient.fnr)
 
         if (avsenderBehandler == null) {
             return ValidationResult(
@@ -112,7 +94,7 @@ class RuleService(
                 legekontorOrgnr = receivedLegeerklaering.legekontorOrgNr,
                 tssid = receivedLegeerklaering.tssid,
                 avsenderfnr = receivedLegeerklaering.personNrLege,
-                patientBorndate = borndate,
+                patientBorndate = fodselsdato,
                 behandler = avsenderBehandler,
                 doctorSuspensjon = doctorSuspend,
             )
