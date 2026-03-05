@@ -1,6 +1,7 @@
 name: Deploy app to dev and prod
-on: push
-
+on:
+  push:
+  workflow_dispatch:
 permissions:
   actions: read
   contents: write
