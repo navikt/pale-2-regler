@@ -23,7 +23,7 @@ class LegeSuspensjonClient(
     suspend fun checkTherapist(
         therapistId: String,
         ediloggid: String,
-        oppslagsdato: String
+        oppslagsdato: String,
     ): Suspendert {
         val httpResponse: HttpResponse =
             httpClient.get("$endpointUrl/api/v1/suspensjon/status") {
@@ -48,7 +48,7 @@ class LegeSuspensjonClient(
                 logger.error(
                     "Btsys svarte med kode {} for ediloggId {}",
                     httpResponse.status,
-                    ediloggid
+                    ediloggid,
                 )
                 throw IOException(
                     "Btsys svarte med uventet kode ${httpResponse.status} for $ediloggid"

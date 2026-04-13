@@ -25,20 +25,10 @@ class ValidationTest {
             Behandler(
                 listOf(
                     Godkjenning(
-                        autorisasjon =
-                            Kode(
-                                aktiv = true,
-                                oid = 7704,
-                                verdi = "1",
-                            ),
-                        helsepersonellkategori =
-                            Kode(
-                                aktiv = true,
-                                oid = 0,
-                                verdi = "LE",
-                            ),
-                    ),
-                ),
+                        autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1"),
+                        helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "LE"),
+                    )
+                )
             )
 
         val ruleMetadata =
@@ -88,20 +78,10 @@ class ValidationTest {
             Behandler(
                 listOf(
                     Godkjenning(
-                        autorisasjon =
-                            Kode(
-                                aktiv = true,
-                                oid = 7704,
-                                verdi = "1",
-                            ),
-                        helsepersonellkategori =
-                            Kode(
-                                aktiv = true,
-                                oid = 0,
-                                verdi = "LE",
-                            ),
-                    ),
-                ),
+                        autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1"),
+                        helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "LE"),
+                    )
+                )
             )
 
         val ruleMetadata =
@@ -120,22 +100,15 @@ class ValidationTest {
 
         Assertions.assertEquals(Status.INVALID, status.treeResult.status)
         Assertions.assertEquals(
-            listOf(
-                ValidationRules.PASIENT_YNGRE_ENN_13 to true,
-            ),
+            listOf(ValidationRules.PASIENT_YNGRE_ENN_13 to true),
             status.rulePath.map { it.rule to it.ruleResult },
         )
 
-        Assertions.assertEquals(
-            mapOf(
-                "pasientUnder13Aar" to true,
-            ),
-            status.ruleInputs,
-        )
+        Assertions.assertEquals(mapOf("pasientUnder13Aar" to true), status.ruleInputs)
 
         Assertions.assertEquals(
             ValidationRuleHit.PASIENT_YNGRE_ENN_13.ruleHit,
-            status.treeResult.ruleHit
+            status.treeResult.ruleHit,
         )
     }
 
@@ -144,29 +117,16 @@ class ValidationTest {
         val person31Years = LocalDate.now().minusYears(31)
 
         val receivedLegeerklaering =
-            getReceivedLegeerklaering(
-                legeerklaering = getLegeerklaering(),
-                orgnr = "1345666666",
-            )
+            getReceivedLegeerklaering(legeerklaering = getLegeerklaering(), orgnr = "1345666666")
 
         val behandler =
             Behandler(
                 listOf(
                     Godkjenning(
-                        autorisasjon =
-                            Kode(
-                                aktiv = true,
-                                oid = 7704,
-                                verdi = "1",
-                            ),
-                        helsepersonellkategori =
-                            Kode(
-                                aktiv = true,
-                                oid = 0,
-                                verdi = "LE",
-                            ),
-                    ),
-                ),
+                        autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1"),
+                        helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "LE"),
+                    )
+                )
             )
 
         val ruleMetadata =
@@ -193,16 +153,13 @@ class ValidationTest {
         )
 
         Assertions.assertEquals(
-            mapOf(
-                "pasientUnder13Aar" to false,
-                "ugyldingOrgNummerLengde" to true,
-            ),
+            mapOf("pasientUnder13Aar" to false, "ugyldingOrgNummerLengde" to true),
             status.ruleInputs,
         )
 
         Assertions.assertEquals(
             ValidationRuleHit.UGYLDIG_ORGNR_LENGDE.ruleHit,
-            status.treeResult.ruleHit
+            status.treeResult.ruleHit,
         )
     }
 
@@ -216,20 +173,10 @@ class ValidationTest {
             Behandler(
                 listOf(
                     Godkjenning(
-                        autorisasjon =
-                            Kode(
-                                aktiv = true,
-                                oid = 7704,
-                                verdi = "1",
-                            ),
-                        helsepersonellkategori =
-                            Kode(
-                                aktiv = true,
-                                oid = 0,
-                                verdi = "LE",
-                            ),
-                    ),
-                ),
+                        autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1"),
+                        helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "LE"),
+                    )
+                )
             )
 
         val ruleMetadata =

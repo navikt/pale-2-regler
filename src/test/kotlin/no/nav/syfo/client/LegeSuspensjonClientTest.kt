@@ -113,7 +113,7 @@ class LegeSuspensjonClientTest {
         }
         assertEquals(
             "Btsys svarte med uventet kode 500 Internal Server Error for 55-4321",
-            btsysException.message
+            btsysException.message,
         )
     }
 }

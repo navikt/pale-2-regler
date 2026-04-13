@@ -14,7 +14,7 @@ val jacksonVersion = "2.20.2"
 val mockkVersion = "1.14.6"
 val kotlinVersion = "2.2.21"
 val junitJupiterVersion = "6.0.1"
-val ktfmtVersion = "0.44"
+val ktfmtVersion = "0.62"
 
 //Due to vulnerabilities
 val commonsTextVersion = "1.14.0"

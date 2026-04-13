@@ -25,7 +25,7 @@ class NorskHelsenettClient(
     suspend fun finnBehandler(
         behandlerFnr: String,
         msgId: String,
-        loggingMeta: LoggingMeta
+        loggingMeta: LoggingMeta,
     ): Behandler? {
         logger.info("Henter behandler fra syfohelsenettproxy for msgId {}", msgId)
         val httpResponse: HttpResponse =
@@ -43,7 +43,7 @@ class NorskHelsenettClient(
                 logger.error(
                     "Syfohelsenettproxy svarte med feilmelding http statuscode: ${httpResponse.status.value} for msgId {}, {}",
                     msgId,
-                    fields(loggingMeta)
+                    fields(loggingMeta),
                 )
                 throw IOException("Syfohelsenettproxy svarte med feilmelding for $msgId")
             }
@@ -51,7 +51,7 @@ class NorskHelsenettClient(
                 logger.error(
                     "Syfohelsenettproxy svarte med feilmelding http statuscode: ${httpResponse.status.value} for msgId {}, {}",
                     msgId,
-                    fields(loggingMeta)
+                    fields(loggingMeta),
                 )
                 return null
             }
@@ -67,18 +67,8 @@ class NorskHelsenettClient(
     }
 }
 
-data class Behandler(
-    val godkjenninger: List<Godkjenning>,
-    val hprNummer: Int? = null,
-)
+data class Behandler(val godkjenninger: List<Godkjenning>, val hprNummer: Int? = null)
 
-data class Godkjenning(
-    val helsepersonellkategori: Kode? = null,
-    val autorisasjon: Kode? = null,
-)
+data class Godkjenning(val helsepersonellkategori: Kode? = null, val autorisasjon: Kode? = null)
 
-data class Kode(
-    val aktiv: Boolean,
-    val oid: Int,
-    val verdi: String?,
-)
+data class Kode(val aktiv: Boolean, val oid: Int, val verdi: String?)

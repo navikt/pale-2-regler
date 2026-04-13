@@ -9,32 +9,18 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import org.slf4j.LoggerFactory
 
-data class TexasResponse(
-    val access_token: String,
-    val expires_in: Int,
-    val token_type: String,
-)
+data class TexasResponse(val access_token: String, val expires_in: Int, val token_type: String)
 
-data class TexasRequest(
-    val identity_provider: String,
-    val target: String,
-)
+data class TexasRequest(val identity_provider: String, val target: String)
 
-class TexasClient(
-    private val tokenEndpoint: String,
-    private val httpClient: HttpClient,
-) {
+class TexasClient(private val tokenEndpoint: String, private val httpClient: HttpClient) {
     companion object {
         private val log = LoggerFactory.getLogger(TexasClient::class.java)
     }
 
     suspend fun getAccessToken(scope: String): String {
 
-        val requestBody =
-            TexasRequest(
-                identity_provider = "azuread",
-                target = scope,
-            )
+        val requestBody = TexasRequest(identity_provider = "azuread", target = scope)
 
         val response =
             httpClient.post(tokenEndpoint) {

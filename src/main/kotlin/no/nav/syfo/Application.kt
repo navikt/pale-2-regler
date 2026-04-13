@@ -57,7 +57,7 @@ fun main() {
         .addShutdownHook(
             Thread {
                 embeddedServer.stop(TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10))
-            },
+            }
         )
     embeddedServer.monitor.subscribe(ApplicationStopped) {
         applicationState.ready = false
@@ -71,12 +71,9 @@ fun Application.configureRouting(
     applicationState: ApplicationState,
     environmentVariables: EnvironmentVariables,
     jwkProviderAadV2: JwkProvider,
-    ruleService: RuleService
+    ruleService: RuleService,
 ) {
-    setupAuth(
-        environmentVariables = environmentVariables,
-        jwkProviderAadV2 = jwkProviderAadV2,
-    )
+    setupAuth(environmentVariables = environmentVariables, jwkProviderAadV2 = jwkProviderAadV2)
     routing {
         naisIsAliveRoute(applicationState)
         naisIsReadyRoute(applicationState)
@@ -179,7 +176,7 @@ fun Application.module() {
             environmentVariables.norskHelsenettEndpointURL,
             accessTokenClientV2,
             environmentVariables.helsenettproxyScope,
-            httpClient
+            httpClient,
         )
 
     val texasClient = TexasClient(environmentVariables.texasUrl, httpClient)
@@ -188,7 +185,7 @@ fun Application.module() {
             texasClient,
             httpClient,
             environmentVariables.tsmPdlUrl,
-            environmentVariables.tsmPdlScope
+            environmentVariables.tsmPdlScope,
         )
 
     val ruleService =
@@ -196,14 +193,14 @@ fun Application.module() {
             legeSuspensjonClient,
             norskHelsenettClient,
             tsmPdlClient,
-            RuleExecutionService()
+            RuleExecutionService(),
         )
 
     configureRouting(
         applicationState = applicationState,
         environmentVariables = environmentVariables,
         jwkProviderAadV2 = jwkProviderAad,
-        ruleService = ruleService
+        ruleService = ruleService,
     )
 
     DefaultExports.initialize()
@@ -244,7 +241,4 @@ fun unauthorized(credentials: JWTCredential): Unit? {
 
 class ServiceUnavailableException(message: String?) : Exception(message)
 
-data class ApplicationState(
-    var alive: Boolean = true,
-    var ready: Boolean = true,
-)
+data class ApplicationState(var alive: Boolean = true, var ready: Boolean = true)

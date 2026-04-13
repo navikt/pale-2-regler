@@ -81,7 +81,7 @@ class RuleService(
                             messageForUser =
                                 "Avsenders fødselsnummer er ikke registert i Helsepersonellregisteret (HPR)",
                             ruleStatus = Status.INVALID,
-                        ),
+                        )
                     ),
             )
         }
@@ -100,12 +100,7 @@ class RuleService(
             )
 
         val result = ruleExecutionService.runRules(legeerklaring, ruleMetadata)
-        result.forEach {
-            RULE_NODE_RULE_PATH_COUNTER.labels(
-                    it.printRulePath(),
-                )
-                .inc()
-        }
+        result.forEach { RULE_NODE_RULE_PATH_COUNTER.labels(it.printRulePath()).inc() }
 
         val validationResult = validationResult(result.map { it })
         RULE_NODE_RULE_HIT_COUNTER.labels(

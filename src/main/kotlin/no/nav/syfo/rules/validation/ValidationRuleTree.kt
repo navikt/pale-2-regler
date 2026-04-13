@@ -27,14 +27,14 @@ val validationRuleTree =
 
 internal fun RuleNode<ValidationRules, RuleResult>.yes(
     status: Status,
-    ruleHit: ValidationRuleHit? = null
+    ruleHit: ValidationRuleHit? = null,
 ) {
     yes(RuleResult(status, ruleHit?.ruleHit))
 }
 
 internal fun RuleNode<ValidationRules, RuleResult>.no(
     status: Status,
-    ruleHit: ValidationRuleHit? = null
+    ruleHit: ValidationRuleHit? = null,
 ) {
     no(RuleResult(status, ruleHit?.ruleHit))
 }

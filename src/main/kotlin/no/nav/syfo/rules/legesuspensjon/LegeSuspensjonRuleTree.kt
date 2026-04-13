@@ -7,7 +7,7 @@ import no.nav.syfo.rules.dsl.RuleNode
 import no.nav.syfo.rules.dsl.tree
 
 enum class LegeSuspensjonRules {
-    BEHANDLER_SUSPENDERT,
+    BEHANDLER_SUSPENDERT
 }
 
 val legeSuspensjonRuleTree =
@@ -18,14 +18,14 @@ val legeSuspensjonRuleTree =
 
 internal fun RuleNode<LegeSuspensjonRules, RuleResult>.yes(
     status: Status,
-    ruleHit: LegeSuspensjonRuleHit? = null
+    ruleHit: LegeSuspensjonRuleHit? = null,
 ) {
     yes(RuleResult(status, ruleHit?.ruleHit))
 }
 
 internal fun RuleNode<LegeSuspensjonRules, RuleResult>.no(
     status: Status,
-    ruleHit: LegeSuspensjonRuleHit? = null
+    ruleHit: LegeSuspensjonRuleHit? = null,
 ) {
     no(RuleResult(status, ruleHit?.ruleHit))
 }
