@@ -6,18 +6,18 @@ version = "1.0.0"
 
 val javaVersion = JvmTarget.JVM_21
 
-val ktorVersion = "3.4.0"
-val logbackVersion = "1.5.21"
+val ktorVersion = "3.4.3"
+val logbackVersion = "1.5.32"
 val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
-val jacksonVersion = "2.20.2"
-val mockkVersion = "1.14.6"
-val kotlinVersion = "2.2.21"
-val junitJupiterVersion = "6.0.1"
+val jacksonVersion = "2.21.3"
+val mockkVersion = "1.14.9"
+val kotlinVersion = "2.3.21"
+val junitJupiterVersion = "6.0.3"
 val ktfmtVersion = "0.44"
 
 //Due to vulnerabilities
-val commonsTextVersion = "1.14.0"
+val commonsTextVersion = "1.15.0"
 
 
 
@@ -31,7 +31,7 @@ application {
 plugins {
     id("application")
     kotlin("jvm") version "2.2.21"
-    id("com.diffplug.spotless") version "8.1.0"
+    id("com.diffplug.spotless") version "8.4.0"
 }
 
 repositories {
