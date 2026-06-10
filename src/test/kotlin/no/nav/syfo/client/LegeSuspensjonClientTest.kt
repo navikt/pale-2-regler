@@ -3,6 +3,7 @@ package no.nav.syfo.client
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
@@ -16,13 +17,15 @@ import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.response.respond
-import io.ktor.server.routing.get
+import io.ktor.server.request.receive
+import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -75,45 +78,39 @@ class LegeSuspensjonClientTest {
     }
 
     @Test
-    fun `CheckTherapist should return Suspendert true`() {
-        runBlocking {
-            val suspendert =
-                legeSuspensjonClient.checkTherapist(
-                    therapistId = "1",
-                    ediloggid = "55-4321",
-                    oppslagsdato = "2023-01-26",
-                )
-            assertEquals(true, suspendert.suspendert)
-        }
+    fun `CheckTherapist should return Suspendert true`() = runTest {
+        val suspendert =
+            legeSuspensjonClient.checkTherapist(
+                therapistId = "1",
+                ediloggid = "55-4321",
+                oppslagsdato = "2023-01-26",
+            )
+        assertEquals(true, suspendert.suspendert)
     }
 
     @Test
-    fun `CheckTherapist should return Suspendert false`() {
-        runBlocking {
-            val suspendert =
-                legeSuspensjonClient.checkTherapist(
-                    therapistId = "2",
-                    ediloggid = "55-4321",
-                    oppslagsdato = "2023-01-26",
-                )
-            assertEquals(false, suspendert.suspendert)
-        }
+    fun `CheckTherapist should return Suspendert false`() = runTest {
+        val suspendert =
+            legeSuspensjonClient.checkTherapist(
+                therapistId = "2",
+                ediloggid = "55-4321",
+                oppslagsdato = "2023-01-26",
+            )
+        assertEquals(false, suspendert.suspendert)
     }
 
     @Test
-    fun `CheckTherapist should return IOException`() {
+    fun `CheckTherapist should return IOException`() = runTest {
         val btsysException: Throwable = assertThrows {
-            runBlocking {
-                legeSuspensjonClient.checkTherapist(
-                    therapistId = "3",
-                    ediloggid = "55-4321",
-                    oppslagsdato = "2023-01-26",
-                )
-            }
+            legeSuspensjonClient.checkTherapist(
+                therapistId = "3",
+                ediloggid = "55-4321",
+                oppslagsdato = "2023-01-26",
+            )
         }
         assertEquals(
             "Btsys svarte med uventet kode 500 Internal Server Error for 55-4321",
-            btsysException.message
+            btsysException.message,
         )
     }
 }
@@ -128,10 +125,13 @@ fun Application.myApplicationModule() {
         }
     }
     routing {
-        get("/api/v1/suspensjon/status") {
+        post("/api/v1/suspensjon/soek") {
+            val payload = call.receive<Map<String, Any>>()
+            val ident = payload["personident"]
+
             when {
-                call.request.headers["Nav-Personident"] == "1" -> call.respond(Suspendert(true))
-                call.request.headers["Nav-Personident"] == "2" -> call.respond(Suspendert(false))
+                ident == "1" -> call.respond(Suspendert(true))
+                ident == "2" -> call.respond(Suspendert(false))
                 else -> call.respond(HttpStatusCode.InternalServerError, "Noe gikk galt")
             }
         }

@@ -6,9 +6,12 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import java.io.IOException
 import no.nav.syfo.logger
 
@@ -26,18 +29,23 @@ class LegeSuspensjonClient(
         oppslagsdato: String
     ): Suspendert {
         val httpResponse: HttpResponse =
-            httpClient.get("$endpointUrl/api/v1/suspensjon/status") {
+            httpClient.post("$endpointUrl/api/v1/suspensjon/soek") {
                 accept(ContentType.Application.Json)
                 val accessToken = accessTokenClientV2.getAccessTokenV2(scope)
 
                 headers {
                     append("Nav-Call-Id", ediloggid)
                     append("Nav-Consumer-Id", consumerAppName)
-                    append("Nav-Personident", therapistId)
-
                     append("Authorization", "Bearer $accessToken")
                 }
-                parameter("oppslagsdato", oppslagsdato)
+
+                contentType(ContentType.Application.Json)
+                setBody(
+                    mapOf(
+                        "personident" to therapistId,
+                        "oppslagsdato" to oppslagsdato,
+                    )
+                )
             }
         when (httpResponse.status) {
             HttpStatusCode.OK -> {
