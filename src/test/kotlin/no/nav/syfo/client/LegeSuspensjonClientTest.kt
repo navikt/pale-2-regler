@@ -1,30 +1,24 @@
 package no.nav.syfo.client
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.apache.Apache
+import io.ktor.client.engine.apache5.Apache5
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
+import io.ktor.serialization.jackson3.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.server.response.respond
 import io.ktor.server.request.receive
+import io.ktor.server.response.respond
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.mockk.coEvery
 import io.mockk.mockk
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -37,15 +31,8 @@ import org.junit.jupiter.api.assertThrows
 class LegeSuspensjonClientTest {
     private val accessTokenClientV2 = mockk<AccessTokenClientV2>()
     private val httpClient =
-        HttpClient(Apache) {
-            install(ContentNegotiation) {
-                jackson {
-                    registerKotlinModule()
-                    registerModule(JavaTimeModule())
-                    configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                }
-            }
+        HttpClient(Apache5) {
+            install(ContentNegotiation) { jackson {} }
             install(HttpRequestRetry) {
                 maxRetries = 3
                 delayMillis { retry -> retry * 100L }
@@ -116,14 +103,7 @@ class LegeSuspensjonClientTest {
 }
 
 fun Application.myApplicationModule() {
-    install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
-        jackson {
-            registerKotlinModule()
-            registerModule(JavaTimeModule())
-            configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        }
-    }
+    install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) { jackson {} }
     routing {
         post("/api/v1/suspensjon/soek") {
             val payload = call.receive<Map<String, Any>>()

@@ -18,11 +18,7 @@ data class TsmPdlResponse(
     val doed: Boolean,
 )
 
-data class Navn(
-    val fornavn: String,
-    val mellomnavn: String?,
-    val etternavn: String,
-)
+data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
 
 class TsmPdlClient(
     private val texasClient: TexasClient,
