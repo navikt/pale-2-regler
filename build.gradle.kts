@@ -4,20 +4,17 @@ import java.io.ByteArrayOutputStream
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val javaVersion = JvmTarget.JVM_21
+val javaVersion = JvmTarget.JVM_25
 
-val ktorVersion = "3.4.0"
-val logbackVersion = "1.5.21"
+val ktorVersion = "3.5.2"
+val logbackVersion = "1.6.3"
 val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
-val jacksonVersion = "2.20.2"
-val mockkVersion = "1.14.6"
-val kotlinVersion = "2.2.21"
-val junitJupiterVersion = "6.0.1"
-val ktfmtVersion = "0.44"
+val jacksonVersion="3.2.2"
+val mockkVersion = "1.14.11"
+val junitJupiterVersion = "6.1.3"
+val ktfmtVersion = "0.56"
 
-//Due to vulnerabilities
-val commonsTextVersion = "1.14.0"
 
 
 
@@ -30,8 +27,8 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.2.21"
-    id("com.diffplug.spotless") version "8.1.0"
+    kotlin("jvm") version "2.4.10"
+    id("com.diffplug.spotless") version "8.10.1"
 }
 
 repositories {
@@ -40,8 +37,6 @@ repositories {
 
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
@@ -49,9 +44,9 @@ dependencies {
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson3:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-apache:$ktorVersion")
+    implementation("io.ktor:ktor-client-apache5:$ktorVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
@@ -59,18 +54,10 @@ dependencies {
     implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation("io.prometheus:simpleclient_common:$prometheusVersion")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("tools.jackson.module:jackson-module-kotlin:$jacksonVersion")
 
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
-        exclude(group = "org.eclipse.jetty")
-    }
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
-
-    testImplementation("org.apache.commons:commons-text:$commonsTextVersion")
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")

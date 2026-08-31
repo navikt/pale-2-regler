@@ -2,16 +2,13 @@ package no.nav.syfo
 
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.client.*
-import io.ktor.client.engine.apache.*
+import io.ktor.client.engine.apache5.Apache5
+import io.ktor.client.engine.apache5.Apache5EngineConfig
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.*
-import io.ktor.serialization.jackson.*
+import io.ktor.serialization.jackson3.jackson
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -57,7 +54,7 @@ fun main() {
         .addShutdownHook(
             Thread {
                 embeddedServer.stop(TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10))
-            },
+            }
         )
     embeddedServer.monitor.subscribe(ApplicationStopped) {
         applicationState.ready = false
@@ -71,26 +68,16 @@ fun Application.configureRouting(
     applicationState: ApplicationState,
     environmentVariables: EnvironmentVariables,
     jwkProviderAadV2: JwkProvider,
-    ruleService: RuleService
+    ruleService: RuleService,
 ) {
-    setupAuth(
-        environmentVariables = environmentVariables,
-        jwkProviderAadV2 = jwkProviderAadV2,
-    )
+    setupAuth(environmentVariables = environmentVariables, jwkProviderAadV2 = jwkProviderAadV2)
     routing {
         naisIsAliveRoute(applicationState)
         naisIsReadyRoute(applicationState)
         naisPrometheusRoute()
         authenticate("servicebrukerAAD") { registerRuleApi(ruleService) }
     }
-    install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
-        jackson {
-            registerKotlinModule()
-            registerModule(JavaTimeModule())
-            configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        }
-    }
+    install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) { jackson {} }
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Unknown error")
@@ -112,15 +99,8 @@ fun Application.module() {
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
 
-    val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
-        install(ContentNegotiation) {
-            jackson {
-                registerKotlinModule()
-                registerModule(JavaTimeModule())
-                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            }
-        }
+    val config: HttpClientConfig<Apache5EngineConfig>.() -> Unit = {
+        install(ContentNegotiation) { jackson {} }
         HttpResponseValidator {
             handleResponseExceptionWithRequest { exception, _ ->
                 when (exception) {
@@ -155,7 +135,7 @@ fun Application.module() {
         }
     }
 
-    val httpClient = HttpClient(Apache, config)
+    val httpClient = HttpClient(Apache5, config)
 
     val accessTokenClientV2 =
         AccessTokenClientV2(
@@ -179,7 +159,7 @@ fun Application.module() {
             environmentVariables.norskHelsenettEndpointURL,
             accessTokenClientV2,
             environmentVariables.helsenettproxyScope,
-            httpClient
+            httpClient,
         )
 
     val texasClient = TexasClient(environmentVariables.texasUrl, httpClient)
@@ -188,7 +168,7 @@ fun Application.module() {
             texasClient,
             httpClient,
             environmentVariables.tsmPdlUrl,
-            environmentVariables.tsmPdlScope
+            environmentVariables.tsmPdlScope,
         )
 
     val ruleService =
@@ -196,14 +176,14 @@ fun Application.module() {
             legeSuspensjonClient,
             norskHelsenettClient,
             tsmPdlClient,
-            RuleExecutionService()
+            RuleExecutionService(),
         )
 
     configureRouting(
         applicationState = applicationState,
         environmentVariables = environmentVariables,
         jwkProviderAadV2 = jwkProviderAad,
-        ruleService = ruleService
+        ruleService = ruleService,
     )
 
     DefaultExports.initialize()
@@ -244,7 +224,4 @@ fun unauthorized(credentials: JWTCredential): Unit? {
 
 class ServiceUnavailableException(message: String?) : Exception(message)
 
-data class ApplicationState(
-    var alive: Boolean = true,
-    var ready: Boolean = true,
-)
+data class ApplicationState(var alive: Boolean = true, var ready: Boolean = true)

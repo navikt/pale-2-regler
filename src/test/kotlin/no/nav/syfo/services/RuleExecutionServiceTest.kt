@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 enum class TestRules {
-    RULE1,
+    RULE1
 }
 
 class RuleExecutionServiceTest {
@@ -25,18 +25,9 @@ class RuleExecutionServiceTest {
 
     @Test
     fun `Run ruleTrees`() {
-        every {
-            rulesExecution.runRules(
-                any(),
-                any(),
-            )
-        } returns
+        every { rulesExecution.runRules(any(), any()) } returns
             (TreeOutput<TestRules, RuleResult>(
-                treeResult =
-                    RuleResult(
-                        status = Status.OK,
-                        ruleHit = null,
-                    ),
+                treeResult = RuleResult(status = Status.OK, ruleHit = null)
             ))
 
         val rule =
@@ -52,11 +43,7 @@ class RuleExecutionServiceTest {
             mockk<RuleExecution<TestRules>>().also {
                 every { it.runRules(any(), any()) } returns
                     (TreeOutput<TestRules, RuleResult>(
-                        treeResult =
-                            RuleResult(
-                                status = Status.OK,
-                                ruleHit = null,
-                            ),
+                        treeResult = RuleResult(status = Status.OK, ruleHit = null)
                     ))
             }
         val invalidRuleExecution =
@@ -71,16 +58,16 @@ class RuleExecutionServiceTest {
                                         Status.INVALID,
                                         TestRules.RULE1.name,
                                         "message",
-                                        "message"
+                                        "message",
                                     ),
-                            ),
+                            )
                     ))
             }
         val results =
             ruleExecutionService.runRules(
                 sykmeldnig,
                 ruleMetadata,
-                sequenceOf(invalidRuleExecution, okRule)
+                sequenceOf(invalidRuleExecution, okRule),
             )
         Assertions.assertEquals(1, results.size)
         Assertions.assertEquals(Status.INVALID, results.first().treeResult.status)

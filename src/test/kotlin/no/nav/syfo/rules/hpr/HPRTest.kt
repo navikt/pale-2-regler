@@ -32,20 +32,10 @@ class HPRTest {
             Behandler(
                 listOf(
                     Godkjenning(
-                        autorisasjon =
-                            Kode(
-                                aktiv = true,
-                                oid = 7704,
-                                verdi = "1",
-                            ),
-                        helsepersonellkategori =
-                            Kode(
-                                aktiv = true,
-                                oid = 0,
-                                verdi = "LE",
-                            ),
-                    ),
-                ),
+                        autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "1"),
+                        helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "LE"),
+                    )
+                )
             )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
@@ -95,20 +85,10 @@ class HPRTest {
             Behandler(
                 listOf(
                     Godkjenning(
-                        autorisasjon =
-                            Kode(
-                                aktiv = false,
-                                oid = 7704,
-                                verdi = "1",
-                            ),
-                        helsepersonellkategori =
-                            Kode(
-                                aktiv = true,
-                                oid = 0,
-                                verdi = "LE",
-                            ),
-                    ),
-                ),
+                        autorisasjon = Kode(aktiv = false, oid = 7704, verdi = "1"),
+                        helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "LE"),
+                    )
+                )
             )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
@@ -131,22 +111,18 @@ class HPRTest {
 
         Assertions.assertEquals(Status.INVALID, status.treeResult.status)
         Assertions.assertEquals(
-            listOf(
-                HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR to true,
-            ),
+            listOf(HPRRules.BEHANDLER_IKKE_GYLDIG_I_HPR to true),
             status.rulePath.map { it.rule to it.ruleResult },
         )
 
         Assertions.assertEquals(
             status.ruleInputs,
-            mapOf(
-                "behandlerGodkjenninger" to behandler.godkjenninger,
-            ),
+            mapOf("behandlerGodkjenninger" to behandler.godkjenninger),
         )
 
         Assertions.assertEquals(
             HPRRuleHit.BEHANDLER_IKKE_GYLDIG_I_HPR.ruleHit,
-            status.treeResult.ruleHit
+            status.treeResult.ruleHit,
         )
     }
 
@@ -156,20 +132,10 @@ class HPRTest {
             Behandler(
                 listOf(
                     Godkjenning(
-                        autorisasjon =
-                            Kode(
-                                aktiv = true,
-                                oid = 7702,
-                                verdi = "19",
-                            ),
-                        helsepersonellkategori =
-                            Kode(
-                                aktiv = true,
-                                oid = 0,
-                                verdi = "LE",
-                            ),
-                    ),
-                ),
+                        autorisasjon = Kode(aktiv = true, oid = 7702, verdi = "19"),
+                        helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "LE"),
+                    )
+                )
             )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
@@ -209,7 +175,7 @@ class HPRTest {
 
         Assertions.assertEquals(
             HPRRuleHit.BEHANDLER_MANGLER_AUTORISASJON_I_HPR.ruleHit,
-            status.treeResult.ruleHit
+            status.treeResult.ruleHit,
         )
     }
 
@@ -219,20 +185,10 @@ class HPRTest {
             Behandler(
                 listOf(
                     Godkjenning(
-                        autorisasjon =
-                            Kode(
-                                aktiv = true,
-                                oid = 7704,
-                                verdi = "18",
-                            ),
-                        helsepersonellkategori =
-                            Kode(
-                                aktiv = true,
-                                oid = 0,
-                                verdi = "PL",
-                            ),
-                    ),
-                ),
+                        autorisasjon = Kode(aktiv = true, oid = 7704, verdi = "18"),
+                        helsepersonellkategori = Kode(aktiv = true, oid = 0, verdi = "PL"),
+                    )
+                )
             )
 
         val receivedLegeerklaering = getReceivedLegeerklaering(getLegeerklaering())
@@ -274,7 +230,7 @@ class HPRTest {
 
         Assertions.assertEquals(
             HPRRuleHit.BEHANDLER_IKKE_LE_KI_MT_TL_FT_PS_I_HPR.ruleHit,
-            status.treeResult.ruleHit
+            status.treeResult.ruleHit,
         )
     }
 }
@@ -282,7 +238,7 @@ class HPRTest {
 fun getReceivedLegeerklaering(
     legeerklaering: Legeerklaering,
     orgnr: String = "913459105",
-    personnrPasient: String = "54321"
+    personnrPasient: String = "54321",
 ): ReceivedLegeerklaering {
     return ReceivedLegeerklaering(
         legeerklaering = legeerklaering,
@@ -332,17 +288,8 @@ fun getLegeerklaering(foedselsnr: String = "23057245631"): Legeerklaering {
         sykdomsopplysninger =
             Sykdomsopplysninger(
                 hoveddiagnose =
-                    Diagnose(
-                        tekst = "Fysikalsk behandling/rehabilitering",
-                        kode = "-57",
-                    ),
-                bidiagnose =
-                    listOf(
-                        Diagnose(
-                            tekst = "Engstelig for hjertesykdom",
-                            kode = "K24",
-                        ),
-                    ),
+                    Diagnose(tekst = "Fysikalsk behandling/rehabilitering", kode = "-57"),
+                bidiagnose = listOf(Diagnose(tekst = "Engstelig for hjertesykdom", kode = "K24")),
                 arbeidsuforFra = LocalDateTime.now().minusDays(3),
                 sykdomshistorie = "Tekst",
                 statusPresens = "Tekst",

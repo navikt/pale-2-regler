@@ -21,7 +21,7 @@ class LegeSuspensjonRulesExecution(
 ) : RuleExecution<LegeSuspensjonRules> {
     override fun runRules(
         legeerklaring: Legeerklaering,
-        ruleMetadata: RuleMetadata
+        ruleMetadata: RuleMetadata,
     ): LegeSuspensjonTreeOutput =
         rootNode.evaluate(legeerklaring.id, ruleMetadata.doctorSuspensjon).also {
             legeSuspensjonRulePath ->

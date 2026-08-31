@@ -23,7 +23,7 @@ This the high level flow of the application
 
 #### Requirements
 
-* JDK 21
+* JDK 25
 
 
 #### Build and run tests
