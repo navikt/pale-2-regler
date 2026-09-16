@@ -10,12 +10,13 @@ val ktorVersion = "3.5.2"
 val logbackVersion = "1.6.3"
 val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
-val jacksonVersion="3.2.2"
+val jacksonVersion = "3.2.2"
 val mockkVersion = "1.14.11"
 val junitJupiterVersion = "6.1.3"
 val ktfmtVersion = "0.56"
 
-
+// Included due vulnerabilities in this transitive dependency
+val nettyVersion = "4.2.17.Final"
 
 
 application {
@@ -39,6 +40,11 @@ repositories {
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    constraints {
+        implementation("io.netty:netty-handler:$nettyVersion") {
+            because("Due to vulnerabilitie CVE-2026-75595")
+        }
+    }
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
@@ -72,6 +78,7 @@ kotlin {
 tasks {
 
     test {
+        jvmArgs("--enable-native-access=ALL-UNNAMED")
         useJUnitPlatform {
         }
         testLogging {
