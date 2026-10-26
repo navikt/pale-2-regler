@@ -6,17 +6,17 @@ version = "1.0.0"
 
 val javaVersion = JvmTarget.JVM_25
 
-val ktorVersion = "3.5.2"
-val logbackVersion = "1.6.3"
+val ktorVersion = "3.6.0"
+val logbackVersion = "1.6.5"
 val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
-val jacksonVersion = "3.2.2"
+val jacksonVersion = "3.2.4"
 val mockkVersion = "1.14.11"
 val junitJupiterVersion = "6.1.3"
 val ktfmtVersion = "0.56"
 
 // Included due vulnerabilities in this transitive dependency
-val nettyVersion = "4.2.17.Final"
+val nettyVersion = "4.2.19.Final"
 
 
 application {
@@ -28,8 +28,8 @@ application {
 
 plugins {
     id("application")
-    kotlin("jvm") version "2.4.10"
-    id("com.diffplug.spotless") version "8.10.1"
+    kotlin("jvm") version "2.4.21"
+    id("com.diffplug.spotless") version "8.10.4"
 }
 
 repositories {
